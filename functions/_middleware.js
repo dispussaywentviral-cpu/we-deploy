@@ -26,6 +26,4 @@ export async function onRequest(context) {
   } catch (e) {
     return res;
   }
-}    return res;
-  }
 }
