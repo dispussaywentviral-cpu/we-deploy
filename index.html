@@ -612,6 +612,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .oc-btn.sel{border-color:var(--a);background:rgba(255,140,66,.12);box-shadow:0 0 0 2px rgba(255,140,66,.25)}
 .wq-bar{height:6px;border-radius:99px;background:var(--panel3);overflow:hidden}.wq-bar i{display:block;height:100%;background:#25d366;transition:width .3s}
 .prop-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.prop-grid>*{min-width:0}
 .prop-doc{background:#fff;color:#1a1a1a;border-radius:12px;padding:26px 24px;font-size:13px;line-height:1.6;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 .prop-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:3px solid #ff6b1a;padding-bottom:14px;margin-bottom:18px}
 .prop-brand{font-weight:800;font-size:18px}.prop-by{font-size:11px;color:#777}
@@ -622,7 +623,78 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .prop-doc ul,.prop-doc ol{padding-left:20px;margin:0}.prop-doc li{margin:3px 0}
 .prop-price{display:flex;justify-content:space-between;gap:10px;background:#faf5ee;border-left:4px solid #ff6b1a;border-radius:8px;padding:14px;margin-top:16px}
 .prop-amt{font-size:22px;font-weight:800}
-@media(max-width:900px){.prop-grid{grid-template-columns:1fr}.oc-btn{padding:14px 8px}}
+@media(max-width:900px){.prop-grid{grid-template-columns:minmax(0,1fr)}.oc-btn{padding:14px 8px}}
+.site-banner{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(90deg,rgba(255,107,26,.18),rgba(255,179,71,.08));border-bottom:1px solid rgba(255,107,26,.3);font-size:13px;font-weight:600}
+.site-banner span:first-of-type{flex:1}.sb-x{cursor:pointer;opacity:.7;padding:0 4px}
+#maintScreen{position:fixed;inset:0;z-index:5000;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
+.rank-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(167,139,250,.08));border:1px solid rgba(255,140,66,.25);border-radius:16px;padding:14px 16px;flex-wrap:wrap}
+.rank-lvl{width:68px;height:68px;border-radius:50%;background:var(--panel2);border:2px solid var(--a);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.rank-emoji{font-size:24px;line-height:1}.rank-num{font-size:10px;font-weight:800;color:var(--a);margin-top:2px}
+.rank-title{font-weight:800;font-size:15px;line-height:1.3}
+.rank-bar{height:8px;border-radius:99px;background:var(--panel3);overflow:hidden;margin:8px 0 5px}.rank-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),var(--a2))}
+.rank-sub{font-size:11px;color:var(--muted)}
+.rank-stats{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-top:6px}
+.rp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:300px;overflow-y:auto;margin:10px 0;padding-right:2px}
+.rp-card{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;transition:all var(--tr)}
+.rp-card.sel{border-color:var(--a);background:rgba(255,140,66,.12);box-shadow:0 0 0 2px rgba(255,140,66,.25)}
+.rp-i{font-size:22px}.rp-n{font-weight:700;font-size:13px}.rp-d{font-size:11px;color:var(--muted);line-height:1.4}
+.rp-preview{background:var(--panel2);border:1px dashed var(--line2);border-radius:12px;padding:10px 12px;margin-top:10px;font-size:13px}
+.lb-row{gap:10px}
+.lb-you{background:rgba(255,140,66,.08);border-radius:10px;padding-left:8px!important;padding-right:8px!important}
+.lb-rank{width:34px;text-align:center;font-weight:800;font-size:15px;flex-shrink:0}
+.lb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--purple));display:grid;place-items:center;font-weight:800;font-size:12px;color:#fff;flex-shrink:0}
+.lb-name{font-weight:700;font-size:13px}.lb-role{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-val{font-weight:800;color:var(--a);font-size:13px;white-space:nowrap}
+.lb-badge{font-size:10px;padding:2px 7px;border-radius:99px;background:rgba(167,139,250,.15);color:var(--purple);font-weight:700}
+.op-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.op-stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.op-stat-v{font-weight:800;font-size:18px;margin-top:4px}.op-stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.op-user{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.op-user>div:nth-child(2){flex:1;min-width:0}
+.op-user.banned{opacity:.6}
+.op-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.op-actions select{background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:5px 8px;font-size:12px;color:var(--text)}
+.op-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.op-switch input{width:20px;height:20px;accent-color:var(--a)}
+.prop-grid .form-group input,.prop-grid .form-group select,.prop-grid .form-group textarea{width:100%;min-width:0}
+@media(max-width:900px){.rp-grid{grid-template-columns:1fr}.op-grid{grid-template-columns:1fr 1fr}.rank-card>div:nth-child(2){flex:1 1 calc(100% - 90px)}.rank-card>.btn{flex:1 1 100%;justify-content:center}.rank-title{font-size:14px}}
+.rc-real{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.real-tag,.claim-tag,.fresh-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(82,201,122,.12);color:var(--green)}
+.claim-tag{background:rgba(248,113,113,.12);color:var(--red)}.fresh-tag{background:rgba(246,200,95,.14);color:#f6c85f}
+.rc-links{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin:6px 0 8px}.rc-links a{color:var(--a);text-decoration:none;font-weight:600}
+.real-banner{grid-column:1/-1;font-size:12px;padding:10px 12px;border-radius:12px;background:rgba(82,201,122,.08);border:1px solid rgba(82,201,122,.25);margin-bottom:12px;color:var(--text2)}
+.money-card{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-radius:18px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(82,201,122,.16),rgba(255,140,66,.08));border:1px solid rgba(82,201,122,.3)}
+.money-l{font-size:12px;color:var(--text2);font-weight:600}.money-v{font-size:34px;font-weight:900;letter-spacing:-.02em;color:var(--green);line-height:1.1;margin:4px 0}.money-s{font-size:11px;color:var(--muted)}
+.drop-card{display:flex;align-items:center;gap:12px;border-radius:16px;padding:14px 16px;margin-bottom:14px;background:linear-gradient(135deg,rgba(167,139,250,.16),rgba(255,140,66,.08));border:1px solid rgba(167,139,250,.35)}
+.drop-ic{font-size:30px;animation:dropBob 2.4s ease-in-out infinite}@keyframes dropBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
+.drop-t{font-weight:800;font-size:14px}.drop-s{font-size:12px;color:var(--text2)}
+.drop-row,.radar-row,.feed-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.drop-row:last-child,.radar-row:last-child,.feed-row:last-child{border-bottom:none}
+.feed-row{font-size:13px}.feed-ic{font-size:18px;width:26px;text-align:center}.feed-x{cursor:pointer;color:var(--muted);padding:0 4px}
+.mission{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.mission.done{opacity:.75}
+.m-ic{font-size:20px;width:28px;text-align:center}.m-t{font-size:13px;font-weight:600}.m-xp{font-size:12px;font-weight:800;text-align:right;color:var(--a)}.m-xp span{font-size:10px;color:var(--muted);font-weight:600}
+.m-foot{font-size:11px;color:var(--muted);margin-top:8px}
+.tip-card{font-size:13px;line-height:1.6;color:var(--text2)}
+.win-card{border:1px solid var(--line2);border-radius:14px;padding:12px;margin-bottom:10px;background:var(--panel2)}
+.win-top{display:flex;align-items:center;gap:10px}.win-amt{font-weight:900;color:var(--green);font-size:15px;white-space:nowrap}
+.win-text{font-size:14px;margin:10px 0;line-height:1.5}.win-react{display:flex;gap:6px;flex-wrap:wrap}
+.rx{cursor:pointer;font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--line2);background:var(--panel3);user-select:none}.rx.on{border-color:var(--a);background:rgba(255,140,66,.15)}.rx.del{margin-left:auto}
+.champ-card{border:1px solid rgba(246,200,95,.35);border-radius:16px;padding:12px 14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(246,200,95,.1),rgba(255,140,66,.04))}
+.champ-h{font-weight:800;font-size:13px;margin-bottom:8px}.champ-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.ch-row{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}.ch-row:last-child{border-bottom:none}
+.ch-score{font-size:18px;font-weight:900;margin:4px 0}.ch-score .lead{color:var(--green)}
+.ch-btn{margin-left:6px;flex-shrink:0}
+.btn-xs{padding:4px 9px;font-size:11px;border-radius:8px}
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.bdg{border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;opacity:.45;background:var(--panel2)}
+.bdg.on{opacity:1;border-color:rgba(246,200,95,.45);background:linear-gradient(135deg,rgba(246,200,95,.1),transparent)}
+.bdg-i{font-size:24px}.bdg-n{font-size:11px;font-weight:800;margin-top:4px}.bdg-d{font-size:9.5px;color:var(--muted);margin-top:2px;line-height:1.3}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.theme-sw{border:1px solid var(--line2);border-radius:12px;padding:10px;cursor:pointer;text-align:center;background:var(--panel2)}
+.theme-sw.sel{border-color:var(--a);box-shadow:0 0 0 2px rgba(255,140,66,.25)}.theme-sw.locked{opacity:.45}
+.theme-dot{width:34px;height:34px;border-radius:50%;margin:0 auto 6px}.theme-n{font-size:12px;font-weight:700}.theme-l{font-size:10px;color:var(--muted)}
+.auth-pulse{font-size:12px;color:var(--text2);margin-top:10px;padding:8px 12px;border-radius:99px;background:rgba(82,201,122,.1);border:1px solid rgba(82,201,122,.25);display:inline-block}
+@media(max-width:900px){.money-v{font-size:28px}.champ-row{gap:4px}}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
 .btn-gmail:hover{background:#f6f8fc;border-color:#ea4335}
 .tag-cold{background:rgba(148,163,184,.15);color:var(--muted)}
@@ -656,6 +728,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
       <div class="auth-logo">🎯</div>
       <h1>We<span>Deploy</span></h1>
       <p>Lead Finder Pro — find businesses without websites, anywhere in the world</p>
+      <div class="auth-pulse" id="authPulse" style="display:none"></div>
     </div>
     <div class="auth-tabs">
       <div class="auth-tab active" id="tab-login" onclick="switchAuth('login')">🔐 Sign In</div>
@@ -721,7 +794,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="logo-wrap">
     <div class="logo-icon">🎯</div>
     <div class="logo-text">We<span>Deploy</span></div>
-    <span id="versionBadge" style="font-size:10px;color:var(--muted);background:var(--panel3);padding:2px 7px;border-radius:99px;margin-left:6px">v9.3</span>
+    <span id="versionBadge" style="font-size:10px;color:var(--muted);background:var(--panel3);padding:2px 7px;border-radius:99px;margin-left:6px">v10.0</span>
   </div>
   <div class="topbar-sep"></div>
   <div class="topbar-search">
@@ -746,6 +819,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="avatar" id="avatar" title="Account menu" onclick="toggleUserMenu()">WD</div>
   </div>
 </header>
+<div class="site-banner" id="siteBanner" style="display:none">📢 <span id="siteBannerText"></span><span class="sb-x" onclick="this.parentElement.style.display='none'" title="Hide">✕</span></div>
 
 <div class="body">
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
@@ -756,11 +830,14 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <button class="nav-btn" data-view="leads" onclick="sv('leads')"><div class="nav-icon">🏢</div>Lead Finder<span class="nav-badge" id="navLeadCount">247</span></button>
   <button class="nav-btn" data-view="search" onclick="sv('search')"><div class="nav-icon">🔍</div>Search Businesses</button>
   <button class="nav-btn" data-view="pipeline" onclick="sv('pipeline')"><div class="nav-icon">📋</div>Pipeline<span class="nav-badge blue" id="navPipe">18</span></button>
+  <button class="nav-btn" data-view="leaderboard" onclick="sv('leaderboard')"><div class="nav-icon">🏆</div>Leaderboard</button>
+  <button class="nav-btn" data-view="community" onclick="sv('community')"><div class="nav-icon">🌍</div>Community<span class="nav-badge green">LIVE</span></button>
   <div class="sidebar-section">Outreach Tools</div>
   <button class="nav-btn" data-view="scripts" onclick="sv('scripts')"><div class="nav-icon">📞</div>Call Scripts<span class="nav-badge green">AI</span></button>
   <button class="nav-btn" data-view="whatsapp" onclick="sv('whatsapp')"><div class="nav-icon">💬</div>WhatsApp Messages<span class="nav-badge" style="background:#25d366">WA</span></button>
   <button class="nav-btn" data-view="email" onclick="sv('email')"><div class="nav-icon">📧</div>Email Templates</button>
   <div class="sidebar-section">Business Tools</div>
+  <button class="nav-btn" id="navOwner" data-view="owner" onclick="sv('owner')" style="display:none;color:var(--a)"><div class="nav-icon">👑</div>Owner Panel</button>
   <button class="nav-btn" data-view="invoice" id="navInvoice" onclick="sv('invoice')"><div class="nav-icon">🧾</div>Invoice Builder<span class="nav-badge purple" id="invBadge">👑</span></button>
   <button class="nav-btn" data-view="proposal" onclick="sv('proposal')"><div class="nav-icon">📄</div>Proposals</button>
   <button class="nav-btn" data-view="earnings" onclick="sv('earnings')"><div class="nav-icon">💰</div>Earnings<span class="nav-badge green">$</span></button>
@@ -837,12 +914,24 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         </div>
       </div>
     </div>
+    <div id="growthDash">
+      <div id="moneyCard"></div>
+      <div id="dropCard"></div>
+      <div class="dash-grid" style="margin-bottom:18px">
+        <div class="widget"><div class="widget-head"><h3>🎯 Daily Missions</h3><span style="font-size:11px;color:var(--muted)">new every day</span></div><div class="widget-body" id="missionsBody"></div></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="widget"><div class="widget-head"><h3>💡 Tip of the Day</h3></div><div class="widget-body tip-card" id="tipBody"></div></div>
+          <div class="widget"><div class="widget-head"><h3>⚡ Live</h3><button class="btn btn-ghost btn-sm" onclick="sv('community');commTab('live')">See all</button></div><div class="widget-body" id="feedMini"></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="dashRank" style="margin-bottom:18px"></div>
     <div class="widget" style="margin-bottom:18px">
       <div class="widget-head"><h3>🎯 This Month's Goals</h3><button class="btn btn-ghost btn-sm" onclick="openGoals()">✏️ Edit</button></div>
       <div class="widget-body" id="goalsBody"></div>
     </div>
     <div class="widget" style="margin-bottom:18px">
-      <div class="widget-head"><h3>🏆 Leaderboard</h3><span style="font-size:12px;color:var(--muted)">This week</span></div>
+      <div class="widget-head"><h3>🏆 Leaderboard</h3><span style="font-size:12px;color:var(--muted)">Top by XP</span></div>
       <div class="widget-body" id="leaderboardBody"></div>
     </div>
     <div class="widget">
@@ -871,7 +960,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div style="font-size:11px;color:var(--muted)">Create & send</div>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v9.3</span></div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.0</span></div>
   </div>
 </div>
 
@@ -1239,7 +1328,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         </table>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v9.3</span></div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.0</span></div>
   </div>
 </div>
 
@@ -1347,6 +1436,106 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   </div>
 </div>
 
+<div class="view" id="view-leaderboard">
+  <div class="page-head">
+    <div class="page-head-left"><h1>🏆 Leaderboard</h1><p>Who finds the most leads and closes the most deals • Your rank: <b id="lbMyRank">—</b></p></div>
+    <div class="page-head-right"><div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div><button class="btn btn-ghost btn-sm" onclick="renderLeaderboardView()">🔄 Refresh</button></div>
+  </div>
+  <div class="scroll-area">
+    <div id="lbMine" style="margin-bottom:16px"></div>
+    <div id="lbChamps"></div>
+    <div id="lbChallenges"></div>
+    <div class="seg-tabs" id="lbTabs"></div>
+    <div class="widget"><div class="widget-body" id="lbList"></div></div>
+    <div class="widget" style="margin-top:16px"><div class="widget-head"><h3>🏅 Achievements</h3><span style="font-size:12px;color:var(--muted)" id="lbBadgeCount"></span></div><div class="widget-body" id="lbBadges"></div></div>
+    <div class="widget" style="margin-top:16px">
+      <div class="widget-head"><h3>⭐ How to earn XP</h3></div>
+      <div class="widget-body" style="font-size:12px;color:var(--text2);line-height:1.8">
+        🔍 Search +5 • ➕ Each lead added +2 • 📞 Call / 💬 WhatsApp / 📧 Email +10 • 📝 Call result +5 • ⏰ Follow-up +3 • 📋 Pipeline move +4 • 📄 Proposal +40 • 🧾 Invoice +30 • ✅ Deal closed +150 • 💰 Payment +100<br>
+        <b style="color:var(--a)">Your role's focus actions give +50% XP.</b> Ranks: 🌱 Rookie → 🔭 Scout (3) → 🎯 Hunter (6) → 🤝 Closer (10) → 💼 Pro (15) → ⚡ Expert (20) → 💎 Elite (30) → 👑 Master (40) → 🏆 Legend (50) → 🚀 Mogul (75)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-owner">
+  <div class="page-head">
+    <div class="page-head-left"><h1>👑 Owner Panel</h1><p>Control the whole site — only you can see this</p></div>
+    <div class="page-head-right"><div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div><button class="btn btn-ghost btn-sm" onclick="renderOwnerPanel()">🔄 Refresh</button></div>
+  </div>
+  <div class="scroll-area">
+    <div class="invoice-notes" id="op-warn" style="display:none;margin-bottom:14px"></div>
+    <div class="op-grid" id="op-stats"></div>
+    <div class="prop-grid">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="inv-section">
+          <h3>🏷 Website identity</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Website name</label><input id="op-name" maxlength="40" placeholder="We Deploy"></div>
+            <div class="form-group"><label>Version label</label><input id="op-version" maxlength="20" placeholder="e.g. 9.4 or Beta 2"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin:-4px 0 10px"><span id="op-default-ver"></span> • leave the version empty to use it • <a style="color:var(--a);cursor:pointer" onclick="resetVersion()">reset</a></div>
+          <div class="form-group" style="margin-bottom:10px"><label>Tagline (sign-in screen)</label><input id="op-tagline" maxlength="140"></div>
+          <h3 style="margin-top:6px">📢 Site-wide banner</h3>
+          <div class="form-group" style="margin-bottom:6px"><label>Message shown at the top for everyone</label><input id="op-banner" maxlength="280" placeholder="e.g. 🎉 New: Proposals + Leaderboard are live!"></div>
+          <label class="op-switch"><span>Show banner</span><input type="checkbox" id="op-bannerOn"></label>
+          <div class="form-group" style="margin:10px 0 6px"><label>💡 Tip of the day (leave empty for the built-in daily tips)</label><input id="op-tip" maxlength="280" placeholder="e.g. Call restaurants between 2–4pm"></div>
+          <h3 style="margin-top:12px">⚙️ Switches</h3>
+          <label class="op-switch"><span>✍️ Allow new sign-ups</span><input type="checkbox" id="op-signups"></label>
+          <label class="op-switch"><span>🏆 Leaderboard visible to users</span><input type="checkbox" id="op-lb"></label>
+          <label class="op-switch"><span>🛠️ Maintenance mode <small style="color:var(--muted)">(everyone except you sees a maintenance screen)</small></span><input type="checkbox" id="op-maint"></label>
+          <div class="form-group" style="margin:8px 0 12px"><label>Maintenance message</label><input id="op-maintMsg" maxlength="200"></div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveSiteSettings()">💾 Save site settings</button>
+        </div>
+        <div class="inv-section">
+          <h3>🧰 Owner tools</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="openAnnouncements()">📢 Announcements</button>
+            <button class="btn btn-ghost btn-sm" onclick="sv('invoice')">🧾 Invoice Builder</button>
+            <button class="btn btn-ghost btn-sm" onclick="exportUsersCSV()">⬇ Export users CSV</button>
+            <button class="btn btn-ghost btn-sm" onclick="backupData()">💾 Backup my data</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openM('freshModal')">🧹 Reset my stats</button>
+          </div>
+        </div>
+      </div>
+      <div class="inv-section">
+        <h3 style="display:flex;justify-content:space-between;align-items:center">👥 Users <span id="op-ucount" style="font-size:11px;color:var(--muted);font-weight:500"></span></h3>
+        <input class="filter-input" id="op-search" placeholder="Search name, email, role…" oninput="renderOwnerUsers()" style="margin-bottom:6px">
+        <div id="op-users"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-community">
+  <div class="page-head">
+    <div class="page-head-left"><h1>🌍 Community</h1><p>Wins, live activity, the world opportunity radar and invites</p></div>
+    <div class="page-head-right"><div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div></div>
+  </div>
+  <div class="scroll-area">
+    <div class="seg-tabs" id="commTabs">
+      <div class="seg-tab active" data-t="wins" onclick="commTab('wins')">🏆 Win Wall</div>
+      <div class="seg-tab" data-t="live" onclick="commTab('live')">⚡ Live</div>
+      <div class="seg-tab" data-t="radar" onclick="commTab('radar')">📡 Radar</div>
+      <div class="seg-tab" data-t="invite" onclick="commTab('invite')">🤝 Invite</div>
+    </div>
+    <div id="comm-wins">
+      <div class="inv-section" style="margin-bottom:14px">
+        <h3>🏆 Share a win</h3>
+        <textarea class="filter-input" id="win-text" rows="2" maxlength="280" placeholder="e.g. Closed Kapana Grill today — website + app! 🔥" style="width:100%;resize:vertical;margin-bottom:8px"></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><input class="filter-input" id="win-amount" type="number" min="0" placeholder="Amount (optional)" style="flex:1;min-width:120px"><button class="btn btn-primary btn-sm" onclick="postWin()">📣 Post win (+15 XP)</button></div>
+      </div>
+      <div id="winList"></div>
+    </div>
+    <div id="comm-live" style="display:none"><div class="widget"><div class="widget-head"><h3>⚡ Live activity</h3><button class="btn btn-ghost btn-sm" onclick="commTab('live')">🔄</button></div><div class="widget-body" id="liveList"></div></div></div>
+    <div id="comm-radar" style="display:none">
+      <div class="widget" style="margin-bottom:14px"><div class="widget-head"><h3>📡 Opportunity Radar</h3><span style="font-size:11px;color:var(--muted)" id="radarTotals"></span></div><div class="widget-body"><p style="font-size:12px;color:var(--text2);margin-bottom:8px">Cities ranked by how many businesses have <b>no website</b> — built from every search the community runs. Tap 🔍 Hunt to search there.</p><div id="radarList"></div></div></div>
+      <div class="widget"><div class="widget-head"><h3>🏭 Hottest industries worldwide</h3></div><div class="widget-body"><div class="mini-bar-wrap" id="radarInd"></div></div></div>
+    </div>
+    <div id="comm-invite" style="display:none"></div>
+  </div>
+</div>
+
 <div class="view" id="view-settings">
   <div class="page-head"><div class="page-head-left"><h1>⚙️ Settings</h1><p>Configure your account, tools and preferences</p></div></div>
   <div class="scroll-area">
@@ -1357,6 +1546,22 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div class="settings-nav-btn" onclick="this.parentElement.querySelectorAll('.settings-nav-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">🔑 Security</div>
       </div>
       <div class="settings-panel">
+        <div class="settings-section">
+          <h3>🎭 Your Role</h3><p>Pick what you use the site for — your title upgrades as you level up</p>
+          <button class="btn btn-primary btn-sm" onclick="openRolePicker()">🎭 Choose / change role</button>
+        </div>
+        <div class="settings-section">
+          <h3>🎨 Themes</h3><p>New colour themes unlock as you level up</p>
+          <div class="theme-grid" id="themePicker"></div>
+        </div>
+        <div class="settings-section">
+          <h3>⚡ Live feed</h3><p>Share your wins (deals, level-ups, badges, streaks) in the community feed. Business names are never shared.</p>
+          <label class="op-switch"><span>Share my wins publicly</span><input type="checkbox" id="shareFeedToggle" onchange="UD.shareFeed=this.checked;saveUD()"></label>
+        </div>
+        <div class="settings-section">
+          <h3>🧹 Start Fresh</h3><p>Reset your leads, invoices, pipeline, payments, stats and XP back to zero</p>
+          <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openM('freshModal')">🧹 Reset everything to zero</button>
+        </div>
         <div class="settings-section">
           <h3>👑 Owner Access</h3><p>Unlock the Invoice Builder and Announcement posting (Lameero Mendoza only)</p>
           <button class="btn btn-primary btn-sm" onclick="openM('ownerUnlockModal')">👑 Unlock Owner Access</button>
@@ -1563,6 +1768,56 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   </div>
 </div>
 
+<!-- ROLE PICKER -->
+<div class="modal-overlay" id="roleModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head"><div><h2 id="rp-head">🎭 Choose your role</h2><div style="font-size:12px;color:var(--muted);margin-top:3px"><b id="rp-count"></b> roles to choose from — your title levels up as you use the site</div></div><div class="modal-close" onclick="closeM('roleModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <input class="filter-input" id="rp-search" placeholder="🔍 Search paths — e.g. call, WhatsApp, design, agency" oninput="renderRolePaths()">
+      <div class="rp-grid" id="rp-paths"></div>
+      <div class="form-row" style="margin:0">
+        <div class="form-group"><label>Industry focus</label><select id="rp-ind" onchange="updateRolePreview()"></select></div>
+        <div class="form-group"><label>Home market</label><select id="rp-market" onchange="updateRolePreview()"></select></div>
+      </div>
+      <div class="rp-preview" id="rp-preview"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveRole()">✓ Save role</button><button class="btn btn-ghost" onclick="closeM('roleModal')">Later</button></div>
+  </div>
+</div>
+
+<!-- START FRESH -->
+<div class="modal-overlay" id="freshModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h2>🧹 Reset everything to zero?</h2><div class="modal-close" onclick="closeM('freshModal')" title="Close">✕</div></div>
+    <div class="modal-body" style="font-size:13px;color:var(--text2);line-height:1.6">
+      This clears your <b>leads, invoices, pipeline, CRM notes, payments, follow-ups, activity, XP and stats</b>. Your account, role, goals and settings stay.<br><br>
+      <b style="color:var(--red)">This can't be undone.</b> Tap 💾 Backup first if you want a copy.
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="backupData()">💾 Backup</button><button class="btn btn-primary" style="background:var(--red)" onclick="startFresh()">🧹 Yes, reset to zero</button><button class="btn btn-ghost" onclick="closeM('freshModal')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- LEAD DROP -->
+<div class="modal-overlay" id="dropModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-head"><h2 id="drop-head">🎁 Today's Lead Drop</h2><div class="modal-close" onclick="closeM('dropModal')" title="Close">✕</div></div>
+    <div class="modal-body" id="drop-body"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE -->
+<div class="modal-overlay" id="challengeModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head"><h2>⚔️ Challenge <span id="ch-name"></span></h2><div class="modal-close" onclick="closeM('challengeModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:10px"><label>Who gets the most…</label><select id="ch-metric"><option value="contacts">📞 Contacts (calls, WhatsApps, emails)</option><option value="leads">🔍 Leads added</option><option value="deals">✅ Deals closed</option><option value="xp">⭐ XP earned</option></select></div>
+      <div class="form-group"><label>In</label><select id="ch-hours"><option value="24">24 hours</option><option value="72">3 days</option><option value="168">7 days</option></select></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px">Scores count from the moment they accept. Winner gets +200 XP and a shout-out in the live feed.</div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="sendChallenge()">⚔️ Send challenge</button><button class="btn btn-ghost" onclick="closeM('challengeModal')">Cancel</button></div>
+  </div>
+</div>
+
 <!-- OWNER UNLOCK MODAL -->
 <div class="modal-overlay" id="ownerUnlockModal">
   <div class="modal" style="max-width:420px">
@@ -1714,7 +1969,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
       <div class="about-hero">
         <div class="about-logo">🎯</div>
         <div class="about-name">We<span>Deploy</span></div>
-        <div class="about-version">Lead Finder Pro • <span class="appVer">v9.3</span></div>
+        <div class="about-version">Lead Finder Pro • <span class="appVer">v10.0</span></div>
       </div>
       <div class="about-credit">
         <div class="ac-role">Engineered by</div>
@@ -1919,12 +2174,16 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="um-item" onclick="toggleUserMenu();openFAQ()">❓ FAQ</div>
   <div class="um-item" onclick="toggleUserMenu();openM('donateModal')">☕ Donate</div>
   <div class="um-item" onclick="openM('aboutModal');toggleUserMenu()">⭐ About & Credits</div>
+  <div class="um-item gold" id="umOwner" style="display:none" onclick="sv('owner');toggleUserMenu()">👑 Owner Panel</div>
+  <div class="um-item" onclick="toggleUserMenu();openRolePicker()">🎭 Change Role</div>
+  <div class="um-item" onclick="sv('leaderboard');toggleUserMenu()">🏆 Leaderboard</div>
   <div class="um-item" onclick="sv('settings');toggleUserMenu()">👤 Profile & Settings</div>
   <div class="um-item" onclick="openM('changePwModal');toggleUserMenu()">🔑 Change Password</div>
   <div class="um-item" onclick="openAI();toggleUserMenu()">🤖 Ask Lameero's Assistant</div>
   <div class="um-item danger" onclick="logout()">🚪 Log Out</div>
 </div>
 
+<div id="maintScreen"><div style="font-size:54px">🛠️</div><h2 style="font-size:22px">Down for maintenance</h2><p id="maintMsg" style="color:var(--muted);max-width:360px"></p><button class="btn btn-ghost btn-sm" onclick="logout()">🚪 Log out</button></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <!-- ═══ SCRIPT BLOCK A — AUTH SAFETY CORE (crash-proof) ═══ -->
@@ -2121,7 +2380,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='9.3';   // ← Change this number whenever you update the site
+const APP_VERSION='10.0';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function isOwner(){
  if(!CUR)return false;
@@ -2145,6 +2404,8 @@ function doOwnerUnlock(){
 }
 function applyOwnerGates(){
  const own=isOwner();
+ const no=el('navOwner');if(no)no.style.display=own?'':'none';
+ const uo=el('umOwner');if(uo)uo.style.display=own?'':'none';
  const pill=el('pillInvoice');
  if(pill)pill.style.display=own?'':'none';
  const inv=el('navInvoice');
@@ -2592,7 +2853,7 @@ function loadUD(){
  try{raw=lsGet('wd_data_'+CUR.id)}catch(e){raw=null}
  UD=null;
  if(raw){try{UD=JSON.parse(raw)}catch(e){UD=null}}
- if(!UD)UD={myLeads:[],savedIds:[],deletedIds:[],contactedIds:[],followups:{},notes:{},invoices:null,pipeline:null,crms:null,payments:null,target:0};
+ if(!UD)UD={myLeads:[],savedIds:[],deletedIds:[],contactedIds:[],followups:{},notes:{},invoices:null,pipeline:null,crms:null,payments:null,target:0,freshStart:true,xp:0,stats:{}};
  if(!UD.payments)UD.payments=defaultPayments();
 }
 function saveUD(){
@@ -2610,7 +2871,7 @@ function saveUD(){
 function backupData(){
  if(!CUR||!UD)return showToast('Nothing to back up yet','info');
  const pack={app:'We Deploy',by:'Lameero Mendoza',user:{name:CUR.name,email:CUR.email,biz:CUR.biz},savedAt:new Date().toLocaleString(),
-  myLeads:state.leads.filter(l=>l.added),savedIds:state.leads.filter(l=>l.saved).map(l=>l.id),contactedIds:state.leads.filter(l=>l.contacted).map(l=>l.id),followups:UD.followups||{},deletedIds:UD.deletedIds,notes:state.notes,invoices:state.invoices,pipeline:PIPE,crms:CRMS,payments:UD.payments||[],target:UD.target||0,statusTags:UD.statusTags||{},activity:UD.activity||[],outcomes:UD.outcomes||{},goals:UD.goals||null,proposals:UD.proposals||[],dealValue:UD.dealValue||0};
+  myLeads:state.leads.filter(l=>l.added),savedIds:state.leads.filter(l=>l.saved).map(l=>l.id),contactedIds:state.leads.filter(l=>l.contacted).map(l=>l.id),followups:UD.followups||{},deletedIds:UD.deletedIds,notes:state.notes,invoices:state.invoices,pipeline:PIPE,crms:CRMS,payments:UD.payments||[],target:UD.target||0,statusTags:UD.statusTags||{},activity:UD.activity||[],outcomes:UD.outcomes||{},goals:UD.goals||null,proposals:UD.proposals||[],dealValue:UD.dealValue||0,role:UD.role||null,xp:UD.xp||0,stats:UD.stats||{},freshStart:!!UD.freshStart};
  const a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob([JSON.stringify(pack,null,2)],{type:'application/json'}));
  a.download='wedeploy-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -2624,7 +2885,7 @@ function restoreData(inp){
   try{
    const d=JSON.parse(reader.result);
    if(!d.app||d.app!=='We Deploy')return showToast('That file is not a We Deploy backup','error');
-   UD.myLeads=d.myLeads||[];UD.savedIds=d.savedIds||[];UD.contactedIds=d.contactedIds||[];UD.followups=d.followups||{};UD.deletedIds=d.deletedIds||[];UD.notes=d.notes||{};UD.invoices=d.invoices||null;UD.pipeline=d.pipeline||null;UD.crms=d.crms||null;UD.payments=d.payments||[];UD.target=d.target||0;UD.statusTags=d.statusTags||{};UD.activity=d.activity||[];UD.outcomes=d.outcomes||{};UD.goals=d.goals||null;UD.proposals=d.proposals||[];UD.dealValue=d.dealValue||0;
+   UD.myLeads=d.myLeads||[];UD.savedIds=d.savedIds||[];UD.contactedIds=d.contactedIds||[];UD.followups=d.followups||{};UD.deletedIds=d.deletedIds||[];UD.notes=d.notes||{};UD.invoices=d.invoices||null;UD.pipeline=d.pipeline||null;UD.crms=d.crms||null;UD.payments=d.payments||[];UD.target=d.target||0;UD.statusTags=d.statusTags||{};UD.activity=d.activity||[];UD.outcomes=d.outcomes||{};UD.goals=d.goals||null;UD.proposals=d.proposals||[];UD.dealValue=d.dealValue||0;UD.role=d.role||UD.role||null;UD.xp=d.xp||0;UD.stats=d.stats||{};UD.freshStart=!!d.freshStart;
    lsSet('wd_data_'+CUR.id,JSON.stringify(UD));bootApp();
    showToast('📂 Backup restored','success');
   }catch(e){showToast('Could not read that backup file','error')}
@@ -2693,7 +2954,7 @@ function saveLogPayment(){
  if(amount<=0)return showToast('Enter an amount greater than zero','error');
  UD.payments=UD.payments||[];
  UD.payments.unshift({client:client,amount:amount,date:date,note:note});
- logAct('payment',client+' — '+money0(amount));
+ logAct('payment',client+' — '+money0(amount),null,amount);
  saveUD();renderEarnings();
  closeM('logPaymentModal');
  el('lp-client').value='';el('lp-amount').value='';el('lp-note').value='';
@@ -2728,6 +2989,7 @@ function setFollowUp(){
  if(!d)return showToast('Pick a date first','error');
  UD.followups=UD.followups||{};
  UD.followups[state.curLead.id]=d;
+ logAct('followup',state.curLead.name+' on '+fmtDate(d),state.curLead.id);
  saveUD();renderFollowUps();
  const fi=el('m-follow-info');if(fi)fi.textContent='⏰ '+fmtDate(d);
  showToast('⏰ Follow-up set for '+fmtDate(d)+' — '+esc(state.curLead.name),'success');
@@ -2825,7 +3087,7 @@ function startApp(u,isNew){
   playIntro(function(){
    const shell=el('appShell');
    if(shell){shell.classList.remove('reveal');void shell.offsetWidth;shell.style.display='';shell.classList.add('reveal')}
-   showToast(isNew?'🎉 Welcome to We Deploy, '+esc(u.name.split(' ')[0])+'!':'👋 Welcome back, '+esc(u.name.split(' ')[0])+'!','success');
+   showToast(isNew?'🎉 Welcome to '+siteName()+', '+esc(u.name.split(' ')[0])+'!':'👋 Welcome back, '+esc(u.name.split(' ')[0])+'!','success');
    if(isOwner())setTimeout(function(){showToast('👑 Owner verified — Invoice Builder unlocked. Welcome, Lameero Mendoza.','success')},1600);
    if(!aiWelliked){}else{}
    if(!aiWelcomed){aiUnreadN=1;const a=el('aiUnread');if(a){a.textContent='1';a.style.display='grid'}}
@@ -2853,6 +3115,7 @@ function bootApp(){
  renderDashAnn();
  setCHK('introToggle',UD.showIntro!==false);
  UD.followups=UD.followups||{};UD.contactedIds=UD.contactedIds||[];UD.payments=UD.payments||[];
+ if(UD.freshStart)state.leads=[];
  state.leads=state.leads.filter(function(l){return UD.deletedIds.indexOf(l.id)===-1});
  (UD.myLeads||[]).forEach(function(l){state.leads.push(l)});
  (UD.savedIds||[]).forEach(function(id){const l=state.leads.find(function(x){return x.id===id});if(l)l.saved=true});
@@ -2872,6 +3135,9 @@ function bootApp(){
  try{renderCityList('lci')}catch(e){console.warn(e)}
  try{updateStreak()}catch(e){console.warn(e)}
  try{updateReminderBtn();setTimeout(function(){checkDueReminders(false)},3000)}catch(e){}
+ try{growthBoot()}catch(e){console.warn(e)}
+ try{refreshInvNum();applySite();loadSite();renderMyRank();syncOwnerFlags();setTimeout(function(){pushProfile(true)},4000)}catch(e){console.warn(e)}
+ if(UD&&!UD.role&&!state.rolePrompted){state.rolePrompted=true;setTimeout(function(){try{if(UD&&!UD.role)openRolePicker(true)}catch(e){console.warn(e)}},1500)}
  try{const vb=el('versionBadge');if(vb)vb.textContent='v'+APP_VERSION;document.querySelectorAll('.appVer').forEach(function(x){x.textContent='v'+APP_VERSION})}catch(e){}
  const t=new Date();
  setV('inv-date',t.toISOString().slice(0,10));
@@ -2881,6 +3147,7 @@ function bootApp(){
  }catch(err){console.warn('bootApp',err)}
 }
 function sv(v){
+ if(v==='owner'&&!isOwner()){showToast('👑 Owner only','error');return}
  if((v==='invoice'||v==='invoice-history')&&!isOwner()){
   showToast('🔐 The Invoice Builder is reserved for Lameero Mendoza. Unlock owner access to use it.','error');
   openM('ownerUnlockModal');
@@ -2901,6 +3168,9 @@ function sv(v){
  try{if(v==='invoice-history')renderInvHistory()}catch(e){}
  try{if(v==='dashboard')renderDashboard()}catch(e){console.warn(e)}
  try{if(v==='analytics')renderAnalytics()}catch(e){console.warn(e)}
+ try{if(v==='leaderboard')renderLeaderboardView()}catch(e){console.warn(e)}
+ try{if(v==='owner')renderOwnerPanel()}catch(e){console.warn(e)}
+ try{if(v==='community')renderCommunity()}catch(e){console.warn(e)}
  try{if(v==='proposal'){initProposalForm();renderProposalPreview()}}catch(e){console.warn(e)}
 }
 function toggleSidebar(){const s=el('sidebar');if(!s)return;const o=!s.classList.contains('open');s.classList.toggle('open',o);const b=el('sidebarBackdrop');if(b)b.classList.toggle('show',o)}
@@ -3033,11 +3303,12 @@ function resCard(l){
 }
 function addResult(id){
  const l=state.results.find(function(x){return x.id===id});if(!l||l.added)return;
- l.added=true;state.leads.push(l);updateCounts();renderResults();renderLeads();saveUD();
+ l.added=true;state.leads.push(l);logAct('lead',l.name,l.id,1);updateCounts();renderResults();renderLeads();saveUD();
  showToast('➕ '+esc(l.name)+' added to your leads','success');
 }
 function addAllResults(){
  let n=0;state.results.forEach(function(l){if(!l.added){l.added=true;state.leads.push(l);n++}});
+ if(n)logAct('lead',n+' businesses',null,n);
  updateCounts();renderResults();renderLeads();saveUD();
  showToast(n?'➕ '+n+' businesses added':'All results already added',n?'success':'info');
 }
@@ -3689,6 +3960,1068 @@ function renderOutcomeStats(){
  box.innerHTML=tot?Object.keys(OUTCOMES).map(function(k){return barRow(OUTCOMES[k].i+' '+OUTCOMES[k].l,c[k],tot,OUTCOMES[k].c)}).join('')+'<div style="font-size:11px;color:var(--muted);margin-top:6px">Latest result per lead • '+tot+' leads called</div>':'<div class="empty-mini">After each call, tap how it went — results show up here</div>';
 }
 
+/* ═════════════ SERVER HELPERS ═════════════ */
+function srvToken(){try{const raw=localStorage.getItem('wd_srv_token')||sessionStorage.getItem('wd_srv_token');const t=raw?JSON.parse(raw):null;return t&&t.session?t.session:null}catch(e){return null}}
+function onlineSite(){return /^https?:$/.test(location.protocol)}
+function wdApi(path,method,body){
+ const h={'Content-Type':'application/json'};const t=srvToken();if(t)h.Authorization='Bearer '+t;
+ const ctrl=typeof AbortController!=='undefined'?new AbortController():null;
+ const kill=setTimeout(function(){if(ctrl)ctrl.abort()},9000);
+ return fetch('/api/wd/'+path,{method:method||'GET',headers:h,body:body?JSON.stringify(body):undefined,signal:ctrl?ctrl.signal:undefined})
+  .then(function(r){clearTimeout(kill);return r.json().catch(function(){return {error:'Bad response'}}).then(function(j){j.__status=r.status;return j})})
+  .catch(function(e){clearTimeout(kill);return {error:'Server unreachable',offline:true}});
+}
+
+/* ═════════════ SITE SETTINGS (name, version, banner…) ═════════════ */
+const SITE_DEFAULT={name:'We Deploy',version:'',tagline:'Lead Finder Pro — find businesses without websites, anywhere in the world',banner:'',bannerOn:false,maintenance:false,maintenanceMsg:'We Deploy is getting an upgrade. Back soon!',allowSignups:true,leaderboardOn:true,tip:''};
+let SITE=(function(){try{return Object.assign({},SITE_DEFAULT,JSON.parse(localStorage.getItem('wd_site_cache')||'{}'))}catch(e){return Object.assign({},SITE_DEFAULT)}})();
+function siteName(){return SITE.name||'We Deploy'}
+function siteVersion(){const v=String(SITE.version||'').trim();if(!v)return 'v'+APP_VERSION;return /^\d/.test(v)?'v'+v:v}
+function brandHTML(name){
+ name=String(name||'We Deploy').trim();
+ const parts=name.split(/\s+/);
+ if(parts.length>1){const last=parts.pop();return esc(parts.join(' '))+' <span>'+esc(last)+'</span>'}
+ const m=name.match(/^(.+?)([A-Z][a-z0-9]+)$/);
+ if(m)return esc(m[1])+'<span>'+esc(m[2])+'</span>';
+ return '<span>'+esc(name)+'</span>';
+}
+function applySite(){
+ try{
+  document.querySelectorAll('.logo-text').forEach(function(x){x.innerHTML=brandHTML(siteName())});
+  const ah=document.querySelector('.auth-brand h1');if(ah)ah.innerHTML=brandHTML(siteName());
+  const ap=document.querySelector('.auth-brand p');if(ap&&SITE.tagline)ap.textContent=SITE.tagline;
+  document.title=siteName()+' — Lead Finder Pro';
+  const vb=el('versionBadge');if(vb)vb.textContent=siteVersion();
+  document.querySelectorAll('.appVer').forEach(function(x){x.textContent=siteVersion()});
+  const bn=el('siteBanner');
+  if(bn){const on=SITE.bannerOn&&SITE.banner;bn.style.display=on?'':'none';if(on)setH('siteBannerText',esc(SITE.banner))}
+  const mt=el('maintScreen');
+  if(mt){const block=SITE.maintenance&&CUR&&!isOwner();mt.style.display=block?'flex':'none';if(block)setT('maintMsg',SITE.maintenanceMsg||'')}
+  const lbNav=document.querySelector('.nav-btn[data-view="leaderboard"]');if(lbNav)lbNav.style.display=(SITE.leaderboardOn||isOwner())?'':'none';
+ }catch(e){console.warn('applySite',e)}
+}
+function loadSite(){
+ applySite();
+ if(!onlineSite())return Promise.resolve(SITE);
+ return wdApi('site').then(function(r){
+  if(r&&r.ok&&r.site){SITE=Object.assign({},SITE_DEFAULT,r.site);try{localStorage.setItem('wd_site_cache',JSON.stringify(SITE))}catch(e){}}
+  applySite();return SITE;
+ });
+}
+document.addEventListener('DOMContentLoaded',function(){try{loadSite()}catch(e){}});
+
+/* ═════════════ START FRESH (reset stats to zero) ═════════════ */
+function startFresh(){
+ if(!UD)return;
+ const keep={theme:UD.theme,showIntro:UD.showIntro,goals:UD.goals,dealValue:UD.dealValue,target:UD.target,invoiceDefaults:UD.invoiceDefaults,role:UD.role,ownerUnlocked:UD.ownerUnlocked,remindersOn:UD.remindersOn};
+ const fresh={myLeads:[],savedIds:[],deletedIds:[],contactedIds:[],followups:{},notes:{},invoices:[],pipeline:[],crms:[],payments:[],target:0,activity:[],outcomes:{},proposals:[],statusTags:{},notified:{},xp:0,stats:{},streakN:0,streakLast:null,freshStart:true,freshAt:Date.now()};
+ UD=Object.assign(fresh,keep);
+ state.invoices=[];PIPE=[];CRMS=[];state.leads=[];state.results=[];state.notes={};state.curLead=null;
+ saveUD();
+ closeM('freshModal');
+ bootApp();
+ try{pushProfile(true)}catch(e){}
+ showToast('🧹 Fresh start — everything is back to zero','success');
+}
+function nextInvNum(){
+ let max=0;(state.invoices||[]).forEach(function(iv){const n=parseInt(String(iv.num||'').replace(/\D/g,''),10);if(n>max&&n<100000)max=n});
+ return 'INV-'+String(max+1).padStart(3,'0');
+}
+function refreshInvNum(){const f=el('inv-num');if(f)f.value=nextInvNum()}
+
+/* ═════════════ ROLES ═════════════ */
+const ROLE_PATHS=[
+ {id:'hunter',n:'Lead Hunter',i:'🔍',d:'Finds and builds big lists of businesses without websites',f:['search','lead']},
+ {id:'caller',n:'Cold Caller',i:'📞',d:'Calls leads with the scripts and logs every call result',f:['call','outcome']},
+ {id:'wa',n:'WhatsApp Closer',i:'💬',d:'Wins clients through WhatsApp messages and the queue',f:['whatsapp']},
+ {id:'email',n:'Email Outreach Specialist',i:'📧',d:'Uses the cold email and follow-up templates',f:['email']},
+ {id:'webdes',n:'Freelance Web Designer',i:'🎨',d:'Shows mockups and sends proposals to win design jobs',f:['proposal','deal']},
+ {id:'appdev',n:'App Developer',i:'📱',d:'Sells websites that come with a free mobile app',f:['proposal','deal']},
+ {id:'agency',n:'Agency Owner',i:'🏢',d:'Runs the full pipeline from lead to paid client',f:['deal','payment']},
+ {id:'setter',n:'Appointment Setter',i:'📅',d:'Books Google Meet calls and moves deals to Meeting Set',f:['stage','followup']},
+ {id:'proposal',n:'Proposal Writer',i:'📄',d:'Turns interested leads into signed proposals',f:['proposal']},
+ {id:'pipeline',n:'Pipeline Manager',i:'📋',d:'Keeps every deal moving through the pipeline stages',f:['stage']},
+ {id:'follow',n:'Follow-up Specialist',i:'⏰',d:'Never misses a follow-up date or reminder',f:['followup','outcome']},
+ {id:'sales',n:'Sales Rep',i:'🤝',d:'Contacts leads daily and closes deals',f:['call','whatsapp','deal']},
+ {id:'trainee',n:'Sales Trainee',i:'🎓',d:'Learning to sell with the scripts, goals and analytics',f:['call','outcome']},
+ {id:'hustle',n:'Side Hustler',i:'⚡',d:'Earns extra income finding and closing local clients',f:['whatsapp','payment']},
+ {id:'marketer',n:'Digital Marketing Freelancer',i:'📈',d:'Pitches websites, SEO and Google visibility',f:['email','proposal']},
+ {id:'consult',n:'Local Business Consultant',i:'🧭',d:'Advises local businesses on getting online',f:['call','proposal']},
+ {id:'research',n:'Market Researcher',i:'🌍',d:'Scans countries and cities and exports lead lists',f:['search','lead']},
+ {id:'referral',n:'Referral Partner',i:'🔗',d:'Finds leads and passes warm prospects into the pipeline',f:['lead','stage']},
+ {id:'teamlead',n:'Team Lead',i:'🧑‍✈️',d:'Sets monthly goals and tracks performance in Analytics',f:['deal','stage']},
+ {id:'growth',n:'Growth Hacker',i:'🚀',d:'Runs high-volume outreach with the WhatsApp queue',f:['whatsapp','search']},
+ {id:'closer',n:'Deal Closer',i:'🔥',d:'Focuses on Hot leads and closing won deals',f:['deal']},
+ {id:'bizdev',n:'Business Developer',i:'💼',d:'Opens new markets and builds long-term clients',f:['search','deal']},
+ {id:'invoice',n:'Billing & Collections',i:'💰',d:'Logs payments and tracks earnings to target',f:['payment','invoice']},
+ {id:'student',n:'Student Freelancer',i:'📚',d:'Builds a portfolio by landing first web clients',f:['proposal','lead']}
+];
+const RANKS=[[1,'Rookie','🌱'],[3,'Scout','🔭'],[6,'Hunter','🎯'],[10,'Closer','🤝'],[15,'Pro','💼'],[20,'Expert','⚡'],[30,'Elite','💎'],[40,'Master','👑'],[50,'Legend','🏆'],[75,'Mogul','🚀']];
+function roleCount(){return ROLE_PATHS.length*(IND_NAMES.length+1)*(CTRY.length+1)}
+function rankFor(level){let r=RANKS[0];RANKS.forEach(function(x){if(level>=x[0])r=x});return r}
+function xpForLevel(L){return 50*L*(L-1)}
+function levelFor(xp){return Math.max(1,Math.floor((1+Math.sqrt(1+(xp||0)/12.5))/2))}
+function myRole(){return (UD&&UD.role)||null}
+function rolePath(){const r=myRole();return ROLE_PATHS.find(function(p){return r&&p.id===r.path})||null}
+function roleTitle(opts){
+ opts=opts||{};
+ const r=myRole(),p=rolePath(),lvl=levelFor(UD&&UD.xp),rk=rankFor(lvl);
+ if(!p)return rk[1];
+ const ct=r.market?CTRY.find(function(c){return c.name===r.market}):null;
+ return rk[1]+' '+(r.ind?r.ind+' ':'')+p.n+(opts.noMarket||!r.market?'':' · '+(ct?ct.flag+' ':'')+r.market);
+}
+function openRolePicker(first){
+ state.rolePick=Object.assign({path:null,ind:'',market:''},myRole()||{});
+ const ind=el('rp-ind');if(ind&&!ind.options.length)ind.innerHTML='<option value="">🌐 All industries</option>'+IND_NAMES.map(function(n){return '<option>'+esc(n)+'</option>'}).join('');
+ const mk=el('rp-market');if(mk&&!mk.options.length)mk.innerHTML='<option value="">🌍 Worldwide</option>'+CTRY.map(function(c){return '<option value="'+esc(c.name)+'">'+c.flag+' '+esc(c.name)+'</option>'}).join('');
+ setV('rp-ind',state.rolePick.ind||'');setV('rp-market',state.rolePick.market||'');setV('rp-search','');
+ setT('rp-count',roleCount().toLocaleString());
+ setT('rp-head',first?'🎭 Choose your role':'🎭 Change your role');
+ renderRolePaths();openM('roleModal');
+}
+function renderRolePaths(){
+ const q=(el('rp-search').value||'').toLowerCase().trim();
+ const list=ROLE_PATHS.filter(function(p){return !q||(p.n+' '+p.d).toLowerCase().indexOf(q)>-1});
+ setH('rp-paths',list.length?list.map(function(p){
+  return '<div class="rp-card'+(state.rolePick.path===p.id?' sel':'')+'" onclick="pickRolePath(\''+p.id+'\')"><div class="rp-i">'+p.i+'</div><div><div class="rp-n">'+esc(p.n)+'</div><div class="rp-d">'+esc(p.d)+'</div></div></div>';
+ }).join(''):'<div class="empty-mini">No match — try "call", "whatsapp", "design"…</div>');
+ updateRolePreview();
+}
+function pickRolePath(id){state.rolePick.path=id;renderRolePaths()}
+function updateRolePreview(){
+ const rp=state.rolePick||{};rp.ind=el('rp-ind').value;rp.market=el('rp-market').value;
+ const p=ROLE_PATHS.find(function(x){return x.id===rp.path});
+ const lvl=levelFor(UD&&UD.xp),rk=rankFor(lvl);
+ const ct=rp.market?CTRY.find(function(c){return c.name===rp.market}):null;
+ setH('rp-preview',p?'<span style="font-size:20px">'+rk[2]+'</span> <b>'+esc(rk[1]+' '+(rp.ind?rp.ind+' ':'')+p.n)+'</b>'+(rp.market?' · '+(ct?ct.flag+' ':'')+esc(rp.market):'')+'<div style="font-size:11px;color:var(--muted);margin-top:4px">Bonus XP (+50%) for: '+p.f.map(xpLabel).join(', ')+'</div>':'<span style="color:var(--muted)">Pick a path above</span>');
+}
+function saveRole(){
+ const rp=state.rolePick||{};
+ if(!rp.path)return showToast('Pick a path first','error');
+ const was=UD.role;
+ UD.role={path:rp.path,ind:el('rp-ind').value,market:el('rp-market').value,since:(was&&was.since)||Date.now()};
+ saveUD();closeM('roleModal');renderMyRank();pushProfile(true);
+ showToast('🎭 You are now: '+roleTitle(),'success');
+}
+const XP_POINTS={search:5,lead:2,call:10,whatsapp:10,email:10,outcome:5,followup:3,stage:4,proposal:40,invoice:30,deal:150,payment:100};
+const XP_LABEL={search:'searches',lead:'leads added',call:'calls',whatsapp:'WhatsApp',email:'emails',outcome:'call results',followup:'follow-ups',stage:'pipeline moves',proposal:'proposals',invoice:'invoices',deal:'closed deals',payment:'payments'};
+function xpLabel(t){return XP_LABEL[t]||t}
+function gainXP(type,n){
+ if(!UD||!XP_POINTS[type])return;
+ const count=type==='lead'?Math.min(60,Math.max(1,n||1)):1;
+ const p=rolePath();
+ const mult=p&&p.f.indexOf(type)>-1?1.5:1;
+ const add=Math.round(XP_POINTS[type]*count*mult);
+ const before=levelFor(UD.xp);
+ UD.xp=(UD.xp||0)+add;
+ UD.stats=UD.stats||{};const S=UD.stats;
+ if(type==='lead')S.leads=(S.leads||0)+count;
+ if(type==='search')S.searches=(S.searches||0)+1;
+ if(type==='call'||type==='whatsapp'||type==='email')S.contacts=(S.contacts||0)+1;
+ if(type==='deal')S.deals=(S.deals||0)+1;
+ if(type==='proposal')S.proposals=(S.proposals||0)+1;
+ if(type==='payment')S.sales=(S.sales||0)+(Number(n)||0);
+ const after=levelFor(UD.xp);
+ if(after>before){
+  const r0=rankFor(before),r1=rankFor(after);
+  setTimeout(function(){
+   if(r1[1]!==r0[1]){confetti();showToast(r1[2]+' RANK UP! You are now a '+roleTitle({noMarket:true}),'success')}
+   else showToast('⬆️ Level '+after+' reached! +'+add+' XP','success');
+  },500);
+ }
+ schedulePush();
+ try{renderMyRank()}catch(e){}
+}
+
+/* ═════════════ PROFILE SYNC + LEADERBOARD ═════════════ */
+let pushTimer=null;
+function schedulePush(){if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(function(){pushProfile()},5000)}
+function pushProfile(now){
+ if(!onlineSite()||!srvToken()||!UD)return;
+ if(pushTimer){clearTimeout(pushTimer);pushTimer=null}
+ const S=UD.stats||{},lvl=levelFor(UD.xp),r=myRole()||{};
+ wdApi('profile','PUT',{role:roleTitle(),path:r.path||'',ind:r.ind||'',market:r.market||'',xp:UD.xp||0,level:lvl,leads:S.leads||0,contacts:S.contacts||0,deals:S.deals||0,sales:S.sales||0,proposals:S.proposals||0});
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden&&pushTimer)pushProfile(true)});
+function rankCardHTML(){
+ const xp=(UD&&UD.xp)||0,lvl=levelFor(xp),rk=rankFor(lvl),nxt=RANKS.find(function(x){return x[0]>lvl});
+ const a=xpForLevel(lvl),b=xpForLevel(lvl+1),pct=Math.round((xp-a)/(b-a)*100);
+ const S=(UD&&UD.stats)||{};
+ return '<div class="rank-card"><div class="rank-lvl"><div class="rank-emoji">'+rk[2]+'</div><div class="rank-num">LVL '+lvl+'</div></div>'+
+ '<div style="flex:1;min-width:0"><div class="rank-title">'+esc(roleTitle())+'</div>'+
+ '<div class="rank-bar"><i style="width:'+pct+'%"></i></div>'+
+ '<div class="rank-sub">'+xp.toLocaleString()+' XP • '+(b-xp).toLocaleString()+' XP to level '+(lvl+1)+(nxt?' • '+nxt[2]+' '+nxt[1]+' at level '+nxt[0]:'')+'</div>'+
+ '<div class="rank-stats"><span>🔍 '+(S.leads||0)+' leads</span><span>📞 '+(S.contacts||0)+' contacts</span><span>✅ '+(S.deals||0)+' deals</span><span>💰 '+money0(S.sales||0)+'</span></div></div>'+
+ '<button class="btn btn-ghost btn-sm" onclick="openRolePicker()">🎭 Role</button></div>';
+}
+function renderMyRank(){
+ ['dashRank','lbMine'].forEach(function(id){const b=el(id);if(b)b.innerHTML=rankCardHTML()});
+ const um=el('um-role');
+ if(um&&UD)um.innerHTML=(isOwner()?'👑 <b style="color:var(--a)">Owner</b> · ':'')+esc(rankFor(levelFor(UD.xp))[2]+' '+roleTitle({noMarket:true}))+' · LVL '+levelFor(UD.xp)+(UD.badge?' · '+esc(UD.badge):'');
+}
+const LB_METRICS=[['xp','⭐ XP','xp'],['leads','🔍 Leads found','leads'],['contacts','📞 Contacts','contacts'],['deals','✅ Deals','deals'],['sales','💰 Sales','sales']];
+function lbSet(by){state.lbBy=by;renderLeaderboardView()}
+function lbVal(r,by){return by==='sales'?money0(r.sales||0):by==='xp'?(r.xp||0).toLocaleString()+' XP':(r[by]||0).toLocaleString()}
+function initials(n){return String(n||'?').split(/\s+/).map(function(w){return w[0]||''}).slice(0,2).join('').toUpperCase()}
+function renderLeaderboardView(){
+ const by=state.lbBy||'xp';
+ renderMyRank();
+ setH('lbTabs',LB_METRICS.map(function(m){return '<div class="seg-tab'+(m[0]===by?' active':'')+'" onclick="lbSet(\''+m[0]+'\')">'+m[1]+'</div>'}).join(''));
+ const box=el('lbList');if(!box)return;
+ if(!onlineSite()){box.innerHTML='<div class="empty-mini">The leaderboard works on the live site — open it from your website link.</div>';return}
+ if(!srvToken()){box.innerHTML='<div class="empty-mini">Sign out and sign in again to join the leaderboard.</div>';return}
+ box.innerHTML='<div class="empty-mini">Loading…</div>';
+ pushProfile(true);
+ setTimeout(function(){
+  wdApi('leaderboard?by='+by+'&limit=100').then(function(r){
+   if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load the leaderboard')+'</div>';return}
+   if(r.off){box.innerHTML='<div class="empty-mini">The leaderboard is turned off right now.</div>';return}
+   state.lbCache={by:by,rows:r.rows,at:Date.now()};
+   setT('lbMyRank',r.myRank?'#'+r.myRank+' of '+r.total:'—');
+   box.innerHTML=r.rows.length?r.rows.map(function(x){
+    const medal=x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':'#'+x.rank;
+    return '<div class="lb-row'+(x.you?' lb-you':'')+'"><div class="lb-rank">'+medal+'</div><div class="lb-av">'+esc(initials(x.name))+'</div>'+
+    '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(x.name)+(x.you?' <span class="tag tag-warm">You</span>':'')+(x.badge?' <span class="lb-badge">'+esc(x.badge)+'</span>':'')+(x.hidden?' <span class="tag tag-cold">hidden</span>':'')+'</div>'+
+    '<div class="lb-role">'+esc(rankFor(x.level||1)[2]+' '+(x.role||'Rookie'))+' · LVL '+(x.level||1)+'</div></div>'+
+    '<div class="lb-val">'+lbVal(x,by)+'</div></div>';
+   }).join(''):'<div class="empty-mini">No one on the board yet — be the first!</div>';
+   renderDashLb();
+  });
+ },400);
+}
+function renderLeaderboard(){renderDashLb()}
+function renderDashLb(){
+ const box=el('leaderboardBody');if(!box)return;
+ const c=state.lbCache;
+ let html='';
+ if(c&&c.rows&&c.rows.length){
+  html=c.rows.slice(0,3).map(function(x,i){return '<div class="lb-row'+(x.you?' lb-you':'')+'" style="padding:8px 0"><div class="lb-rank">'+['🥇','🥈','🥉'][i]+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(x.name)+(x.you?' <span class="tag tag-warm">You</span>':'')+'</div><div class="lb-role">'+esc(x.role||'')+'</div></div><div class="lb-val">'+lbVal(x,c.by)+'</div></div>'}).join('');
+ }else html='<div class="empty-mini">See who finds the most leads and closes the most deals.</div>';
+ box.innerHTML=html+'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px;justify-content:center" onclick="sv(\'leaderboard\')">🏆 Open full leaderboard</button>';
+ if(onlineSite()&&srvToken()&&(!c||Date.now()-c.at>120000)&&!state.lbLoading){
+  state.lbLoading=true;
+  wdApi('leaderboard?by=xp&limit=10').then(function(r){state.lbLoading=false;if(r&&r.ok&&!r.off&&r.rows){state.lbCache={by:'xp',rows:r.rows,at:Date.now()};renderDashLb()}});
+ }
+}
+
+/* ═════════════ OWNER PANEL ═════════════ */
+function renderOwnerPanel(){
+ if(!isOwner()){sv('dashboard');return showToast('👑 Owner only','error')}
+ setV('op-name',SITE.name);setV('op-version',SITE.version);setV('op-tagline',SITE.tagline);
+ setV('op-banner',SITE.banner);setCHK('op-bannerOn',!!SITE.bannerOn);
+ setCHK('op-signups',SITE.allowSignups!==false);setCHK('op-lb',SITE.leaderboardOn!==false);
+ setCHK('op-maint',!!SITE.maintenance);setV('op-maintMsg',SITE.maintenanceMsg);
+ setT('op-default-ver','Built-in version: v'+APP_VERSION);
+ setV('op-tip',SITE.tip||'');
+ const warn=el('op-warn');
+ if(warn){
+  const msg=!onlineSite()?'You\'re viewing a local copy — changes here only affect this device. Open your live website to change it for everyone.':!srvToken()?'Sign out and sign in again to connect the Owner Panel to the server.':'';
+  warn.style.display=msg?'':'none';warn.textContent=msg;
+ }
+ loadOwnerStats();loadOwnerUsers();
+}
+function saveSiteSettings(){
+ const body={name:el('op-name').value.trim()||'We Deploy',version:el('op-version').value.trim(),tagline:el('op-tagline').value.trim(),banner:el('op-banner').value.trim(),bannerOn:el('op-bannerOn').checked,allowSignups:el('op-signups').checked,leaderboardOn:el('op-lb').checked,maintenance:el('op-maint').checked,maintenanceMsg:el('op-maintMsg').value.trim(),tip:el('op-tip').value.trim()};
+ const local=function(){SITE=Object.assign({},SITE,body);try{localStorage.setItem('wd_site_cache',JSON.stringify(SITE))}catch(e){}applySite()};
+ if(!onlineSite()||!srvToken()){local();return showToast('💾 Saved on this device only','info')}
+ wdApi('site','PUT',body).then(function(r){
+  if(r&&r.ok){SITE=Object.assign({},SITE_DEFAULT,r.site);try{localStorage.setItem('wd_site_cache',JSON.stringify(SITE))}catch(e){}applySite();showToast('✅ Site settings saved for everyone','success')}
+  else showToast('⚠️ '+((r&&r.error)||'Could not save'),'error');
+ });
+}
+function resetVersion(){setV('op-version','');showToast('Version will go back to v'+APP_VERSION+' when you save','info')}
+function loadOwnerStats(){
+ const box=el('op-stats');if(!box)return;
+ if(!onlineSite()||!srvToken()){box.innerHTML='';return}
+ wdApi('admin/stats').then(function(r){
+  if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load stats')+'</div>';return}
+  const s=r.stats;
+  const t=[['👥','Users',s.users],['🆕','New this week',s.newWeek],['🔥','Active this week',s.activeWeek],['🔍','Leads found',s.leads],['📞','Contacts',s.contacts],['✅','Deals',s.deals],['💰','Sales',money0(s.sales)],['⛔','Banned',s.banned]];
+  box.innerHTML=t.map(function(x){return '<div class="op-stat"><div style="font-size:18px">'+x[0]+'</div><div class="op-stat-v">'+x[2]+'</div><div class="op-stat-l">'+x[1]+'</div></div>'}).join('');
+ });
+}
+function loadOwnerUsers(){
+ const box=el('op-users');if(!box)return;
+ if(!onlineSite()||!srvToken()){box.innerHTML='<div class="empty-mini">User management works on the live site.</div>';return}
+ box.innerHTML='<div class="empty-mini">Loading users…</div>';
+ wdApi('admin/users').then(function(r){
+  if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load users')+'</div>';return}
+  state.opUsers=r.users;state.opBadges=r.badges||[''];
+  renderOwnerUsers();
+ });
+}
+function renderOwnerUsers(){
+ const box=el('op-users');if(!box||!state.opUsers)return;
+ const q=(el('op-search')&&el('op-search').value||'').toLowerCase();
+ const list=state.opUsers.filter(function(u){return !q||(u.name+' '+u.email+' '+(u.biz||'')+' '+(u.role||'')).toLowerCase().indexOf(q)>-1});
+ setT('op-ucount',list.length+' of '+state.opUsers.length);
+ box.innerHTML=list.length?list.map(function(u){
+  const own=String(u.email).toLowerCase()==='delonmayne@gmail.com';
+  return '<div class="op-user'+(u.banned?' banned':'')+'"><div class="lb-av">'+esc(initials(u.name))+'</div>'+
+  '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(u.name)+(own?' <span class="tag tag-warm">👑 You</span>':'')+(u.banned?' <span class="tag tag-hot">⛔ Banned</span>':'')+(u.hidden?' <span class="tag tag-cold">Hidden</span>':'')+(u.badge?' <span class="lb-badge">'+esc(u.badge)+'</span>':'')+'</div>'+
+  '<div class="lb-role">'+esc(u.email)+(u.biz?' • '+esc(u.biz):'')+'</div>'+
+  '<div class="lb-role">'+esc(u.role||'No role yet')+' • LVL '+(u.level||1)+' • '+(u.xp||0)+' XP</div>'+
+  '<div class="rank-stats" style="margin-top:4px"><span>🔍 '+(u.leads||0)+'</span><span>📞 '+(u.contacts||0)+'</span><span>✅ '+(u.deals||0)+'</span><span>💰 '+money0(u.sales||0)+'</span><span>📅 joined '+(u.created?new Date(u.created).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—')+'</span>'+(u.last_login?'<span>🔑 last login '+timeAgo(u.last_login)+'</span>':'')+'</div>'+
+  (own?'':'<div class="op-actions">'+
+   '<select onchange="opAction(\''+u.id+'\',\'badge\',this.value)">'+state.opBadges.map(function(b){return '<option value="'+esc(b)+'"'+(b===(u.badge||'')?' selected':'')+'>'+(b?esc(b):'No badge')+'</option>'}).join('')+'</select>'+
+   '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\''+(u.hidden?'unhide':'hide')+'\')">'+(u.hidden?'👁 Show on board':'🙈 Hide from board')+'</button>'+
+   '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\'reset\')">🧹 Reset stats</button>'+
+   '<button class="btn btn-sm '+(u.banned?'btn-green':'btn-ghost')+'" style="'+(u.banned?'':'color:var(--red)')+'" onclick="opAction(\''+u.id+'\',\''+(u.banned?'unban':'ban')+'\')">'+(u.banned?'✅ Unban':'⛔ Ban')+'</button>'+
+  '</div>')+'</div></div>';
+ }).join(''):'<div class="empty-mini">No users match</div>';
+}
+function opAction(id,action,badge){
+ const u=(state.opUsers||[]).find(function(x){return x.id===id});
+ if((action==='ban'||action==='reset')&&state.opConfirm!==id+action){
+  state.opConfirm=id+action;setTimeout(function(){if(state.opConfirm===id+action)state.opConfirm=null},4000);
+  return showToast('Tap again to confirm: '+(action==='ban'?'ban ':'reset stats for ')+(u?u.name:'this user'),'info');
+ }
+ state.opConfirm=null;
+ wdApi('admin/user','POST',{id:id,action:action,badge:badge}).then(function(r){
+  if(r&&r.ok){showToast('✅ Done','success');loadOwnerUsers();loadOwnerStats()}
+  else showToast('⚠️ '+((r&&r.error)||'Failed'),'error');
+ });
+}
+function exportUsersCSV(){
+ const rows=state.opUsers||[];if(!rows.length)return showToast('No users loaded','error');
+ const cols=['name','email','biz','role','level','xp','leads','contacts','deals','sales','proposals','badge','hidden','banned','created','last_login'];
+ const q=function(v){v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+ const csv=cols.join(',')+'\n'+rows.map(function(r){return cols.map(function(c){return q((c==='created'||c==='last_login')&&r[c]?new Date(r[c]).toISOString():r[c])}).join(',')}).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=siteName().replace(/\W+/g,'-')+'-users.csv';a.click();
+}
+setInterval(function(){try{if(CUR)syncOwnerFlags()}catch(e){}},120000);
+function syncOwnerFlags(){
+ if(!onlineSite()||!srvToken())return;
+ wdApi('me').then(function(r){
+  if(!r||!r.ok){if(r&&(r.__status===403||r.__status===401)){showToast(r.__status===403?'⛔ '+r.error:'🔑 Your session ended — please sign in again','error');setTimeout(logout,1500)}return}
+  UD.badge=r.badge||'';renderMyRank();
+ });
+}
+
+/* ═══════════════════════ GROWTH PACK ═══════════════════════
+   Real businesses (OpenStreetMap) · Daily missions · Streak rewards & freezes · Lead drop ·
+   Tip of the day · Money counter · Weekly seasons · 1v1 challenges · Live feed · Win wall ·
+   Invites · Achievements · Unlockable themes · Community claims · Opportunity Radar      */
+
+function onlineReady(){return onlineSite()&&!!srvToken()}
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function weekKeyUTC(ts){const d=new Date(ts||Date.now());d.setUTCHours(0,0,0,0);d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));return d.toISOString().slice(0,10)}
+function hashStr(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),16777619)}return h>>>0}
+function fmtNum(n){return Number(n||0).toLocaleString('en-US')}
+function feedPost(kind,text){
+ if(!onlineReady()||!UD||UD.shareFeed===false)return;
+ wdApi('feed','POST',{kind:kind,text:String(text).slice(0,140)});
+}
+
+/* ───────── REAL BUSINESS SEARCH ───────── */
+const _demoSearch=window.runSearch;
+function leadFromPlace(p,ct,city,claims){
+ const existing=state.leads.find(function(x){return x.id===p.key});
+ if(existing)return existing;
+ const nos=!p.website;
+ let score=nos?68:44;
+ if(p.phone)score+=nos?14:8;
+ if(p.hours)score+=4;if(p.addr)score+=4;if(p.social)score+=4;
+ if(claims)score-=Math.min(20,claims.n*8);
+ score=Math.max(20,Math.min(99,score+(hashStr(p.key)%5)));
+ return {id:p.key,osm:true,name:p.name,industry:IND[p.ind]?p.ind:'Retail & Shops',type:nos?'no-website':'prospect',city:city,country:ct.name,flag:ct.flag,dial:ct.dial,
+  phone:p.phone||'',addr:p.addr||('Near '+city+' centre'),website:p.website||null,social:p.social||'',email:p.email||'',hours:p.hours||'',lat:p.lat,lon:p.lon,
+  claims:claims||null,score:score,saved:false,added:false,contacted:false};
+}
+window.runSearch=function(){
+ if(!onlineReady())return _demoSearch.apply(this,arguments);
+ if(!scSel.country){showToast('🌍 Please select a country first','error');return}
+ const ct=CTRY.find(function(c){return c.name===scSel.country});
+ const ind=el('s-ind').value;
+ const tsel=el('s-type').value;
+ const city=scSel.city||ct.cities[0];
+ if(!scSel.city)showToast('📍 No city picked — searching '+city+', the main city in '+ct.name,'info');
+ const ld=el('locDisplay');if(ld)ld.style.display='block';
+ const lt=el('locText');if(lt)lt.textContent=ct.flag+' '+city+', '+ct.name;
+ const box=el('searchResults');
+ if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Checking the live map for '+(ind?esc(ind.toLowerCase()):'every kind of business')+' and who has no website</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
+ wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||'')).then(function(r){
+  if(!r||!r.ok){
+   if(r&&r.offline){showToast('📶 Offline — showing demo leads instead','info');return _demoSearch()}
+   if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>Try another city or try again in a minute.</p></div>';
+   return;
+  }
+  let list=r.places.map(function(p){return leadFromPlace(p,ct,city,r.claims[p.key])});
+  if(tsel==='No Website')list=list.filter(function(l){return l.type==='no-website'});
+  if(tsel==='Outdated Site')list=list.filter(function(l){return l.type!=='no-website'});
+  list.sort(function(a,b){return b.score-a.score});
+  state.results=list.slice(0,200);
+  state.lastSearch={ct:ct,city:city,real:true,cached:r.cached,total:r.places.length,nosite:r.places.filter(function(p){return !p.website}).length};
+  renderResults();
+  logAct('search',state.results.length+' real businesses in '+city+', '+ct.name);
+  showToast('🎯 '+r.places.length+' real businesses in '+city+' — '+state.lastSearch.nosite+' with no website listed','success');
+ });
+};
+const _resCard=window.resCard;
+window.resCard=function(l){
+ let h=_resCard(l);
+ if(!l.osm)return h;
+ const extra='<div class="rc-real">'+
+  '<span class="real-tag">✅ Real business</span>'+
+  (l.claims&&l.claims.n?'<span class="claim-tag" title="Other We Deploy users already contacted them">👥 Contacted by '+l.claims.n+' user'+(l.claims.n>1?'s':'')+'</span>':'<span class="fresh-tag">✨ Nobody has contacted yet</span>')+
+  (l.social?'<span class="real-tag" style="background:rgba(91,156,246,.12);color:var(--blue)">📘 Social page only</span>':'')+
+  '</div><div class="rc-links">'+
+  (l.lat?'<a href="https://www.google.com/maps/search/?api=1&query='+l.lat+','+l.lon+'" target="_blank" rel="noopener">🗺 Map</a>':'')+
+  '<a href="https://www.google.com/search?q='+encodeURIComponent(l.name+' '+l.city)+'" target="_blank" rel="noopener">🔎 Check online</a>'+
+  (l.phone?'':'<span style="color:var(--muted)">No phone listed</span>')+'</div>';
+ return h.replace('<div class="rc-actions">',extra+'<div class="rc-actions">');
+};
+const _renderResults=window.renderResults;
+window.renderResults=function(){
+ _renderResults.apply(this,arguments);
+ const ls=state.lastSearch,box=el('searchResults');
+ if(ls&&ls.real&&box&&state.results.length){
+  box.insertAdjacentHTML('afterbegin','<div class="real-banner">🌍 <b>Live map data</b> — '+fmtNum(ls.total)+' real businesses found in '+esc(ls.city)+', '+fmtNum(ls.nosite)+' with no website listed.'+(ls.cached?' <span style="color:var(--muted)">(from the shared database)</span>':'')+' Always double-check with 🔎 before calling.</div>');
+ }
+};
+// claims: tell the community a business was contacted
+let claimQ={};let claimT=null;
+function queueClaim(id,kind){
+ if(!/^osm-/.test(String(id))||!onlineReady())return;
+ (claimQ[kind]=claimQ[kind]||[]).push(id);
+ clearTimeout(claimT);claimT=setTimeout(function(){const q=claimQ;claimQ={};Object.keys(q).forEach(function(k){wdApi('claims','POST',{keys:q[k],kind:k})})},3000);
+}
+const _waLeadG=window.waLead;
+window.waLead=function(id){
+ const l=findLead(id);
+ if(l&&!String(l.phone||'').replace(/\D/g,'')){showToast('📵 No phone number listed for '+esc(l.name)+' — use 🔎 Check online to find it','info');window.open('https://www.google.com/search?q='+encodeURIComponent(l.name+' '+l.city+' phone'),'_blank');return}
+ return _waLeadG.apply(this,arguments);
+};
+
+/* ───────── DAILY COUNTERS ───────── */
+function bumpDay(type,n){
+ if(!UD)return;
+ if(!UD.day||UD.day.d!==todayKey())UD.day={d:todayKey(),c:{}};
+ UD.day.c[type]=(UD.day.c[type]||0)+(n||1);
+ if(!UD.wxp||UD.wxp.k!==weekKeyUTC())UD.wxp={k:weekKeyUTC(),xp:0};
+}
+function dayCount(t){return UD&&UD.day&&UD.day.d===todayKey()?(UD.day.c[t]||0):0}
+
+/* ───────── DAILY MISSIONS ───────── */
+const MISSION_POOL=[
+ {id:'call5',t:'Call 5 leads',i:'📞',type:'call',n:5,xp:60},
+ {id:'call3',t:'Call 3 leads',i:'📞',type:'call',n:3,xp:40},
+ {id:'wa3',t:'Send 3 WhatsApp messages',i:'💬',type:'whatsapp',n:3,xp:40},
+ {id:'wa6',t:'Send 6 WhatsApp messages',i:'💬',type:'whatsapp',n:6,xp:70},
+ {id:'search2',t:'Run 2 lead searches',i:'🔍',type:'search',n:2,xp:25},
+ {id:'lead10',t:'Add 10 new leads',i:'➕',type:'lead',n:10,xp:40},
+ {id:'outcome2',t:'Log 2 call results',i:'📝',type:'outcome',n:2,xp:30},
+ {id:'follow2',t:'Set 2 follow-ups',i:'⏰',type:'followup',n:2,xp:25},
+ {id:'stage2',t:'Move 2 deals forward in the pipeline',i:'📋',type:'stage',n:2,xp:35},
+ {id:'email2',t:'Email 2 businesses',i:'📧',type:'email',n:2,xp:30},
+ {id:'prop1',t:'Send 1 proposal',i:'📄',type:'proposal',n:1,xp:60},
+ {id:'win1',t:'Share a win on the Win Wall',i:'🏆',type:'winpost',n:1,xp:30}
+];
+function todaysMissions(){
+ const seed=hashStr((CUR&&CUR.id||'u')+todayKey());
+ const pool=MISSION_POOL.slice(),out=[],types={};
+ let s=seed;
+ while(out.length<3&&pool.length){s=(Math.imul(s,1103515245)+12345)>>>0;const m=pool.splice(s%pool.length,1)[0];if(types[m.type])continue;types[m.type]=1;out.push(m)}
+ return out;
+}
+function checkMissions(){
+ if(!UD)return;
+ if(!UD.missions||UD.missions.d!==todayKey())UD.missions={d:todayKey(),done:[],bonus:false};
+ const ms=todaysMissions();let changed=false;
+ ms.forEach(function(m){
+  if(UD.missions.done.indexOf(m.id)===-1&&dayCount(m.type)>=m.n){
+   UD.missions.done.push(m.id);changed=true;
+   UD.xp=(UD.xp||0)+m.xp;addWeekXp(m.xp);
+   setTimeout(function(){showToast('✅ Mission complete: '+m.t+' (+'+m.xp+' XP)','success')},300);
+  }
+ });
+ if(!UD.missions.bonus&&UD.missions.done.length>=3){
+  UD.missions.bonus=true;changed=true;UD.xp=(UD.xp||0)+100;addWeekXp(100);
+  UD.stats=UD.stats||{};UD.stats.missionDays=(UD.stats.missionDays||0)+1;
+  setTimeout(function(){confetti();showToast('🏆 All 3 daily missions done! +100 bonus XP','success')},900);
+  feedPost('mission','completed all 3 daily missions 🎯');
+ }
+ if(changed){saveUD();schedulePush()}
+ renderMissions();
+}
+function renderMissions(){
+ const box=el('missionsBody');if(!box||!UD)return;
+ const ms=todaysMissions(),done=(UD.missions&&UD.missions.d===todayKey())?UD.missions.done:[];
+ const now=new Date(),mid=new Date(now);mid.setHours(24,0,0,0);const hrs=Math.floor((mid-now)/3600e3),mins=Math.floor((mid-now)/60e3)%60;
+ box.innerHTML=ms.map(function(m){
+  const c=Math.min(m.n,dayCount(m.type)),ok=done.indexOf(m.id)>-1;
+  return '<div class="mission'+(ok?' done':'')+'"><div class="m-ic">'+(ok?'✅':m.i)+'</div><div style="flex:1;min-width:0"><div class="m-t">'+esc(m.t)+'</div><div class="mini-bar-track" style="margin-top:6px"><div class="mini-bar-fill" style="width:'+Math.round(c/m.n*100)+'%;background:'+(ok?'var(--green)':'var(--a)')+'"></div></div></div><div class="m-xp">'+c+'/'+m.n+'<br><span>+'+m.xp+' XP</span></div></div>';
+ }).join('')+'<div class="m-foot">'+(UD.missions&&UD.missions.bonus?'🏆 Bonus earned today — come back tomorrow for new missions':'Finish all 3 for <b>+100 bonus XP</b>')+' • resets in '+hrs+'h '+mins+'m</div>';
+}
+
+/* ───────── STREAK REWARDS + FREEZES ───────── */
+const STREAK_MILESTONES=[[3,50],[7,150],[14,300],[30,700],[60,1500],[100,3000],[365,10000]];
+const _updateStreak=window.updateStreak;
+window.updateStreak=function(){
+ UD.freezes=UD.freezes||0;
+ const today=todayKey(),two=new Date(Date.now()-2*864e5).toISOString().slice(0,10);
+ if(UD.streakLast===two&&UD.freezes>0&&(UD.streakN||0)>1){
+  UD.freezes--;UD.streakLast=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  setTimeout(function(){showToast('🧊 Streak freeze used — your '+UD.streakN+'-day streak is safe!','info')},3000);
+ }
+ _updateStreak.apply(this,arguments);
+ UD.streakBest=Math.max(UD.streakBest||0,UD.streakN||0);
+ UD.streakPaid=UD.streakPaid||[];
+ STREAK_MILESTONES.forEach(function(ms){
+  if((UD.streakN||0)>=ms[0]&&UD.streakPaid.indexOf(ms[0])===-1){
+   UD.streakPaid.push(ms[0]);UD.xp=(UD.xp||0)+ms[1];addWeekXp(ms[1]);
+   if(ms[0]>=7)UD.freezes=Math.min(3,UD.freezes+1);
+   setTimeout(function(){confetti();showToast('🔥 '+ms[0]+'-day streak! +'+ms[1]+' XP'+(ms[0]>=7?' + 🧊 streak freeze':''),'success')},4800);
+   feedPost('streak','hit a '+ms[0]+'-day streak 🔥');
+  }
+ });
+ if(UD.streakN<(UD.streakPaid.length?Math.min.apply(null,UD.streakPaid):0))UD.streakPaid=UD.streakPaid.filter(function(x){return x<=UD.streakN});
+ const chip=el('streakChip');if(chip)chip.textContent='🔥 '+UD.streakN+'-day streak'+(UD.freezes?' · 🧊'+UD.freezes:'');
+ saveUD();
+};
+
+/* ───────── WEEKLY XP (seasons) ───────── */
+function addWeekXp(n){if(!UD)return;if(!UD.wxp||UD.wxp.k!==weekKeyUTC())UD.wxp={k:weekKeyUTC(),xp:0};UD.wxp.xp+=n}
+const _gainXP=window.gainXP;
+window.gainXP=function(type,n){
+ const before=(UD&&UD.xp)||0,lvl0=levelFor(before),rk0=rankFor(lvl0)[1];
+ _gainXP.apply(this,arguments);
+ const gained=((UD&&UD.xp)||0)-before;if(gained>0)addWeekXp(gained);
+ bumpDay(type,type==='lead'?Math.max(1,n||1):1);
+ const lvl1=levelFor(UD.xp);
+ if(lvl1>lvl0){const rk1=rankFor(lvl1);if(rk1[1]!==rk0)feedPost('rank','ranked up to '+rk1[2]+' '+rk1[1]+' (level '+lvl1+')');else if(lvl1%5===0)feedPost('level','reached level '+lvl1+' ⬆️')}
+ if(type==='deal')feedPost('deal','closed a deal'+(UD.role&&UD.role.market?' in '+UD.role.market:'')+' 🎉');
+ checkMissions();checkBadges();
+ const t=unlockedThemes();if(t.length>(UD.themesSeen||1)){UD.themesSeen=t.length;setTimeout(function(){showToast('🎨 New theme unlocked: '+t[t.length-1].n+' — Settings → Themes','success')},1400)}
+};
+const _pushProfile=window.pushProfile;
+window.pushProfile=function(now){
+ if(!onlineSite()||!srvToken()||!UD)return;
+ if(pushTimer){clearTimeout(pushTimer);pushTimer=null}
+ const S=UD.stats||{},lvl=levelFor(UD.xp),r=myRole()||{};
+ const w=UD.wxp&&UD.wxp.k===weekKeyUTC()?UD.wxp.xp:0;
+ wdApi('profile','PUT',{role:roleTitle(),path:r.path||'',ind:r.ind||'',market:r.market||'',xp:UD.xp||0,level:lvl,leads:S.leads||0,contacts:S.contacts||0,deals:S.deals||0,sales:S.sales||0,proposals:S.proposals||0,
+  week_key:weekKeyUTC(),week_xp:w,streak:UD.streakN||0,badges:(UD.badges||[]).length,city:(state.lastSearch&&state.lastSearch.city)||''});
+};
+
+/* ───────── ACHIEVEMENTS ───────── */
+const BADGES=[
+ ['first_search','🔍','First Scan','Run your first search',function(S){return (S.searches||0)>=1}],
+ ['leads_10','➕','Collector','Add 10 leads',function(S){return (S.leads||0)>=10}],
+ ['leads_100','📚','Lead Hoarder','Add 100 leads',function(S){return (S.leads||0)>=100}],
+ ['leads_500','🏗️','Empire Builder','Add 500 leads',function(S){return (S.leads||0)>=500}],
+ ['contact_1','👋','Ice Breaker','Contact your first business',function(S){return (S.contacts||0)>=1}],
+ ['contact_25','📞','Dialer','Contact 25 businesses',function(S){return (S.contacts||0)>=25}],
+ ['contact_100','☎️','Phone Warrior','Contact 100 businesses',function(S){return (S.contacts||0)>=100}],
+ ['contact_500','🎙️','Unstoppable','Contact 500 businesses',function(S){return (S.contacts||0)>=500}],
+ ['deal_1','🤝','First Deal','Close your first deal',function(S){return (S.deals||0)>=1}],
+ ['deal_5','💼','Closer','Close 5 deals',function(S){return (S.deals||0)>=5}],
+ ['deal_25','🏆','Rainmaker','Close 25 deals',function(S){return (S.deals||0)>=25}],
+ ['sales_1k','💵','First $1K','Log $1,000 in payments',function(S){return (S.sales||0)>=1000}],
+ ['sales_10k','💰','10K Club','Log $10,000 in payments',function(S){return (S.sales||0)>=10000}],
+ ['sales_50k','🤑','Tycoon','Log $50,000 in payments',function(S){return (S.sales||0)>=50000}],
+ ['prop_1','📄','Pitch Perfect','Send your first proposal',function(S){return (S.proposals||0)>=1}],
+ ['prop_10','🗂','Proposal Machine','Send 10 proposals',function(S){return (S.proposals||0)>=10}],
+ ['streak_3','🔥','Warming Up','3-day streak',function(S,U){return (U.streakBest||0)>=3}],
+ ['streak_7','🔥','On Fire','7-day streak',function(S,U){return (U.streakBest||0)>=7}],
+ ['streak_30','🌋','Volcano','30-day streak',function(S,U){return (U.streakBest||0)>=30}],
+ ['streak_100','☄️','Legendary Streak','100-day streak',function(S,U){return (U.streakBest||0)>=100}],
+ ['missions_1','🎯','Mission Complete','Finish all daily missions once',function(S){return (S.missionDays||0)>=1}],
+ ['missions_10','🎖️','Mission Master','Finish all daily missions 10 times',function(S){return (S.missionDays||0)>=10}],
+ ['level_5','⭐','Rising Star','Reach level 5',function(S,U){return levelFor(U.xp)>=5}],
+ ['level_10','🌟','Closer Rank','Reach level 10',function(S,U){return levelFor(U.xp)>=10}],
+ ['level_20','💫','Expert Rank','Reach level 20',function(S,U){return levelFor(U.xp)>=20}],
+ ['level_30','💎','Elite Rank','Reach level 30',function(S,U){return levelFor(U.xp)>=30}],
+ ['countries_3','🌍','Globetrotter','Search in 3 countries',function(S,U){return (U.countries||[]).length>=3}],
+ ['countries_10','🛰️','World Scanner','Search in 10 countries',function(S,U){return (U.countries||[]).length>=10}],
+ ['night_owl','🦉','Night Owl','Contact a lead after 10pm',function(S,U){return !!U.nightOwl}],
+ ['early_bird','🐦','Early Bird','Contact a lead before 8am',function(S,U){return !!U.earlyBird}],
+ ['win_post','📣','Show-Off','Share a win on the Win Wall',function(S){return (S.winPosts||0)>=1}],
+ ['recruiter','🤝','Recruiter','Invite a friend who joins',function(S){return (S.invites||0)>=1}],
+ ['recruiter_5','📢','Ambassador','Invite 5 friends who join',function(S){return (S.invites||0)>=5}],
+ ['challenger','⚔️','Challenger','Win a 1v1 challenge',function(S){return (S.challengeWins||0)>=1}],
+ ['pioneer','🧭','Pioneer','Be first to contact a business nobody has contacted',function(S){return (S.pioneer||0)>=1}]
+];
+function checkBadges(){
+ if(!UD)return;
+ UD.badges=UD.badges||[];const S=UD.stats||{};let n=0;
+ BADGES.forEach(function(b){
+  if(UD.badges.indexOf(b[0])===-1){let ok=false;try{ok=b[4](S,UD)}catch(e){}
+   if(ok){UD.badges.push(b[0]);n++;UD.xp=(UD.xp||0)+25;addWeekXp(25);
+    setTimeout(function(){showToast('🏅 Badge unlocked: '+b[1]+' '+b[2]+' (+25 XP)','success')},700+n*500);
+    feedPost('badge','unlocked the '+b[1]+' '+b[2]+' badge');}}
+ });
+ if(n){saveUD();schedulePush()}
+}
+function badgesHTML(){
+ const got=(UD&&UD.badges)||[];
+ return '<div class="badge-grid">'+BADGES.map(function(b){const on=got.indexOf(b[0])>-1;return '<div class="bdg'+(on?' on':'')+'" title="'+esc(b[3])+'"><div class="bdg-i">'+(on?b[1]:'🔒')+'</div><div class="bdg-n">'+esc(b[2])+'</div><div class="bdg-d">'+esc(b[3])+'</div></div>'}).join('')+'</div>';
+}
+const _markContactedG=window.markContacted;
+window.markContacted=function(id,how){
+ const l=findLead(id);
+ const h=new Date().getHours();
+ if(UD){if(h>=22)UD.nightOwl=true;if(h<8)UD.earlyBird=true}
+ if(l&&l.osm&&!l.contacted&&!(l.claims&&l.claims.n)&&UD){UD.stats=UD.stats||{};UD.stats.pioneer=(UD.stats.pioneer||0)+1}
+ const r=_markContactedG.apply(this,arguments);
+ if(l)queueClaim(l.id,'contacted');
+ return r;
+};
+const _addToPipelineG=window.addToPipeline;
+window.addToPipeline=function(id){const r=_addToPipelineG.apply(this,arguments);if(r)queueClaim(id,'pipeline');return r};
+const _logActG=window.logAct;
+window.logAct=function(type,text,id,n){
+ if(type==='search'&&state.lastSearch&&state.lastSearch.ct&&UD){UD.countries=UD.countries||[];if(UD.countries.indexOf(state.lastSearch.ct.name)===-1)UD.countries.push(state.lastSearch.ct.name)}
+ return _logActG.apply(this,arguments);
+};
+
+/* ───────── THEMES ───────── */
+const THEMES=[
+ {id:'classic',n:'Classic Orange',lvl:1,a:'#ff8c42',a2:'#ffb347',a3:'#ff6b1a'},
+ {id:'ocean',n:'Ocean',lvl:5,a:'#38bdf8',a2:'#818cf8',a3:'#0ea5e9'},
+ {id:'emerald',n:'Emerald',lvl:10,a:'#34d399',a2:'#a3e635',a3:'#10b981'},
+ {id:'royal',n:'Royal',lvl:15,a:'#a78bfa',a2:'#f472b6',a3:'#8b5cf6'},
+ {id:'gold',n:'24K Gold',lvl:20,a:'#f6c85f',a2:'#ff9f43',a3:'#eab308'},
+ {id:'crimson',n:'Crimson',lvl:25,a:'#f87171',a2:'#fb923c',a3:'#ef4444'},
+ {id:'neon',n:'Neon',lvl:30,a:'#22d3ee',a2:'#e879f9',a3:'#06b6d4'},
+ {id:'legend',n:'Legend',lvl:50,a:'#fde047',a2:'#f472b6',a3:'#facc15'}
+];
+function unlockedThemes(){const L=levelFor(UD&&UD.xp);return THEMES.filter(function(t){return L>=t.lvl||isOwner()})}
+function applyAccent(){
+ const t=THEMES.find(function(x){return x.id===(UD&&UD.accent)})||THEMES[0];
+ if(unlockedThemes().indexOf(t)===-1)return;
+ const r=document.documentElement.style;r.setProperty('--a',t.a);r.setProperty('--a2',t.a2);r.setProperty('--a3',t.a3);
+}
+function setAccent(id){const t=THEMES.find(function(x){return x.id===id});if(!t)return;if(unlockedThemes().indexOf(t)===-1)return showToast('🔒 Reach level '+t.lvl+' to unlock '+t.n,'info');UD.accent=id;saveUD();applyAccent();renderThemes();showToast('🎨 '+t.n+' theme on','success')}
+function renderThemes(){
+ const box=el('themePicker');if(!box)return;const L=levelFor(UD&&UD.xp);
+ box.innerHTML=THEMES.map(function(t){const open=L>=t.lvl||isOwner();return '<div class="theme-sw'+((UD.accent||'classic')===t.id?' sel':'')+(open?'':' locked')+'" onclick="setAccent(\''+t.id+'\')"><div class="theme-dot" style="background:linear-gradient(135deg,'+t.a+','+t.a2+')"></div><div class="theme-n">'+esc(t.n)+'</div><div class="theme-l">'+(open?'Unlocked':'🔒 Level '+t.lvl)+'</div></div>'}).join('');
+}
+
+/* ───────── TIPS ───────── */
+const TIPS=[
+ 'Call between 9–11am — owners are in but not yet slammed.','Say the business name in your first 3 seconds. People listen when they hear their own name.',
+ 'Ask "Do you have 30 seconds?" — a yes makes them twice as likely to hear you out.','Send a voice note after a missed call. Reply rates jump compared to text.',
+ 'Always offer two meeting times: "Today at 3 or tomorrow at 10?"','Show the free mockup on the call. Seeing their own name on a website sells itself.',
+ 'Businesses with a Facebook page but no website are warm: they already believe in being online.','Follow up 3 times. Most deals close after the second or third touch.',
+ 'Restaurants care about orders. Talk about WhatsApp ordering, not "a website".','Plumbers and electricians want calls. Say "more emergency jobs from Google".',
+ 'Don\'t argue with "I\'m busy". Say "Totally — can I WhatsApp you a 20-second demo?"','Log every call result. Your future self will know exactly who to call back.',
+ 'Price anchor: mention the full-service price first, then offer the starter package.','Salons and barbers book through Instagram — pitch online booking.',
+ 'Hot leads go cold in 48 hours. Follow up fast.','One closed client can bring 3 referrals. Always ask "Who else do you know?"',
+ 'Take a screenshot of every thank-you message — post it on the Win Wall.','Use the Opportunity Radar to find cities where few businesses are online.',
+ 'Batch your WhatsApps with the Queue: 10 messages in 5 minutes.','A "No" today is a "Not now". Set a follow-up for 30 days.',
+ 'Guest houses need direct bookings to skip commission. That\'s your pitch.','Mention a competitor nearby who already has a site — gently.',
+ 'Smile when you talk. It changes your voice.','Keep your first WhatsApp under 5 lines.',
+ 'End every call with a next step, even if it\'s tiny.','Look for businesses with lots of reviews but no website — they\'re busy and ready.',
+ 'Friday afternoons are slow — perfect for follow-ups.','Schools and clinics decide slowly. Start early, stay patient.',
+ 'Your streak is your habit. 20 minutes a day beats 5 hours once a week.','Challenge a friend on the leaderboard — competition doubles output.'
+];
+function tipOfDay(){if(SITE&&SITE.tip)return SITE.tip;return TIPS[hashStr(todayKey())%TIPS.length]}
+
+/* ───────── DASHBOARD CARDS ───────── */
+function renderGrowthDash(){
+ if(!UD||!el('growthDash'))return;
+ const pays=(UD.payments||[]).reduce(function(s,p){return s+(p.amount||0)},0);
+ const openPipe=PIPE.filter(function(p){return p.s!==5}).reduce(function(s,p){return s+pipeVal(p)},0);
+ setH('moneyCard','<div class="money-card"><div><div class="money-l">💰 You\'ve earned with '+esc(siteName())+'</div><div class="money-v" id="moneyVal">'+money0(0)+'</div><div class="money-s">'+money0(openPipe)+' more waiting in your pipeline'+(UD.freezes?' • 🧊 '+UD.freezes+' streak freeze'+(UD.freezes>1?'s':''):'')+'</div></div><button class="btn btn-ghost btn-sm" onclick="sv(\'earnings\')">💵 Log a payment</button></div>');
+ countUp(el('moneyVal'),pays);
+ renderMissions();
+ setH('tipBody','💡 '+esc(tipOfDay()));
+ renderDropCard();renderFeedMini();
+}
+function countUp(node,to){if(!node)return;const t0=performance.now(),d=900;(function step(t){const k=Math.min(1,(t-t0)/d);node.textContent=money0(Math.round(to*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(step)})(t0)}
+const _renderDashboardG=window.renderDashboard;
+window.renderDashboard=function(){_renderDashboardG.apply(this,arguments);try{renderGrowthDash()}catch(e){console.warn(e)}};
+
+/* ───────── TODAY'S LEAD DROP ───────── */
+function dropPlace(){
+ const r=myRole();
+ const mk=r&&r.market?CTRY.find(function(c){return c.name===r.market}):null;
+ const ls=state.lastSearch;
+ if(mk)return {ct:mk,city:mk.cities[0]};
+ if(ls&&ls.ct)return {ct:ls.ct,city:ls.city||ls.ct.cities[0]};
+ return {ct:CTRY.find(function(c){return c.name==='Namibia'})||CTRY[0],city:null};
+}
+function dropIndustry(){return IND_NAMES[hashStr(todayKey()+'drop')%IND_NAMES.length]}
+function renderDropCard(){
+ const box=el('dropCard');if(!box)return;
+ const p=dropPlace(),ind=dropIndustry(),got=UD.drop&&UD.drop.d===todayKey();
+ box.innerHTML='<div class="drop-card"><div class="drop-ic">🎁</div><div style="flex:1;min-width:0"><div class="drop-t">Today\'s Lead Drop</div><div class="drop-s">5 hand-picked '+esc(ind.toLowerCase())+' with no website in '+esc(p.city||p.ct.cities[0])+' '+p.ct.flag+'</div></div><button class="btn '+(got?'btn-ghost':'btn-primary')+' btn-sm" onclick="openDrop()">'+(got?'👀 View':'🎁 Open')+'</button></div>';
+}
+function openDrop(){
+ const p=dropPlace(),ind=dropIndustry(),city=p.city||p.ct.cities[0];
+ setH('drop-head','🎁 Today\'s Lead Drop — '+esc(city));
+ setH('drop-body','<div class="empty-mini">Opening your drop…</div>');openM('dropModal');
+ const show=function(list){
+  state.dropList=list;
+  const first=!(UD.drop&&UD.drop.d===todayKey());
+  if(first){UD.drop={d:todayKey()};UD.xp=(UD.xp||0)+20;addWeekXp(20);saveUD();showToast('🎁 Drop opened! +20 XP','success')}
+  setH('drop-body',list.length?list.map(function(l,i){return '<div class="drop-row"><div class="lb-rank">'+(i+1)+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(l.name)+'</div><div class="lb-role">'+esc(l.industry)+' • '+(l.phone?esc(l.phone):'no phone listed')+(l.osm?' • ✅ real':'')+'</div></div><button class="btn btn-green btn-sm" onclick="addDropLead('+i+',this)">'+(state.leads.find(function(x){return x.id===l.id})?'✓':'➕')+'</button></div>'}).join('')+'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px;justify-content:center" onclick="addAllDrop()">➕ Add all 5 to my leads</button>':'<div class="empty-mini">No fresh businesses found for today\'s drop — try the Radar for other cities.</div>');
+ };
+ if(!onlineReady()){const ct=p.ct;show(genLeads(ct,city,ind,'no-website',5,'drop:'+todayKey()+(CUR&&CUR.id)));return}
+ wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(p.ct.name)+'&ind='+encodeURIComponent(ind)).then(function(r){
+  if(!r||!r.ok){setH('drop-body','<div class="empty-mini">'+esc((r&&r.error)||'Could not load today\'s drop')+'</div>');return}
+  const list=r.places.map(function(x){return leadFromPlace(x,p.ct,city,r.claims[x.key])}).filter(function(l){return l.type==='no-website'&&!(l.claims&&l.claims.n)}).sort(function(a,b){return b.score-a.score}).slice(0,5);
+  show(list);
+ });
+}
+function addDropLead(i,btn){const l=state.dropList[i];if(!l)return;if(!state.leads.find(function(x){return x.id===l.id})){l.added=true;state.leads.push(l);logAct('lead',l.name,l.id,1);updateCounts();saveUD()}if(btn)btn.textContent='✓'}
+function addAllDrop(){(state.dropList||[]).forEach(function(l,i){addDropLead(i)});showToast('➕ Drop added to your leads','success');openDrop()}
+
+/* ───────── LIVE FEED ───────── */
+const FEED_IC={deal:'🎉',level:'⬆️',rank:'🏅',badge:'🏅',streak:'🔥',challenge:'⚔️',mission:'🎯',win:'🏆',join:'👋',search:'🔍'};
+function feedHTML(items,limit){
+ if(!items||!items.length)return '<div class="empty-mini">No activity yet — be the first to make some noise 🚀</div>';
+ return items.slice(0,limit||40).map(function(x){return '<div class="feed-row"><div class="feed-ic">'+(FEED_IC[x.kind]||'⚡')+'</div><div style="flex:1;min-width:0"><b>'+esc(x.name)+'</b> '+esc(x.text)+'</div><div class="act-time">'+timeAgo(x.created)+'</div>'+(isOwner()?'<span class="feed-x" title="Remove" onclick="delFeed('+x.id+')">✕</span>':'')+'</div>'}).join('');
+}
+function loadFeed(){if(!onlineReady())return Promise.resolve(null);return wdApi('feed').then(function(r){if(r&&r.ok){state.feed=r.items;state.feedAt=Date.now()}return state.feed})}
+function renderFeedMini(){
+ const box=el('feedMini');if(!box)return;
+ if(!onlineReady()){box.innerHTML='<div class="empty-mini">The live feed works on the online site.</div>';return}
+ box.innerHTML=feedHTML(state.feed,6);
+ if(!state.feedAt||Date.now()-state.feedAt>60000)loadFeed().then(function(){const b=el('feedMini');if(b)b.innerHTML=feedHTML(state.feed,6)});
+}
+function delFeed(id){wdApi('admin/feed-delete','POST',{id:id}).then(function(){loadFeed().then(function(){renderFeedMini();renderCommunity()})})}
+setInterval(function(){try{if(CUR&&state.view==='dashboard'&&!document.hidden)loadFeed().then(function(){const b=el('feedMini');if(b)b.innerHTML=feedHTML(state.feed,6)})}catch(e){}},60000);
+
+/* ───────── COMMUNITY VIEW: win wall, live feed, radar, invites ───────── */
+function commTab(t){state.commTab=t;renderCommunity()}
+function renderCommunity(){
+ const t=state.commTab||'wins';
+ document.querySelectorAll('#commTabs .seg-tab').forEach(function(x){x.classList.toggle('active',x.dataset.t===t)});
+ ['wins','live','radar','invite'].forEach(function(k){const p=el('comm-'+k);if(p)p.style.display=k===t?'':'none'});
+ if(!onlineReady()&&t!=='invite'){setH('comm-'+t,'<div class="empty-mini">Community features work on the online site — open your website link.</div>');return}
+ if(t==='wins')loadWins();
+ if(t==='live'){setH('liveList','<div class="empty-mini">Loading…</div>');loadFeed().then(function(){setH('liveList',feedHTML(state.feed,40))})}
+ if(t==='radar')loadRadar();
+ if(t==='invite')renderInvite();
+}
+function loadWins(){
+ setH('winList','<div class="empty-mini">Loading wins…</div>');
+ wdApi('wins').then(function(r){
+  if(!r||!r.ok){setH('winList','<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>');return}
+  setH('winList',r.wins.length?r.wins.map(function(w){
+   return '<div class="win-card"><div class="win-top"><div class="lb-av">'+esc(initials(w.name))+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(w.name)+(w.city?' <span class="lb-role">· '+esc(w.city)+'</span>':'')+'</div><div class="lb-role">'+timeAgo(w.created)+'</div></div>'+(w.amount?'<div class="win-amt">'+esc(w.currency||'$')+' '+fmtNum(w.amount)+'</div>':'')+'</div><div class="win-text">'+esc(w.text)+'</div><div class="win-react">'+['🔥','👏','💰','🚀'].map(function(e){const n=w.reacts[e]||0,mine=w.myReacts.indexOf(e)>-1;return '<span class="rx'+(mine?' on':'')+'" onclick="reactWin('+w.id+',\''+e+'\')">'+e+(n?' '+n:'')+'</span>'}).join('')+((w.mine||isOwner())?'<span class="rx del" onclick="delWin('+w.id+')">🗑</span>':'')+'</div></div>';
+  }).join(''):'<div class="empty-mini">No wins posted yet. Closed a deal or got a great reply? Be the first! 🏆</div>');
+ });
+}
+function postWin(){
+ const text=el('win-text').value.trim(),amount=parseFloat(el('win-amount').value)||0;
+ if(text.length<3)return showToast('Write a few words about your win','error');
+ wdApi('wins','POST',{text:text,amount:amount,currency:curSym(),city:(state.lastSearch&&state.lastSearch.city)||((myRole()||{}).market)||''}).then(function(r){
+  if(r&&r.ok){setV('win-text','');setV('win-amount','');UD.stats=UD.stats||{};UD.stats.winPosts=(UD.stats.winPosts||0)+1;bumpDay('winpost',1);UD.xp=(UD.xp||0)+15;addWeekXp(15);saveUD();checkMissions();checkBadges();feedPost('win','posted a win on the Win Wall 🏆');showToast('🏆 Win posted! +15 XP','success');loadWins()}
+  else showToast('⚠️ '+((r&&r.error)||'Could not post'),'error');
+ });
+}
+function reactWin(id,e){wdApi('wins/react','POST',{id:id,emoji:e}).then(loadWins)}
+function delWin(id){wdApi('wins/delete','POST',{id:id}).then(loadWins)}
+function loadRadar(){
+ setH('radarList','<div class="empty-mini">Loading the world map of opportunity…</div>');
+ wdApi('radar').then(function(r){
+  if(!r||!r.ok){setH('radarList','<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>');return}
+  const max=Math.max.apply(null,r.cities.map(function(c){return c.nosite}).concat([1]));
+  setT('radarTotals',fmtNum(r.totals.cities||0)+' cities scanned by the community • '+fmtNum(r.totals.scans||0)+' scans');
+  setH('radarList',r.cities.length?r.cities.map(function(c,i){
+   const ct=CTRY.find(function(x){return x.name.toLowerCase()===String(c.country).toLowerCase()});
+   const pct=c.total?Math.round(c.nosite/c.total*100):0;
+   return '<div class="radar-row"><div class="lb-rank">'+(i+1)+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+(ct?ct.flag+' ':'')+esc(c.city)+', '+esc(c.country)+'</div><div class="mini-bar-track" style="margin:5px 0 3px"><div class="mini-bar-fill" style="width:'+Math.round(c.nosite/max*100)+'%;background:var(--a)"></div></div><div class="lb-role">'+fmtNum(c.nosite)+' of '+fmtNum(c.total)+' businesses have no website ('+pct+'%)</div></div><button class="btn btn-ghost btn-sm" onclick="radarGo(\''+esc(c.country).replace(/'/g,"\\'")+'\',\''+esc(c.city).replace(/'/g,"\\'")+'\')">🔍 Hunt</button></div>';
+  }).join(''):'<div class="empty-mini">No scans yet — every search you run adds to the radar.</div>');
+  setH('radarInd',(r.industries||[]).map(function(x){return barRow((IND[x.industry]?IND[x.industry].icon+' ':'')+esc(x.industry),x.nosite,Math.max.apply(null,r.industries.map(function(y){return y.nosite}).concat([1])),'var(--a)',fmtNum(x.nosite)+' no site')}).join('')||'<div class="empty-mini">Industry data appears as people search.</div>');
+ });
+}
+function radarGo(country,city){
+ scSel.country=country;scSel.city=city;
+ const ct=CTRY.find(function(c){return c.name.toLowerCase()===country.toLowerCase()});if(ct)scSel.country=ct.name;
+ const v=el('sc-val');if(v){v.textContent=(ct?ct.flag+' ':'')+scSel.country;v.classList.remove('ph')}
+ const cv=el('sci-val');if(cv){cv.textContent='📍 '+city;cv.classList.remove('ph')}
+ try{renderCityList('sci')}catch(e){}
+ sv('search');runSearch();
+}
+function inviteLink(){return location.origin+'/?ref='+encodeURIComponent((CUR&&CUR.id)||'')}
+function renderInvite(){
+ const n=(UD.stats&&UD.stats.invites)||0;
+ setH('comm-invite','<div class="inv-section"><h3>🤝 Invite friends — both of you win</h3><p style="font-size:13px;color:var(--text2);margin-bottom:10px">When a friend signs up with your link: <b>you get +300 XP</b>, they get <b>+150 XP</b> to start, and you unlock the 🤝 Recruiter badge.</p>'+
+ (onlineSite()?'<input class="filter-input" readonly value="'+esc(inviteLink())+'" onclick="this.select()" style="margin-bottom:8px"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="copyStr(\''+esc(inviteLink())+'\')">📋 Copy link</button><button class="btn btn-wa btn-sm" onclick="shareInviteWA()">💬 Share on WhatsApp</button>'+(navigator.share?'<button class="btn btn-ghost btn-sm" onclick="navigator.share({title:siteName(),text:inviteText(),url:inviteLink()}).catch(function(){})">📤 Share…</button>':'')+'</div>':'<div class="empty-mini">Open your live website to get your invite link.</div>')+
+ '<div style="margin-top:12px;font-size:13px">👥 Friends joined with your link: <b>'+n+'</b></div></div>');
+}
+function inviteText(){return '🔥 I use '+siteName()+' to find businesses without websites anywhere in the world — 100% free. Join me: '}
+function shareInviteWA(){window.open('https://wa.me/?text='+encodeURIComponent(inviteText()+inviteLink()),'_blank')}
+// capture ?ref= before sign-up
+(function(){try{const r=new URLSearchParams(location.search).get('ref');if(r){localStorage.setItem('wd_ref',r);history.replaceState(null,'',location.pathname)}}catch(e){}})();
+function processReferral(){
+ if(!onlineReady())return;
+ let ref=null;try{ref=localStorage.getItem('wd_ref')}catch(e){}
+ const claim=function(){wdApi('referral/claim','POST',{}).then(function(r){
+  if(!r||!r.ok)return;
+  UD.stats=UD.stats||{};
+  if(r.invited&&r.invited.length){UD.stats.invites=r.totalInvites;UD.xp=(UD.xp||0)+300*r.invited.length;addWeekXp(300*r.invited.length);setTimeout(function(){confetti();showToast('🤝 '+r.invited.join(', ')+' joined with your link! +'+(300*r.invited.length)+' XP','success')},2500)}
+  else if(r.totalInvites)UD.stats.invites=r.totalInvites;
+  if(r.invitedBy){UD.xp=(UD.xp||0)+150;addWeekXp(150);setTimeout(function(){showToast('🎁 Welcome bonus from '+r.invitedBy+'\'s invite: +150 XP','success')},3500)}
+  saveUD();checkBadges();schedulePush();
+ })};
+ if(ref&&CUR&&ref!==CUR.id){wdApi('referral','POST',{code:ref}).then(function(){try{localStorage.removeItem('wd_ref')}catch(e){}claim()})}
+ else claim();
+}
+
+/* ───────── LEADERBOARD: weekly season, champions, challenges ───────── */
+LB_METRICS.unshift(['week','🗓 This week','week']);
+const _lbVal=window.lbVal;
+window.lbVal=function(r,by){if(by==='week')return fmtNum(r.week||0)+' XP';return _lbVal(r,by)};
+const _renderLBV=window.renderLeaderboardView;
+window.renderLeaderboardView=function(){
+ if(!state.lbBy)state.lbBy='week';
+ _renderLBV.apply(this,arguments);
+ const bh=el('lbBadges');if(bh)bh.innerHTML=badgesHTML();
+ setT('lbBadgeCount',((UD.badges||[]).length)+'/'+BADGES.length);
+ loadChampions();loadChallenges();
+ setTimeout(decorateLB,1500);setTimeout(decorateLB,3000);
+};
+function decorateLB(){
+ if(!state.lbCache||!state.lbCache.rows)return;
+ document.querySelectorAll('#lbList .lb-row').forEach(function(row,i){
+  const x=state.lbCache.rows[i];if(!x||x.you||row.querySelector('.ch-btn'))return;
+  const b=document.createElement('button');b.className='btn btn-ghost btn-xs ch-btn';b.textContent='⚔️';b.title='Challenge '+x.name;
+  b.onclick=function(){openChallenge(x.id,x.name)};row.appendChild(b);
+ });
+}
+function loadChampions(){
+ const box=el('lbChamps');if(!box)return;
+ if(!onlineReady()){box.innerHTML='';return}
+ wdApi('champions').then(function(r){
+  if(!r||!r.ok||!r.champions.length){box.innerHTML='<div class="champ-card"><div class="lb-role">🏆 Last week\'s champions appear here every Monday. This week could be yours!</div></div>';return}
+  box.innerHTML='<div class="champ-card"><div class="champ-h">🏆 Last week\'s champions</div><div class="champ-row">'+r.champions.map(function(c,i){return '<div class="champ"><div style="font-size:24px">'+['🥇','🥈','🥉'][i]+'</div><div class="lb-name">'+esc(c.name)+'</div><div class="lb-role">'+fmtNum(c.score)+' XP</div></div>'}).join('')+'</div></div>';
+ });
+}
+function openChallenge(id,name){state.chTo=id;setT('ch-name',name);openM('challengeModal')}
+function sendChallenge(){
+ wdApi('challenges','POST',{to:state.chTo,metric:el('ch-metric').value,hours:Number(el('ch-hours').value)}).then(function(r){
+  if(r&&r.ok){closeM('challengeModal');showToast('⚔️ Challenge sent! They have 48 hours to accept','success');loadChallenges()}
+  else showToast('⚠️ '+((r&&r.error)||'Could not send'),'error');
+ });
+}
+const CH_METRIC={contacts:'📞 contacts',leads:'🔍 leads added',deals:'✅ deals',xp:'⭐ XP'};
+function loadChallenges(){
+ const box=el('lbChallenges');if(!box)return;
+ if(!onlineReady()){box.innerHTML='';return}
+ wdApi('challenges').then(function(r){
+  if(!r||!r.ok){box.innerHTML='';return}
+  const list=r.challenges.filter(function(c){return c.status!=='expired'&&c.status!=='declined'}).slice(0,8);
+  const wins=r.challenges.filter(function(c){return c.status==='done'&&c.youWon}).length;
+  if(UD&&wins>((UD.stats&&UD.stats.challengeWins)||0)){UD.stats=UD.stats||{};UD.stats.challengeWins=wins;UD.xp=(UD.xp||0)+200;addWeekXp(200);saveUD();checkBadges();confetti();showToast('⚔️ You won a challenge! +200 XP','success')}
+  box.innerHTML='<div class="widget" style="margin-bottom:16px"><div class="widget-head"><h3>⚔️ Challenges</h3><span style="font-size:11px;color:var(--muted)">Tap ⚔️ next to anyone to challenge them</span></div><div class="widget-body">'+(list.length?list.map(function(c){
+   const them=c.mine==='from'?c.to_name:c.from_name;
+   let body='';
+   if(c.status==='pending')body=c.mine==='to'?'<b>'+esc(them)+'</b> challenged you: most '+CH_METRIC[c.metric]+' in '+(c.hours/24)+' day'+(c.hours>24?'s':'')+'<div style="margin-top:6px;display:flex;gap:6px"><button class="btn btn-primary btn-xs" onclick="respondCh(\''+c.id+'\',true)">✅ Accept</button><button class="btn btn-ghost btn-xs" onclick="respondCh(\''+c.id+'\',false)">Decline</button></div>':'Waiting for <b>'+esc(them)+'</b> to accept ('+CH_METRIC[c.metric]+')';
+   if(c.status==='active'){const me=c.mine==='from'?c.from_now:c.to_now,ot=c.mine==='from'?c.to_now:c.from_now;const left=Math.max(0,c.end-Date.now());body='vs <b>'+esc(them)+'</b> — '+CH_METRIC[c.metric]+'<div class="ch-score"><span class="'+(me>=ot?'lead':'')+'">You '+me+'</span> : <span class="'+(ot>me?'lead':'')+'">'+ot+' '+esc(them.split(' ')[0])+'</span></div><div class="lb-role">'+Math.floor(left/3600e3)+'h '+Math.floor(left/60e3)%60+'m left</div>'}
+   if(c.status==='done'){const me=c.mine==='from'?c.from_score:c.to_score,ot=c.mine==='from'?c.to_score:c.from_score;body=(c.youWon?'🏆 You beat ':(me===ot?'🤝 Draw with ':'😤 Lost to '))+'<b>'+esc(them)+'</b> '+me+'–'+ot+' ('+CH_METRIC[c.metric]+')'}
+   return '<div class="ch-row">'+body+'</div>';
+  }).join(''):'<div class="empty-mini">No challenges yet. Pick someone on the board and hit ⚔️</div>')+'</div></div>';
+ });
+}
+function respondCh(id,accept){wdApi('challenges/respond','POST',{id:id,accept:accept}).then(function(r){if(r&&r.ok){showToast(accept?'⚔️ Challenge on! Scores count from now':'Challenge declined','info');loadChallenges()}})}
+
+/* ───────── PUBLIC PULSE on the sign-in screen ───────── */
+function loadPulse(){
+ if(!onlineSite())return;
+ fetch('/api/wd/pulse').then(function(r){return r.json()}).then(function(p){
+  if(!p||!p.ok)return;const b=el('authPulse');if(!b)return;
+  const bits=[];if(p.noWebsite)bits.push('<b>'+fmtNum(p.noWebsite)+'</b> businesses without websites found');if(p.cities)bits.push('in <b>'+fmtNum(p.cities)+'</b> cities');if(p.users)bits.push('by <b>'+fmtNum(p.users)+'</b> hunters');
+  if(bits.length){b.innerHTML='🌍 '+bits.join(' ')+' — 100% free';b.style.display=''}
+ }).catch(function(){});
+}
+document.addEventListener('DOMContentLoaded',function(){try{loadPulse()}catch(e){}});
+
+/* ───────── BOOT ───────── */
+function growthBoot(){
+ try{
+  UD.stats=UD.stats||{};if(UD.shareFeed===undefined)UD.shareFeed=true;
+  applyAccent();checkMissions();checkBadges();renderGrowthDash();
+  if(!UD.joinedPosted&&onlineReady()){UD.joinedPosted=true;saveUD();feedPost('join','just joined the hunt 👋')}
+  setTimeout(processReferral,2000);
+  const st=el('shareFeedToggle');if(st)st.checked=UD.shareFeed!==false;
+  renderThemes();
+ }catch(e){console.warn('growthBoot',e)}
+}
+
+/* ═══════════════════════ SMARTER ASSISTANT ═══════════════════════
+   Understands commands + questions about the user's own data, remembers who you were
+   talking about, tolerates typos, and knows every feature of the site.                */
+const AI_CTX={lead:null,topic:null};
+const AI_IND=[
+ [/\b(restaurants?|food|cafes?|coffee|bakery|bakeries|takeaways?|diners?|bars?|pubs?|eateries|kitchens?|grill)\b/,'Restaurants & Food'],
+ [/\b(plumbers?|plumbing|electricians?|handym[ae]n|carpenters?|painters?|roofers?|roofing|locksmiths?|gardeners?|cleaners?|cleaning|home services?)\b/,'Home Services'],
+ [/\b(clinics?|doctors?|dentists?|pharmac(y|ies)|gyms?|fitness|health|physios?|wellness|spas?)\b/,'Health & Wellness'],
+ [/\b(mechanics?|cars?|auto|garages?|tyres?|tires?|panel ?beaters?|car ?wash(es)?)\b/,'Auto Services'],
+ [/\b(shops?|stores?|boutiques?|retail|clothing|supermarkets?)\b/,'Retail & Shops'],
+ [/\b(lawyers?|attorneys?|accountants?|finance|insurance|legal|tax)\b/,'Legal & Finance'],
+ [/\b(salons?|barbers?|beauty|nails?|hair(dressers?)?|makeup|tattoos?)\b/,'Beauty & Grooming'],
+ [/\b(real ?estate|estate agents?|property|properties|realtors?)\b/,'Real Estate'],
+ [/\b(schools?|tutors?|colleges?|academ(y|ies)|training|driving schools?|kindergartens?|creches?)\b/,'Education'],
+ [/\b(hotels?|lodges?|guest ?houses?|b&bs?|hostels?|travel|tours?|tour operators?)\b/,'Hotels & Travel'],
+ [/\b(computers?|it|tech|phone repairs?|software|electronics)\b/,'Technology'],
+ [/\b(builders?|construction|contractors?|bricks?|cement)\b/,'Construction']
+];
+const AI_PAGES={dashboard:'dashboard',home:'dashboard',leads:'leads','lead finder':'leads',search:'search',find:'search',pipeline:'pipeline',scripts:'scripts','call scripts':'scripts',whatsapp:'whatsapp',email:'email',emails:'email',invoice:'invoice',invoices:'invoice',earnings:'earnings',money:'earnings',crm:'crm',notes:'crm',analytics:'analytics',stats:'analytics',leaderboard:'leaderboard',community:'community','win wall':'community',radar:'community',proposals:'proposal',proposal:'proposal',settings:'settings',profile:'settings',owner:'owner','owner panel':'owner'};
+const AI_KB=[
+ {k:['real','fake','where do leads come from','data','openstreetmap','osm','accurate','real business','are the leads real'],a:'🌍 Searches on the live site pull **real businesses from OpenStreetMap** — the free world map built by millions of people. Each result shows ✅ Real business, a 🗺 map pin and 🔎 Check online. "No website" means none is listed on the map, so always double-check before calling.'},
+ {k:['mission','missions','daily task','daily tasks','quest'],a:'🎯 **Daily missions**: 3 small tasks every day (like "Call 5 leads"). Each gives XP, and finishing all 3 gives **+100 bonus XP**. They reset at midnight.',c:[{t:'📊 Show my missions',q:'my missions'}]},
+ {k:['streak','freeze','streak freeze','lose my streak'],a:'🔥 Your **streak** grows every day you open the site. Milestones at 3, 7, 14, 30, 60, 100 and 365 days give big XP. Every milestone from 7 days on gives a **🧊 streak freeze** that saves your streak if you miss one day.'},
+ {k:['drop','lead drop','gift','daily drop'],a:'🎁 **Today\'s Lead Drop** hand-picks 5 businesses with no website in your city every day (+20 XP for opening it). Find it on the Dashboard.',c:[{t:'🎁 Open today\'s drop',a:'openDrop()'}]},
+ {k:['radar','opportunity','best city','which city','where should i search','hotspot'],a:'📡 The **Opportunity Radar** (Community → Radar) ranks cities by how many businesses have no website — built from every search the community runs.',c:[{t:'📡 Open the Radar',a:"sv('community');commTab('radar')"}]},
+ {k:['win wall','post a win','wins','brag'],a:'🏆 The **Win Wall** (Community) is where hunters post closed deals and great replies. Others react 🔥👏💰🚀. Posting gives +15 XP.',c:[{t:'🏆 Open Win Wall',a:"sv('community');commTab('wins')"}]},
+ {k:['challenge','1v1','versus','vs','battle','duel'],a:'⚔️ **Challenges**: open the Leaderboard, tap ⚔️ next to anyone and pick a goal (contacts, leads, deals or XP) for 1, 3 or 7 days. The winner gets +200 XP and it\'s posted to the live feed.',c:[{t:'🏆 Open Leaderboard',a:"sv('leaderboard')"}]},
+ {k:['invite','referral','refer','friend','share link'],a:'🤝 **Invite friends**: Community → Invite. When a friend joins with your link you get **+300 XP** and they get **+150 XP**.',c:[{t:'🤝 Get my link',a:"sv('community');commTab('invite')"}]},
+ {k:['badge','badges','achievement','achievements','trophy'],a:'🏅 There are **'+35+' achievement badges** — from First Scan to Rainmaker. Each one gives +25 XP. See them on the Leaderboard page.',c:[{t:'🏅 My badges',a:"sv('leaderboard')"}]},
+ {k:['theme','themes','colour','color','skin'],a:'🎨 **Themes** unlock as you level up: Ocean (5), Emerald (10), Royal (15), 24K Gold (20), Crimson (25), Neon (30), Legend (50). Change them in Settings → Themes.',c:[{t:'🎨 Open themes',a:"sv('settings')"}]},
+ {k:['season','weekly','this week','reset monday','champion'],a:'🗓 The leaderboard has a **weekly season** that resets every Monday. Last week\'s top 3 are shown as 🥇🥈🥉 champions.'},
+ {k:['contacted by','claimed','other users contacted','already contacted'],a:'👥 On real search results you\'ll see **"Contacted by N users"** when others already reached out, or ✨ **"Nobody has contacted yet"** — go for those first. Being first earns the 🧭 Pioneer badge.'},
+ {k:['xp','points','how do i level','level up','earn xp'],a:'⭐ XP: search +5 • each lead +2 • call/WhatsApp/email +10 • call result +5 • follow-up +3 • pipeline move +4 • proposal +40 • invoice +30 • deal +150 • payment +100. Your role\'s focus actions give +50%. Missions, streaks, badges and invites give bonus XP.'},
+ {k:['role','roles','title','rank'],a:'🎭 Your **role** (Settings) sets your title and which actions give +50% XP. Ranks go 🌱 Rookie → 🔭 Scout → 🎯 Hunter → 🤝 Closer → 💼 Pro → ⚡ Expert → 💎 Elite → 👑 Master → 🏆 Legend → 🚀 Mogul.'},
+ {k:['free','cost','price','pay','subscription'],a:'💚 Everything here is **free** — searching anywhere in the world, scripts, pipeline, proposals, invoices, the lot.'}
+];
+function aiLev(a,b){if(Math.abs(a.length-b.length)>1)return 9;const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];for(let j=1;j<=b.length;j++)m[i][j]=i?Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1)):j}return m[a.length][b.length]}
+let AI_VOCAB=null;
+function aiVocab(){
+ if(AI_VOCAB)return AI_VOCAB;const v=new Set();
+ (typeof AI_INTENTS!=='undefined'?AI_INTENTS:[]).concat(AI_KB).forEach(function(it){(it.k||[]).forEach(function(k){k.split(/\s+/).forEach(function(w){if(w.length>=4)v.add(w)})})});
+ Object.keys(AI_PAGES).forEach(function(k){k.split(' ').forEach(function(w){if(w.length>=4)v.add(w)})});
+ ['whatsapp','pipeline','leaderboard','streak','missions','proposal','invoice','search','restaurants','plumbers','salons','dentists','mechanics','lawyers','hotels','schools','earned','follow','tomorrow'].forEach(function(w){v.add(w)});
+ AI_VOCAB=Array.from(v);return AI_VOCAB;
+}
+function aiFix(text){
+ const vocab=aiVocab();
+ return text.split(/(\s+)/).map(function(w){
+  const lw=w.toLowerCase();if(lw.length<5||/\s/.test(w)||vocab.indexOf(lw)>-1)return w;
+  let best=null;vocab.forEach(function(v){if(!best&&aiLev(lw,v)<=1)best=v});return best||w;
+ }).join('');
+}
+function aiPlace(t){
+ let best=null;
+ CTRY.forEach(function(ct){
+  ct.cities.forEach(function(c){const lc=c.toLowerCase();if(lc.length>2&&new RegExp('\\b'+lc.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b').test(t)&&(!best||lc.length>best.len))best={ct:ct,city:c,len:lc.length}});
+  const ln=ct.name.toLowerCase();if(new RegExp('\\b'+ln+'\\b').test(t)&&!best)best={ct:ct,city:null,len:ln.length};
+ });
+ if(best&&!best.city){const cm=CTRY.find(function(c){return c===best.ct});best.city=cm.cities[0]}
+ return best;
+}
+function aiInd(t){for(const x of AI_IND)if(x[0].test(t))return x[1];return ''}
+function aiLead(t){
+ let best=null,bs=0;
+ state.leads.forEach(function(l){
+  const n=l.name.toLowerCase();
+  if(t.indexOf(n)>-1&&n.length>bs){best=l;bs=n.length+100;return}
+  const words=n.split(/\s+/).filter(function(w){return w.length>3});
+  const hit=words.filter(function(w){return t.indexOf(w)>-1}).length;
+  if(words.length&&hit/words.length>=0.6&&hit*10>bs){best=l;bs=hit*10}
+ });
+ if(!best&&/\b(him|her|them|they|it|this one|that one|that lead|this lead|the lead|same)\b/.test(t))best=AI_CTX.lead||state.curLead;
+ return best;
+}
+function aiNextLead(){
+ const due=[];const today=todayKey();
+ Object.keys(UD.followups||{}).forEach(function(id){if(UD.followups[id]<=today){const l=findLead(id);if(l)due.push(l)}});
+ if(due.length)return {l:due[0],why:'your follow-up is due'};
+ const c=state.leads.filter(function(l){return !l.contacted&&l.statusTag!=='cold'&&String(l.phone||'').replace(/\D/g,'').length>=7})
+  .sort(function(a,b){return ((b.statusTag==='hot')*30+b.score-((b.claims&&b.claims.n)||0)*10)-((a.statusTag==='hot')*30+a.score-((a.claims&&a.claims.n)||0)*10)});
+ if(!c.length)return null;
+ const l=c[0];
+ return {l:l,why:(l.statusTag==='hot'?'marked 🔥 hot, ':'')+(l.type==='no-website'?'no website, ':'')+'score '+l.score+(l.osm?(l.claims&&l.claims.n?'':', nobody has contacted them yet'):'')};
+}
+function leadChips(l){
+ AI_CTX.lead=l;const id=l.id.replace(/'/g,"\\'");
+ return [{t:'📞 Call',a:"markContacted('"+id+"','call');location.href='tel:"+String(l.phone||'').replace(/[^\d+]/g,'')+"'"},{t:'💬 WhatsApp',a:"waLead('"+id+"')"},{t:'👁 Open',a:"openLead('"+id+"')"},{t:'📋 Pipeline',a:"addToPipeline('"+id+"')"}];
+}
+function aiBrief(){
+ const ms=todaysMissions(),done=(UD.missions&&UD.missions.d===todayKey())?UD.missions.done.length:0;
+ const due=Object.keys(UD.followups||{}).filter(function(id){return UD.followups[id]<=todayKey()&&findLead(id)}).length;
+ const nx=aiNextLead();
+ let t='Here\'s your plan for today 👇\n\n🎯 Missions: **'+done+'/3 done** — '+ms.map(function(m){return m.t}).join(' • ')+'\n⏰ Follow-ups due: **'+due+'**\n🔥 Streak: **'+(UD.streakN||0)+' days**'+(UD.freezes?' (🧊 '+UD.freezes+')':'')+'\n⭐ Level **'+levelFor(UD.xp)+'** — '+esc(roleTitle({noMarket:true}));
+ if(nx)t+='\n\n👉 Start with **'+esc(nx.l.name)+'** ('+esc(nx.why)+').';
+ return {text:t,chips:nx?leadChips(nx.l).concat([{t:'🎁 Lead Drop',a:'openDrop()'}]):[{t:'🔍 Find leads',a:"sv('search')"},{t:'🎁 Lead Drop',a:'openDrop()'}]};
+}
+function aiSmart(raw){
+ if(!UD)return false;
+ const t=' '+aiFix(raw).toLowerCase().replace(/[!?,;"]/g,' ').replace(/\s+/g,' ')+' ';
+ const say=function(text,chips){botSay(text,chips);return true};
+ // greetings / daily brief
+ if(/^\s*(hi|hey|hello|yo|sup|morning|good (morning|afternoon|evening)|howzit|hallo)\b/.test(t)&&t.trim().split(' ').length<=4){const b=aiBrief();return say('Hey '+esc((CUR.name||'').split(' ')[0])+'! 👋 '+b.text,b.chips)}
+ if(/\b(what (should|do) i do|plan (for )?today|daily brief|my day|where do i start|what now|give me a plan)\b/.test(t)){const b=aiBrief();return say(b.text,b.chips)}
+ // search commands
+ const wantsSearch=/\b(find|search|look for|looking for|hunt|get me|show me|scan|list)\b/.test(t);
+ const place=aiPlace(t),ind=aiInd(t);
+ if(wantsSearch&&(place||ind)&&!/\b(lead named|called)\b/.test(t)){
+  const p=place||dropPlace();const city=p.city||p.ct.cities[0];
+  scSel.country=p.ct.name;scSel.city=city;
+  const v=el('sc-val');if(v){v.textContent=p.ct.flag+' '+p.ct.name;v.classList.remove('ph')}
+  const cv=el('sci-val');if(cv){cv.textContent='📍 '+city;cv.classList.remove('ph')}
+  const si=el('s-ind');if(si)si.value=ind||'';
+  const st=el('s-type');if(st&&/\b(no website|without (a )?website|no site)\b/.test(t))st.value='No Website';
+  try{renderCityList('sci')}catch(e){}
+  sv('search');runSearch();
+  return say('🔍 On it — scanning **'+(ind?ind.toLowerCase():'all businesses')+'** in **'+esc(city)+', '+esc(p.ct.name)+'** '+p.ct.flag+'. Results are loading on the Search page. Tip: sort by the ✨ "Nobody has contacted yet" ones first.');
+ }
+ // next lead
+ if(/\b(who (should|do|can) i (call|contact|message|whatsapp)|next lead|best lead|call next|who next|hottest lead|who to call)\b/.test(t)){
+  const nx=aiNextLead();
+  if(!nx)return say('You don\'t have any uncontacted leads with a phone number yet. Let\'s get some! 🔍',[{t:'🔍 Find leads',a:"sv('search')"},{t:'🎁 Today\'s drop',a:'openDrop()'}]);
+  return say('📞 Call **'+esc(nx.l.name)+'** — '+esc(nx.l.industry)+', '+esc(nx.l.city)+'.\nWhy: '+esc(nx.why)+'.'+(nx.l.phone?'\nPhone: **'+esc(nx.l.phone)+'**':''),leadChips(nx.l));
+ }
+ // lead actions
+ const lead=aiLead(t);
+ if(lead){
+  AI_CTX.lead=lead;const id=lead.id;
+  if(/\b(whatsapp|wa|message|text)\b/.test(t)){waLead(id);return say('💬 Opening WhatsApp for **'+esc(lead.name)+'** with your message ready.')}
+  if(/\b(call|phone|ring|dial)\b/.test(t)){if(!String(lead.phone||'').replace(/\D/g,''))return say('📵 **'+esc(lead.name)+'** has no phone number listed. Try 🔎 Check online.',[{t:'🔎 Search online',a:"window.open('https://www.google.com/search?q="+encodeURIComponent(lead.name+' '+lead.city)+"')"}]);markContacted(id,'call');location.href='tel:'+String(lead.phone).replace(/[^\d+]/g,'');return say('📞 Calling **'+esc(lead.name)+'**… I\'ll ask how it went when you\'re back.')}
+  if(/\b(email|mail)\b/.test(t)){openLead(id);setTimeout(function(){const tb=document.querySelector('#leadModal .mtab:nth-child(4)');if(tb)switchMTab(tb,'mt-email')},200);return say('📧 Here\'s a ready-made email for **'+esc(lead.name)+'** — tap 📤 Mail client to send.')}
+  if(/\b(script|pitch|what (do|should) i say)\b/.test(t)){openLead(id);setTimeout(function(){const tb=document.querySelector('#leadModal .mtab:nth-child(2)');if(tb)switchMTab(tb,'mt-script')},200);return say('📞 Opened a call script written for **'+esc(lead.name)+'**.')}
+  if(/\b(pipeline|deal)\b/.test(t)){addToPipeline(id);return say('📋 **'+esc(lead.name)+'** is in your pipeline.',[{t:'📋 Open pipeline',a:"sv('pipeline')"}])}
+  if(/\b(proposal|quote)\b/.test(t)){openProposalFor(id);return say('📄 Proposal started for **'+esc(lead.name)+'** — check the price and send it.')}
+  const tag=(t.match(/\b(hot|warm|cold)\b/)||[])[1];
+  if(tag&&/\b(mark|set|make|tag|is)\b/.test(t)){setLeadStatus(id,tag);return say('Done — **'+esc(lead.name)+'** is now '+{hot:'🔥 Hot',warm:'🟡 Warm',cold:'⚪ Cold'}[tag]+'.')}
+  if(/\b(follow ?up|remind|callback|call back)\b/.test(t)){
+   let days=1;const m=t.match(/\bin (\d+) days?\b/);if(m)days=Math.min(90,+m[1]);if(/next week/.test(t))days=7;if(/today/.test(t))days=0;
+   const d=new Date(Date.now()+days*864e5).toISOString().slice(0,10);UD.followups=UD.followups||{};UD.followups[id]=d;saveUD();try{renderFollowUps()}catch(e){}
+   logAct('followup',lead.name+' on '+fmtDate(d),id);
+   return say('⏰ Follow-up set for **'+esc(lead.name)+'** on **'+fmtDate(d)+'**.',[{t:'📅 Add to Calendar',a:"addFollowToCalendar('"+id+"')"}]);
+  }
+  if(/\b(open|show|details|info|tell me about|who is)\b/.test(t)){openLead(id);return say('👁 **'+esc(lead.name)+'** — '+esc(lead.industry)+', '+esc(lead.city)+(lead.phone?' • '+esc(lead.phone):'')+' • score '+lead.score+(lead.contacted?' • already contacted':'')+'.',leadChips(lead))}
+ }
+ // personal stats
+ const S=UD.stats||{};
+ if(/\b(my missions?|missions? (today|left)|daily missions?)\b/.test(t)){const ms=todaysMissions();return say('🎯 Today\'s missions:\n'+ms.map(function(m){const c=Math.min(m.n,dayCount(m.type));return (c>=m.n?'✅ ':'▫️ ')+m.t+' — **'+c+'/'+m.n+'** (+'+m.xp+' XP)'}).join('\n')+'\n\nAll 3 = **+100 bonus XP**.')}
+ if(/\b(streak)\b/.test(t))return say('🔥 You\'re on a **'+(UD.streakN||0)+'-day streak** (best: '+(UD.streakBest||UD.streakN||0)+').'+(UD.freezes?' You have 🧊 **'+UD.freezes+'** streak freeze'+(UD.freezes>1?'s':'')+'.':' Reach 7 days to earn a 🧊 streak freeze.'));
+ if(/\b(level|xp|rank|how close|next level)\b/.test(t)&&/\b(my|i|am|what)\b/.test(t)){const L=levelFor(UD.xp),need=xpForLevel(L+1)-(UD.xp||0),nr=RANKS.find(function(x){return x[0]>L});return say('⭐ You\'re **level '+L+'** with **'+fmtNum(UD.xp||0)+' XP** — '+esc(roleTitle({noMarket:true}))+'.\n**'+fmtNum(need)+' XP** to level '+(L+1)+(nr?', and '+nr[2]+' '+nr[1]+' unlocks at level '+nr[0]:'')+'.',[{t:'🏆 Leaderboard',a:"sv('leaderboard')"}])}
+ if(/\b(earned|revenue|made|income|how much money)\b/.test(t)){const pays=(UD.payments||[]).reduce(function(s,p){return s+(p.amount||0)},0);return say('💰 You\'ve logged **'+money0(pays)+'** in payments, with **'+money0(PIPE.filter(function(p){return p.s!==5}).reduce(function(s,p){return s+pipeVal(p)},0))+'** still open in your pipeline.',[{t:'💵 Earnings',a:"sv('earnings')"}])}
+ if(/\b(how am i doing|my stats|my progress|statistics|summary|report)\b/.test(t)){
+  const nw=state.leads.filter(function(l){return l.type==='no-website'}).length,ct=state.leads.filter(function(l){return l.contacted}).length;
+  return say('📊 **Your numbers**\n• '+state.leads.length+' leads ('+nw+' with no website)\n• '+ct+' contacted • '+PIPE.length+' in pipeline • '+(S.deals||0)+' deals closed\n• Level '+levelFor(UD.xp)+' • '+fmtNum(UD.xp||0)+' XP • 🔥 '+(UD.streakN||0)+'-day streak\n• 🏅 '+(UD.badges||[]).length+'/'+BADGES.length+' badges'+(state.leads.length&&ct/state.leads.length<0.2?'\n\n💡 You\'ve contacted under 20% of your leads — that\'s where the money is.':''),[{t:'👉 Who should I call?',q:'who should I call next'},{t:'📈 Analytics',a:"sv('analytics')"}]);
+ }
+ if(/\b(how many leads|lead count|number of leads)\b/.test(t)){const c=place?state.leads.filter(function(l){return l.city===place.city||l.country===place.ct.name}):state.leads;return say('You have **'+c.length+'** leads'+(place?' in '+esc(place.city||place.ct.name):'')+' — **'+c.filter(function(l){return l.type==='no-website'}).length+'** without a website, **'+c.filter(function(l){return !l.contacted}).length+'** not contacted yet.')}
+ if(/\b(best industry|which industry|what industry|best niche)\b/.test(t)){
+  const by={};state.leads.forEach(function(l){by[l.industry]=by[l.industry]||{n:0,nw:0,won:0};by[l.industry].n++;if(l.type==='no-website')by[l.industry].nw++});
+  const top=Object.keys(by).sort(function(a,b){return by[b].nw-by[a].nw}).slice(0,3);
+  return say(top.length?'🏭 In your leads, the most businesses without websites are in:\n'+top.map(function(k,i){return (i+1)+'. **'+k+'** — '+by[k].nw+' of '+by[k].n}).join('\n')+'\n\nRestaurants and home services usually close fastest.':'Search a few cities first and I\'ll tell you which industries have the most opportunity.',[{t:'📡 Community Radar',a:"sv('community');commTab('radar')"}]);
+ }
+ if(/\b(best city|which city|where should i (search|look|hunt)|hotspots?|opportunit(y|ies))\b/.test(t)&&onlineReady()){
+  wdApi('radar').then(function(r){if(!r||!r.ok||!r.cities.length)return botSay('The radar is still filling up — every search adds to it. Try searching your own city first!');botSay('📡 Top opportunity cities right now:\n'+r.cities.slice(0,5).map(function(c,i){return (i+1)+'. **'+esc(c.city)+', '+esc(c.country)+'** — '+fmtNum(c.nosite)+' businesses without a website'}).join('\n'),[{t:'🔍 Hunt in '+r.cities[0].city,a:"radarGo('"+String(r.cities[0].country).replace(/'/g,"\\'")+"','"+String(r.cities[0].city).replace(/'/g,"\\'")+"')"}])});
+  return true;
+ }
+ // navigation
+ const nav=t.match(/\b(open|go to|goto|take me to|show( me)?|navigate to)\s+(the\s+)?([a-z ]+?)\s*(page|tab|view)?\s*$/);
+ if(nav){const k=nav[4].trim();const v=AI_PAGES[k];if(v){sv(v);return say('Opened **'+k+'** ✅')}}
+ if(/\b(open|show)\b.*\b(drop)\b/.test(t)){openDrop();return say('🎁 Here\'s today\'s lead drop!')}
+ // knowledge base
+ let best=null,bs=0;
+ AI_KB.forEach(function(it){let s=0;it.k.forEach(function(k){if(t.indexOf(' '+k+' ')>-1||t.indexOf(k)>-1)s+=k.split(' ').length*2});if(s>bs){bs=s;best=it}});
+ if(best&&bs>=2)return say(best.a,best.c);
+ return false;
+}
+const _aiRespondG=window.aiRespond;
+window.aiRespond=function(input){
+ try{if(aiSmart(input))return}catch(e){console.warn('aiSmart',e)}
+ return _aiRespondG.call(this,aiFix(input));
+};
+
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
  const l=findLead(id);
@@ -3701,11 +5034,12 @@ function setLeadStatus(id,status){
 }
 
 /* ===== ACTIVITY LOG — powers the real dashboard + analytics ===== */
-const ACT_META={call:['📞','var(--green)','Called'],whatsapp:['💬','#25d366','WhatsApp sent to'],email:['📧','var(--blue)','Email opened for'],search:['🔍','var(--blue)','Search —'],invoice:['🧾','var(--purple)','Invoice'],payment:['💰','var(--green)','Payment logged —'],deal:['✅','var(--green)','Deal closed —'],stage:['📋','var(--a)','Pipeline:'],outcome:['📝','var(--yellow)','Call result —'],proposal:['📄','var(--purple)','Proposal sent —']};
-function logAct(type,text,id){
+const ACT_META={call:['📞','var(--green)','Called'],whatsapp:['💬','#25d366','WhatsApp sent to'],email:['📧','var(--blue)','Email opened for'],search:['🔍','var(--blue)','Search —'],invoice:['🧾','var(--purple)','Invoice'],payment:['💰','var(--green)','Payment logged —'],deal:['✅','var(--green)','Deal closed —'],stage:['📋','var(--a)','Pipeline:'],outcome:['📝','var(--yellow)','Call result —'],proposal:['📄','var(--purple)','Proposal sent —'],lead:['➕','var(--green)','Added lead'],followup:['⏰','var(--blue)','Follow-up set —']};
+function logAct(type,text,id,n){
  if(!UD)return;
  UD.activity=UD.activity||[];
  UD.activity.unshift({t:Date.now(),type:type,text:String(text||''),id:id||null});
+ try{gainXP(type,n)}catch(e){console.warn(e)}
  if(UD.activity.length>1000)UD.activity.length=1000;
  saveUD();
  try{renderDashboard()}catch(e){}
@@ -3804,25 +5138,6 @@ function renderDashboard(){
 }
 
 /* ===== LEADERBOARD ===== */
-function renderLeaderboard(){
- const box=el('leaderboardBody');
- if(!box)return;
- const w0=startOfWeek(0);
- // Points this week: contact = 10, closed deal = 50, streak day = 5
- const contacted=acts(null,w0).filter(function(a){return a.type==='call'||a.type==='whatsapp'||a.type==='email'}).length;
- const closed=acts('deal',w0).length;
- const streak=(UD&&UD.streakN)||0;
- const base=contacted*10+closed*50;
- const ranks=[
-  {name:meFull()||'You',score:base+streak*5,you:true},
-  {name:'Team Average',score:Math.round(base*0.7),you:false},
-  {name:'Top Performer (demo)',score:Math.round(base*1.3),you:false}
- ].sort(function(a,b){return b.score-a.score});
- const medals=['🥇','🥈','🥉'];
- box.innerHTML=ranks.map(function(r,i){
-  return '<div class="lb-row"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">'+medals[i]+'</span><div><div style="font-weight:700;font-size:13px">'+esc(r.name)+'</div><div style="font-size:11px;color:var(--muted)">'+(r.you?'You':'Demo')+'</div></div></div><div style="font-weight:800;color:var(--a)">'+r.score+' pts</div></div>';
- }).join('');
-}
 
 /* ===== ANALYTICS ===== */
 function renderAnalytics(){
@@ -4213,6 +5528,7 @@ function recordInvoice(d,status){
  state.invoices.unshift({num:d.num,to:d.to.name||'Client',total:money(d.total),status:status,date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});
  logAct('invoice',(d.num||'Invoice')+' to '+(d.to.name||'Client')+' — '+money(d.total));
  saveUD();
+ try{refreshInvNum()}catch(e){}
  if(state.view==='invoice-history')renderInvHistory();
 }
 function sendInvoiceWA(){
@@ -4313,7 +5629,7 @@ function markPaid(i){
   UD.payments=UD.payments||[];
   UD.payments.unshift({client:iv.to,amount:amt,date:new Date().toISOString().slice(0,10),note:'Invoice '+iv.num,ref:iv.num});
   showToast('✅ Payment logged — '+iv.total+' from '+esc(iv.to),'success');
-  logAct('payment',iv.to+' — '+iv.total);
+  logAct('payment',iv.to+' — '+iv.total,null,amt);
  }else{
   UD.payments=(UD.payments||[]).filter(function(p){return p.ref!==iv.num});
   showToast('Invoice marked as sent','info');
@@ -4416,8 +5732,8 @@ function openAI(){
  if(!aiWelcomed){
   aiWelcomed=true;
   const first=CUR?CUR.name.split(' ')[0]:'there';
-  botSay('Hi '+esc(first)+'! 👋 I\'m **Lameero\'s Assistant** — I know every corner of We Deploy.\n\nAsk me anything, or just tap one of the buttons below me if you don\'t know what to type — they do the work for you. 👇',
-  [{t:'🔍 How do I find leads?',q:'how do I find leads'},{t:'💰 What should I charge?',q:'what should I charge clients'},{t:'📊 Show my stats',q:'show my stats'},{t:'✨ What can you do?',q:'what can you do'}]);
+  botSay('Hi '+esc(first)+'! 👋 I\'m **Lameero\'s Assistant** — I know every corner of '+siteName()+' and I can do things for you.\n\nTry: **"find plumbers in Cape Town"**, **"who should I call next"**, **"WhatsApp them"**, **"follow up with them in 3 days"** or **"how am I doing"**. 👇',
+  [{t:'📋 Plan my day',q:'what should I do today'},{t:'👉 Who should I call?',q:'who should I call next'},{t:'🔍 Find restaurants near me',q:'find restaurants in '+((UD&&UD.role&&UD.role.market&&(CTRY.find(function(c){return c.name===UD.role.market})||{}).cities||['Windhoek'])[0])},{t:'📊 How am I doing?',q:'how am I doing'}]);
  }
  setTimeout(function(){const i=el('aiInput');if(i)i.focus()},150);
 }

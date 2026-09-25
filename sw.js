@@ -1,5 +1,5 @@
 // We Deploy service worker — makes the site installable and lets it open offline.
-const CACHE = 'wedeploy-v9.3';
+const CACHE = 'wedeploy-v10.0';
 const CORE = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
