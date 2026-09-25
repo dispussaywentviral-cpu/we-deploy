@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>We Deploy — Lead Finder Pro</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0907">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="We Deploy">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -562,24 +570,65 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .divider{height:1px;background:var(--line);margin:14px 0}
 @media(max-width:900px){
   .menu-btn{display:grid}
-  .topbar{height:96px;min-height:96px;flex-wrap:wrap;align-content:center;padding:8px 10px;gap:7px}
+  .topbar{height:auto;min-height:58px;flex-wrap:wrap;align-content:center;padding:8px 10px;gap:8px}
   .topbar-sep{display:none}
-  .topbar-search{flex:1;min-width:0;max-width:none}
+  .topbar-search{flex:1 1 auto;min-width:0;max-width:none;order:2}
+  .topbar-search input{font-size:13px;padding:6px 0}
   .topbar-pills{display:none}
-  .topbar-right{order:3;flex:1 0 100%;justify-content:flex-end;margin-left:0;padding-top:5px;border-top:1px solid var(--line)}
-  .sidebar{position:fixed;top:96px;left:0;bottom:0;z-index:1500;transform:translateX(-105%);transition:transform .25s ease;box-shadow:20px 0 60px rgba(0,0,0,.55);width:270px}
+  .topbar-right{order:3;flex:0 0 auto;justify-content:flex-end;margin-left:0;gap:6px}
+  .topbar-right .btn-sm{padding:5px 8px;font-size:11px}
+  .topbar-right .btn-icon{width:32px;height:32px}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:1500;transform:translateX(-105%);transition:transform .25s ease;box-shadow:20px 0 60px rgba(0,0,0,.55);width:270px;padding-top:70px}
   .sidebar.open{transform:none}
   .stats-grid{grid-template-columns:1fr 1fr}
-  .filter-bar{flex-direction:column}.settings-grid{grid-template-columns:1fr}
-  .form-row{grid-template-columns:1fr}.dash-grid{grid-template-columns:1fr}
+  .filter-bar{flex-direction:column}
+  .settings-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .dash-grid{grid-template-columns:1fr}
   .inv-builder{grid-template-columns:1fr}
   .about-stats{grid-template-columns:repeat(2,1fr)}
+  .quick-grid{grid-template-columns:1fr 1fr!important}
   .ai-launcher{right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:60px;height:60px;font-size:27px}
   .ai-panel{top:106px;bottom:calc(84px + env(safe-area-inset-bottom));right:12px;left:12px;width:auto;max-height:none;border-radius:16px}
   .ai-head{padding:12px 14px}
   .ai-body{padding:12px}
   .user-menu{top:100px;right:10px;width:min(290px,calc(100vw - 20px));max-height:calc(100vh - 112px);overflow-y:auto}
 }
+.act-btns{flex-wrap:wrap}
+.sidebar-top,.sidebar-backdrop{display:none}
+@media(max-width:900px){
+  .sidebar{padding-top:calc(12px + env(safe-area-inset-top))}
+  .sidebar-top{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 10px 10px;margin-bottom:4px;border-bottom:1px solid var(--line);position:sticky;top:-12px;background:var(--bg2);z-index:2}
+  .sidebar-top-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.14em}
+  .sidebar-close{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:18px;display:grid;place-items:center;cursor:pointer}
+  .sidebar-close:active{transform:scale(.94)}
+  .sidebar-backdrop{display:block;position:fixed;inset:0;z-index:1499;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .sidebar-backdrop.show{opacity:1;pointer-events:auto}
+}
+.install-btn{display:none}
+.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.oc-btn{padding:16px 10px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);color:var(--text);font-weight:700;font-size:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all var(--tr)}
+.oc-btn span{font-size:26px}
+.oc-btn.sel{border-color:var(--a);background:rgba(255,140,66,.12);box-shadow:0 0 0 2px rgba(255,140,66,.25)}
+.wq-bar{height:6px;border-radius:99px;background:var(--panel3);overflow:hidden}.wq-bar i{display:block;height:100%;background:#25d366;transition:width .3s}
+.prop-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.prop-doc{background:#fff;color:#1a1a1a;border-radius:12px;padding:26px 24px;font-size:13px;line-height:1.6;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.prop-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:3px solid #ff6b1a;padding-bottom:14px;margin-bottom:18px}
+.prop-brand{font-weight:800;font-size:18px}.prop-by{font-size:11px;color:#777}
+.prop-tag{font-weight:800;color:#ff6b1a;letter-spacing:.1em}
+.prop-for{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.1em}
+.prop-client{font-size:20px;font-weight:800}.prop-sub{font-size:11px;color:#777}
+.prop-h{font-weight:800;color:#ff6b1a;margin:18px 0 6px;font-size:13px}
+.prop-doc ul,.prop-doc ol{padding-left:20px;margin:0}.prop-doc li{margin:3px 0}
+.prop-price{display:flex;justify-content:space-between;gap:10px;background:#faf5ee;border-left:4px solid #ff6b1a;border-radius:8px;padding:14px;margin-top:16px}
+.prop-amt{font-size:22px;font-weight:800}
+@media(max-width:900px){.prop-grid{grid-template-columns:1fr}.oc-btn{padding:14px 8px}}
+.btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
+.btn-gmail:hover{background:#f6f8fc;border-color:#ea4335}
+.tag-cold{background:rgba(148,163,184,.15);color:var(--muted)}
+.lb-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.lb-row:last-child{border-bottom:none}
+.empty-mini{color:var(--muted);font-size:12px;padding:10px 0;text-align:center}
 </style>
 </head>
 <body>
@@ -672,6 +721,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="logo-wrap">
     <div class="logo-icon">🎯</div>
     <div class="logo-text">We<span>Deploy</span></div>
+    <span id="versionBadge" style="font-size:10px;color:var(--muted);background:var(--panel3);padding:2px 7px;border-radius:99px;margin-left:6px">v9.3</span>
   </div>
   <div class="topbar-sep"></div>
   <div class="topbar-search">
@@ -698,7 +748,9 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 </header>
 
 <div class="body">
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 <aside class="sidebar" id="sidebar">
+  <div class="sidebar-top"><span class="sidebar-top-title">Menu</span><button class="sidebar-close" onclick="closeSidebar()" title="Close menu" aria-label="Close menu">✕</button></div>
   <div class="sidebar-section">Main</div>
   <button class="nav-btn active" data-view="dashboard" onclick="sv('dashboard')"><div class="nav-icon">📊</div>Dashboard</button>
   <button class="nav-btn" data-view="leads" onclick="sv('leads')"><div class="nav-icon">🏢</div>Lead Finder<span class="nav-badge" id="navLeadCount">247</span></button>
@@ -710,6 +762,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <button class="nav-btn" data-view="email" onclick="sv('email')"><div class="nav-icon">📧</div>Email Templates</button>
   <div class="sidebar-section">Business Tools</div>
   <button class="nav-btn" data-view="invoice" id="navInvoice" onclick="sv('invoice')"><div class="nav-icon">🧾</div>Invoice Builder<span class="nav-badge purple" id="invBadge">👑</span></button>
+  <button class="nav-btn" data-view="proposal" onclick="sv('proposal')"><div class="nav-icon">📄</div>Proposals</button>
   <button class="nav-btn" data-view="earnings" onclick="sv('earnings')"><div class="nav-icon">💰</div>Earnings<span class="nav-badge green">$</span></button>
   <button class="nav-btn" data-view="crm" onclick="sv('crm')"><div class="nav-icon">🗂</div>CRM Notes</button>
   <button class="nav-btn" data-view="analytics" onclick="sv('analytics')"><div class="nav-icon">📈</div>Analytics</button>
@@ -748,18 +801,18 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="scroll-area">
     <div id="dashAnn" style="display:none"></div>
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon">🏢</div><span class="stat-change up">↑ 12%</span></div><div class="stat-val" id="dsTotal">247</div><div class="stat-label">Total Leads</div></div>
-      <div class="stat-card red"><div class="stat-top"><div class="stat-icon">🚫</div><span class="stat-change up">↑ 8%</span></div><div class="stat-val" id="dsNW">89</div><div class="stat-label">No Website</div></div>
-      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">⚠️</div><span class="stat-change up">↑ 21%</span></div><div class="stat-val" id="dsOD">134</div><div class="stat-label">Outdated Sites</div></div>
-      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">📞</div><span class="stat-change up">↑ 5%</span></div><div class="stat-val" id="dsContacted">18</div><div class="stat-label">Contacted</div></div>
-      <div class="stat-card purple"><div class="stat-top"><div class="stat-icon">🧾</div><span class="stat-change up">↑ 33%</span></div><div class="stat-val">6</div><div class="stat-label">Invoices Sent</div></div>
-      <div class="stat-card teal"><div class="stat-top"><div class="stat-icon">💰</div><span class="stat-change up">↑ 18%</span></div><div class="stat-val">$14.2k</div><div class="stat-label">Revenue Pipeline</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon">💬</div><span class="stat-change up">↑ 45%</span></div><div class="stat-val">31</div><div class="stat-label">WhatsApp Sent</div></div>
-      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">✅</div><span class="stat-change up">↑ 9%</span></div><div class="stat-val">4</div><div class="stat-label">Deals Closed</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon">🏢</div><span class="stat-change up" id="dcTotal" style="display:none"></span></div><div class="stat-val" id="dsTotal">0</div><div class="stat-label">Total Leads</div></div>
+      <div class="stat-card red"><div class="stat-top"><div class="stat-icon">🚫</div><span class="stat-change up" id="dcNW" style="display:none"></span></div><div class="stat-val" id="dsNW">0</div><div class="stat-label">No Website</div></div>
+      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">⚠️</div><span class="stat-change up" id="dcOD" style="display:none"></span></div><div class="stat-val" id="dsOD">0</div><div class="stat-label">Outdated Sites</div></div>
+      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">📞</div><span class="stat-change up" id="dcContacted" style="display:none"></span></div><div class="stat-val" id="dsContacted">0</div><div class="stat-label">Contacted</div></div>
+      <div class="stat-card purple"><div class="stat-top"><div class="stat-icon">🧾</div><span class="stat-change up" id="dcInv" style="display:none"></span></div><div class="stat-val" id="dsInv">0</div><div class="stat-label">Invoices Sent</div></div>
+      <div class="stat-card teal"><div class="stat-top"><div class="stat-icon">💰</div><span class="stat-change up" id="dcPipe" style="display:none"></span></div><div class="stat-val" id="dsPipe">0</div><div class="stat-label">Open Pipeline</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon">💬</div><span class="stat-change up" id="dcWA" style="display:none"></span></div><div class="stat-val" id="dsWA">0</div><div class="stat-label">WhatsApp Sent</div></div>
+      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">✅</div><span class="stat-change up" id="dcWon" style="display:none"></span></div><div class="stat-val" id="dsWon">0</div><div class="stat-label">Deals Closed</div></div>
     </div>
     <div class="hot-lead" id="hotLeadCard"></div>
     <div class="widget" id="followUpCard" style="display:none">
-      <div class="widget-head"><h3>⏰ Follow-ups Due</h3><span class="tag tag-hot" id="followUpCount"></span></div>
+      <div class="widget-head"><h3>⏰ Follow-ups Due</h3><div style="display:flex;gap:6px;align-items:center"><button class="btn btn-ghost btn-sm" id="reminderBtn" onclick="enableReminders()">🔔 Turn on reminders</button><span class="tag tag-hot" id="followUpCount"></span></div></div>
       <div class="widget-body" id="followUpBody"></div>
     </div>
     <div class="dash-grid">
@@ -768,46 +821,35 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div class="widget-body">
           <div class="donut-wrap">
             <div class="donut">
-              <svg viewBox="0 0 100 100" width="100" height="100">
+              <svg viewBox="0 0 100 100" width="100" height="100" id="dashDonut">
                 <circle class="donut-bg" cx="50" cy="50" r="40"/>
-                <circle class="donut-seg" cx="50" cy="50" r="40" stroke="#f87171" stroke-dasharray="90 251.2" stroke-dashoffset="0"/>
-                <circle class="donut-seg" cx="50" cy="50" r="40" stroke="#f6c85f" stroke-dasharray="136 251.2" stroke-dashoffset="-90"/>
-                <circle class="donut-seg" cx="50" cy="50" r="40" stroke="#52c97a" stroke-dasharray="25 251.2" stroke-dashoffset="-226"/>
               </svg>
-              <div class="donut-lbl"><div class="donut-num">247</div><div class="donut-sub">Leads</div></div>
+              <div class="donut-lbl"><div class="donut-num" id="donutNum">0</div><div class="donut-sub">Leads</div></div>
             </div>
-            <div class="legend">
-              <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><div class="legend-name">No Website</div><div class="legend-val">89</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div><div class="legend-name">Outdated</div><div class="legend-val">134</div></div>
-              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div><div class="legend-name">Prospects</div><div class="legend-val">24</div></div>
-            </div>
+            <div class="legend" id="dashLegend"></div>
           </div>
         </div>
       </div>
       <div class="widget">
-        <div class="widget-head"><h3>Top Industries</h3></div>
+        <div class="widget-head"><h3>Top Industries</h3><span style="font-size:12px;color:var(--muted)">in your leads</span></div>
         <div class="widget-body">
-          <div class="mini-bar-wrap">
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Restaurants & Food</span><span style="font-weight:700">68</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:78%;background:var(--a)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Home Services</span><span style="font-weight:700">54</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:62%;background:var(--blue)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Health & Wellness</span><span style="font-weight:700">41</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:47%;background:var(--green)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Auto Services</span><span style="font-weight:700">35</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:40%;background:var(--purple)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Beauty & Grooming</span><span style="font-weight:700">28</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:32%;background:var(--pink)"></div></div></div>
-          </div>
+          <div class="mini-bar-wrap" id="dashIndustries"></div>
         </div>
       </div>
     </div>
+    <div class="widget" style="margin-bottom:18px">
+      <div class="widget-head"><h3>🎯 This Month's Goals</h3><button class="btn btn-ghost btn-sm" onclick="openGoals()">✏️ Edit</button></div>
+      <div class="widget-body" id="goalsBody"></div>
+    </div>
+    <div class="widget" style="margin-bottom:18px">
+      <div class="widget-head"><h3>🏆 Leaderboard</h3><span style="font-size:12px;color:var(--muted)">This week</span></div>
+      <div class="widget-body" id="leaderboardBody"></div>
+    </div>
     <div class="widget">
       <div class="widget-head"><h3>Recent Activity</h3><button class="btn btn-ghost btn-sm" onclick="sv('crm')">View All</button></div>
-      <div class="widget-body">
-        <div class="act-item"><div class="act-dot" style="background:var(--a)"></div><div class="act-text">🧾 Invoice <strong>#INV-006</strong> sent to <strong>Mike's Auto Repair</strong> — $2,400</div><div class="act-time">5m ago</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--green)"></div><div class="act-text">💬 WhatsApp message sent to <strong>Sunrise Bakery</strong> — Dubai 🇦🇪</div><div class="act-time">18m ago</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--blue)"></div><div class="act-text">🔍 Search completed — <strong>43 leads</strong> found in London, UK 🇬🇧</div><div class="act-time">1h ago</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--red)"></div><div class="act-text">📞 Cold call script generated for <strong>Green Thumb Landscaping</strong></div><div class="act-time">2h ago</div></div>
-        <div class="act-item"><div class="act-dot" style="background:var(--purple)"></div><div class="act-text">✅ Deal closed — <strong>FastFix Plumbing</strong> signed for $2,600</div><div class="act-time">3h ago</div></div>
-      </div>
+      <div class="widget-body" id="dashActivity"></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px">
+    <div class="quick-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px">
       <div style="background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:all var(--tr)" onclick="sv('search')" onmouseover="this.style.borderColor='var(--a)'" onmouseout="this.style.borderColor='var(--line)'">
         <div style="font-size:24px;margin-bottom:8px">🔍</div>
         <div style="font-weight:700;font-size:13px;margin-bottom:3px">Find Leads</div>
@@ -829,7 +871,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div style="font-size:11px;color:var(--muted)">Create & send</div>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • v9.1</div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v9.3</span></div>
   </div>
 </div>
 
@@ -838,6 +880,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="page-head-left"><h1>Lead Finder</h1><p>Businesses without websites or with outdated sites worldwide</p></div>
     <div class="page-head-right">
       <div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div>
+      <button class="btn btn-wa btn-sm" onclick="openWaQueue()">🚀 WhatsApp Queue</button>
       <button class="btn btn-ghost btn-sm" onclick="openM('exportModal')">⬇ Export CSV</button>
       <button class="btn btn-primary btn-sm" onclick="sv('search')">+ Find More Leads</button>
     </div>
@@ -984,6 +1027,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <option>Restaurants & Food</option><option>Home Services</option><option>Auto Services</option>
         <option>Health & Wellness</option><option>Beauty & Grooming</option>
       </select>
+      <button class="btn btn-wa btn-sm" onclick="openWaQueue()">🚀 Queue</button>
       <button class="btn btn-primary btn-sm" onclick="renderWA()">🔄 Refresh</button>
     </div>
   </div>
@@ -1108,7 +1152,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         </div>
         <div class="inv-section">
           <h3>💳 Payment Instructions</h3>
-          <div class="form-group"><label>Bank details and payment links</label><textarea id="inv-payment" rows="5" placeholder="Example:\nBank: Example Bank\nAccount name: Your Business\nAccount number: 123456789\nSWIFT/BIC: EXAMPXXX\nPayPal: https://paypal.me/yourname\nWise: https://wise.com/pay/me/yourname" style="width:100%;margin-top:4px;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;resize:vertical"></textarea></div>
+          <div class="form-group"><label>Bank details and payment links</label><textarea id="inv-payment" rows="5" placeholder="Example:&#10;Bank: Example Bank&#10;Account name: Your Business&#10;Account number: 123456789&#10;SWIFT/BIC: EXAMPXXX&#10;PayPal: https://paypal.me/yourname&#10;Wise: https://wise.com/pay/me/yourname" style="width:100%;margin-top:4px;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;resize:vertical"></textarea></div>
           <div class="form-row" style="margin-top:10px">
             <div class="form-group"><label>Stripe Payment Link</label><input id="inv-stripe" type="url" placeholder="https://buy.stripe.com/…"></div>
             <div class="form-group"><label>PayPal Checkout Link</label><input id="inv-paypal" type="url" placeholder="https://paypal.me/… or checkout link"></div>
@@ -1120,7 +1164,10 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="previewInvoice()" style="flex:1">👁 Preview & Download</button>
           <button class="btn btn-green" onclick="sendInvoiceWA()" style="flex:1">💬 Send via WhatsApp</button>
-          <button class="btn btn-blue" onclick="emailInvoice()" style="flex:1">📧 Send Email</button>
+          <button class="btn btn-gmail" onclick="gmailInvoice()" style="flex:1">✉️ Send via Gmail</button>
+          <button class="btn btn-purple" onclick="shareInvoicePDF()" style="flex:1">📤 Share PDF</button>
+          <button class="btn btn-ghost" onclick="downloadInvoicePDF()" style="flex:1">⬇ Download PDF</button>
+          <button class="btn btn-blue" onclick="emailInvoice()" style="flex:1">📧 Other Email App</button>
         </div>
       </div>
     </div>
@@ -1158,8 +1205,8 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   </div>
   <div class="scroll-area">
     <div class="stats-grid">
-      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">💰</div><span class="stat-change up">↑ 28%</span></div><div class="stat-val" id="er-total">$0</div><div class="stat-label">Total Earned</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon">📅</div><span class="stat-change up">↑ 18%</span></div><div class="stat-val" id="er-month">$0</div><div class="stat-label">This Month</div></div>
+      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">💰</div></div><div class="stat-val" id="er-total">$0</div><div class="stat-label">Total Earned</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon">📅</div></div><div class="stat-val" id="er-month">$0</div><div class="stat-label">This Month</div></div>
       <div class="stat-card red"><div class="stat-top"><div class="stat-icon">⏳</div><span class="stat-change up">chasing</span></div><div class="stat-val" id="er-out">$0</div><div class="stat-label">Outstanding</div></div>
       <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">📊</div><span class="stat-change up">avg</span></div><div class="stat-val" id="er-avg">$0</div><div class="stat-label">Avg Deal Size</div></div>
     </div>
@@ -1192,7 +1239,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         </table>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • v9.1</div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v9.3</span></div>
   </div>
 </div>
 
@@ -1227,36 +1274,75 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   </div>
   <div class="scroll-area">
     <div class="stats-grid">
-      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">💰</div><span class="stat-change up">↑ 28%</span></div><div class="stat-val">$14.2k</div><div class="stat-label">Total Pipeline Value</div></div>
-      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">📞</div><span class="stat-change up">↑ 15%</span></div><div class="stat-val">73</div><div class="stat-label">Calls Made</div></div>
-      <div class="stat-card purple"><div class="stat-top"><div class="stat-icon">💬</div><span class="stat-change up">↑ 45%</span></div><div class="stat-val">31</div><div class="stat-label">WhatsApp Sent</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon">📧</div><span class="stat-change up">↑ 11%</span></div><div class="stat-val">58</div><div class="stat-label">Emails Sent</div></div>
+      <div class="stat-card green"><div class="stat-top"><div class="stat-icon">💰</div><span class="stat-change up" id="acPipe" style="display:none"></span></div><div class="stat-val" id="anPipe">0</div><div class="stat-label">Total Pipeline Value</div></div>
+      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">📞</div><span class="stat-change up" id="acCalls" style="display:none"></span></div><div class="stat-val" id="anCalls">0</div><div class="stat-label">Calls Made</div></div>
+      <div class="stat-card purple"><div class="stat-top"><div class="stat-icon">💬</div><span class="stat-change up" id="acWA" style="display:none"></span></div><div class="stat-val" id="anWA">0</div><div class="stat-label">WhatsApp Sent</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon">📧</div><span class="stat-change up" id="acEmail" style="display:none"></span></div><div class="stat-val" id="anEmail">0</div><div class="stat-label">Emails Sent</div></div>
     </div>
     <div class="dash-grid">
       <div class="widget">
         <div class="widget-head"><h3>Conversion Funnel</h3></div>
-        <div class="widget-body">
-          <div class="mini-bar-wrap">
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Leads Found</span><span style="font-weight:700">247</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:var(--blue)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Contacted</span><span style="font-weight:700">73</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:29%;background:var(--a)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Interested</span><span style="font-weight:700">22</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:9%;background:var(--yellow)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Proposal Sent</span><span style="font-weight:700">8</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:3%;background:var(--purple)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>Closed Won</span><span style="font-weight:700">4</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:1.6%;background:var(--green)"></div></div></div>
-          </div>
-        </div>
+        <div class="widget-body"><div class="mini-bar-wrap" id="anFunnel"></div></div>
       </div>
       <div class="widget">
-        <div class="widget-head"><h3>Best Performing Countries</h3></div>
-        <div class="widget-body">
-          <div class="mini-bar-wrap">
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>🇺🇸 United States</span><span style="font-weight:700">82</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:82%;background:var(--blue)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>🇬🇧 United Kingdom</span><span style="font-weight:700">54</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:54%;background:var(--a)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>🇦🇺 Australia</span><span style="font-weight:700">38</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:38%;background:var(--green)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>🇦🇪 UAE</span><span style="font-weight:700">29</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:29%;background:var(--yellow)"></div></div></div>
-            <div class="mini-bar-item"><div class="mini-bar-top"><span>🇨🇦 Canada</span><span style="font-weight:700">24</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:24%;background:var(--purple)"></div></div></div>
-          </div>
-        </div>
+        <div class="widget-head"><h3>Top Countries</h3><span style="font-size:12px;color:var(--muted)">leads · contacted</span></div>
+        <div class="widget-body"><div class="mini-bar-wrap" id="anCountries"></div></div>
       </div>
+    </div>
+    <div class="widget" style="margin-bottom:18px">
+      <div class="widget-head"><h3>📞 Call Outcomes</h3><span style="font-size:12px;color:var(--muted)">what happened on your calls</span></div>
+      <div class="widget-body"><div class="mini-bar-wrap" id="anOutcomes"></div></div>
+    </div>
+    <div class="widget">
+      <div class="widget-head"><h3>Outreach — last 7 days</h3><span style="font-size:12px;color:var(--muted)">calls · WhatsApp · emails</span></div>
+      <div class="widget-body"><div class="mini-bar-wrap" id="anDaily"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-proposal">
+  <div class="page-head">
+    <div class="page-head-left"><h1>📄 Proposals</h1><p>Send a clean one-page proposal before the invoice</p></div>
+    <div class="page-head-right"><div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div></div>
+  </div>
+  <div class="scroll-area">
+    <div class="prop-grid">
+      <div class="inv-section" oninput="renderProposalPreview()" onchange="renderProposalPreview()">
+        <h3>👤 Client</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Business name</label><input id="pr-client" placeholder="Sunrise Bakery"></div>
+          <div class="form-group"><label>Contact person</label><input id="pr-person" placeholder="Owner's name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>WhatsApp / phone</label><input id="pr-phone" placeholder="+264 81 ..."></div>
+          <div class="form-group"><label>Email</label><input id="pr-email" type="email" placeholder="owner@business.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Industry</label><select id="pr-ind"></select></div>
+          <div class="form-group"><label>City</label><input id="pr-city" placeholder="Windhoek"></div>
+        </div>
+        <h3 style="margin-top:8px">📦 Offer</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Package name</label><input id="pr-package"></div>
+          <div class="form-group"><label>Price (one-time)</label><input id="pr-price" type="number" min="0" step="50"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Delivery</label><input id="pr-delivery"></div>
+          <div class="form-group"><label>Valid until</label><input id="pr-valid" type="date"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:10px"><label>What's included (one per line)</label><textarea id="pr-includes" rows="6"></textarea></div>
+        <div class="form-group" style="margin-bottom:12px"><label>Notes (optional)</label><textarea id="pr-notes" rows="2" placeholder="e.g. 50% deposit to start, balance on launch"></textarea></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-primary" style="flex:1" onclick="shareProposal()">📤 Share PDF</button>
+          <button class="btn btn-ghost" style="flex:1" onclick="downloadProposal()">⬇ Download PDF</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-green" style="flex:1" onclick="waProposal()">💬 Send via WhatsApp</button>
+          <button class="btn btn-gmail" style="flex:1" onclick="gmailProposal()">✉️ Send via Gmail</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Sending a proposal moves the deal to <strong>Proposal Sent</strong> in your Pipeline. Currency follows your Invoice settings.</div>
+      </div>
+      <div id="pr-preview"></div>
     </div>
   </div>
 </div>
@@ -1386,9 +1472,15 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
           <button class="btn btn-ghost btn-sm" id="m-inv-lock" style="display:none" onclick="openM('ownerUnlockModal')">🔒 Invoice — owner only</button>
           <button class="btn btn-ghost btn-sm" onclick="saveCurLead()">⭐ Save Lead</button>
         </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="addToPipeline(state.curLead.id)">📋 Add to Pipeline</button>
+          <button class="btn btn-ghost btn-sm" onclick="openProposalFor()">📄 Proposal</button>
+          <button class="btn btn-ghost btn-sm" onclick="openOutcome(state.curLead.id)">📝 Log call result</button>
+        </div>
         <div style="display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap">
           <input type="date" id="m-follow" class="filter-input" style="width:auto">
           <button class="btn btn-ghost btn-sm" onclick="setFollowUp()">⏰ Set Follow-up</button>
+          <button class="btn btn-ghost btn-sm" onclick="addFollowToCalendar()">📅 Add to Calendar</button>
           <span id="m-follow-info" style="font-size:11px;color:var(--muted)"></span>
         </div>
       </div>
@@ -1407,6 +1499,67 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
       <button class="btn btn-wa" id="m-wa-btn">💬 WhatsApp</button>
       <button class="btn btn-ghost" onclick="closeM('leadModal')">✕ Close</button>
     </div>
+  </div>
+</div>
+
+<!-- CALL OUTCOME -->
+<div class="modal-overlay" id="outcomeModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head"><div><h2>📞 How did the call go?</h2><div style="font-size:12px;color:var(--muted);margin-top:3px"><strong id="oc-name"></strong> <span id="oc-sub"></span></div></div><div class="modal-close" onclick="closeM('outcomeModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="oc-grid">
+        <button class="oc-btn" onclick="pickOutcome(this,'no-answer')"><span>📵</span>No answer</button>
+        <button class="oc-btn" onclick="pickOutcome(this,'callback')"><span>⏰</span>Call back</button>
+        <button class="oc-btn" onclick="pickOutcome(this,'interested')"><span>🔥</span>Interested</button>
+        <button class="oc-btn" onclick="pickOutcome(this,'not-interested')"><span>✋</span>Not interested</button>
+      </div>
+      <div class="form-group" id="oc-cb-row" style="display:none;margin-bottom:10px"><label>Follow up on</label><input type="date" id="oc-date"></div>
+      <div class="form-group"><label>Quick note (optional)</label><textarea id="oc-note" rows="2" placeholder="e.g. Owner is Maria, busy until 3pm"></textarea></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">🔥 Interested → marked Hot + added to Pipeline • ✋ Not interested → marked Cold</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveOutcome()">✓ Save</button>
+      <button class="btn btn-ghost" onclick="closeM('outcomeModal')">Skip</button>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP QUEUE -->
+<div class="modal-overlay" id="waQueueModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><h2>🚀 WhatsApp Queue <span id="wq-progress" style="font-size:13px;color:var(--muted);font-weight:600;margin-left:6px"></span></h2><div class="modal-close" onclick="closeM('waQueueModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:12px"><label>Who to message</label>
+        <select id="wq-src" onchange="buildWaQueue()">
+          <option value="hot">🔥 Hot leads</option>
+          <option value="warm">🟡 Warm leads</option>
+          <option value="saved">⭐ Saved leads</option>
+          <option value="due">⏰ Follow-ups due</option>
+          <option value="fresh">🚫 Best no-website leads not contacted yet</option>
+          <option value="selected">☑️ Leads I ticked in Lead Finder</option>
+        </select>
+      </div>
+      <div id="wq-body"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px">Tap Send → WhatsApp opens → press send → come back here for the next one.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-wa" onclick="waqSend()">💬 Send &amp; Next</button>
+      <button class="btn btn-ghost" onclick="waqSkip()">⏭ Skip</button>
+      <button class="btn btn-ghost" onclick="closeM('waQueueModal')">✕ Stop</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOALS -->
+<div class="modal-overlay" id="goalsModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h2>🎯 Monthly Goals</h2><div class="modal-close" onclick="closeM('goalsModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label>Calls / month</label><input id="gl-calls" type="number" min="0"></div><div class="form-group"><label>WhatsApp / month</label><input id="gl-wa" type="number" min="0"></div></div>
+      <div class="form-row"><div class="form-group"><label>Deals closed / month</label><input id="gl-deals" type="number" min="0"></div><div class="form-group"><label>Revenue / month</label><input id="gl-rev" type="number" min="0" placeholder="e.g. 5000"></div></div>
+      <div class="form-group"><label>Typical deal value (used for new pipeline cards)</label><input id="gl-deal" type="number" min="0"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="saveGoals()">✓ Save goals</button><button class="btn btn-ghost" onclick="closeM('goalsModal')">Cancel</button></div>
   </div>
 </div>
 
@@ -1561,7 +1714,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
       <div class="about-hero">
         <div class="about-logo">🎯</div>
         <div class="about-name">We<span>Deploy</span></div>
-        <div class="about-version">Lead Finder Pro • v9.1</div>
+        <div class="about-version">Lead Finder Pro • <span class="appVer">v9.3</span></div>
       </div>
       <div class="about-credit">
         <div class="ac-role">Engineered by</div>
@@ -1609,22 +1762,22 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="modal" style="max-width:470px">
     <div class="modal-head"><h2>📱 Install We Deploy on Your Phone</h2><div class="modal-close" onclick="closeM('installModal')" title="Close">✕</div></div>
     <div class="modal-body">
+      <button class="btn btn-primary install-btn" style="width:100%;justify-content:center;margin-bottom:14px" onclick="installApp()">📲 Install We Deploy now</button>
       <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>🤖 Android (Chrome):</strong></p>
-      <div class="inst-step"><div class="inst-num">1</div><p>Send this file to your phone (WhatsApp yourself / email / Drive)</p></div>
-      <div class="inst-step"><div class="inst-num">2</div><p>Open the file in <strong>Chrome</strong></p></div>
-      <div class="inst-step"><div class="inst-num">3</div><p>Tap the <strong>⋮ menu</strong> → <strong>"Add to Home screen"</strong> → confirm. It launches full-screen like a real app 🎉</p></div>
+      <div class="inst-step"><div class="inst-num">1</div><p>Open We Deploy in <strong>Chrome</strong></p></div>
+      <div class="inst-step"><div class="inst-num">2</div><p>Tap the <strong>⋮ menu</strong> → <strong>"Install app"</strong> (or "Add to Home screen" → <strong>Install</strong>)</p></div>
+      <div class="inst-step"><div class="inst-num">3</div><p>It opens full-screen from your home screen, like a real app 🎉</p></div>
       <div style="height:14px"></div>
       <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>🍏 iPhone (Safari):</strong></p>
-      <div class="inst-step"><div class="inst-num">1</div><p>Get the file onto your iPhone (WhatsApp/email/Files)</p></div>
-      <div class="inst-step"><div class="inst-num">2</div><p>Open it in <strong>Safari</strong></p></div>
-      <div class="inst-step"><div class="inst-num">3</div><p>Tap <strong>Share</strong> → scroll down → <strong>"Add to Home Screen"</strong></p></div>
+      <div class="inst-step"><div class="inst-num">1</div><p>Open We Deploy in <strong>Safari</strong></p></div>
+      <div class="inst-step"><div class="inst-num">2</div><p>Tap <strong>Share</strong> → scroll down → <strong>"Add to Home Screen"</strong></p></div>
       <div style="height:14px"></div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>💻 Desktop:</strong></p>
-      <div class="inst-step"><div class="inst-num">1</div><p>Keep the file saved and double-click it — opens instantly in your browser</p></div>
-      <div class="invoice-notes" style="margin-top:16px">💡 A true app-store style install (offline, auto-updating) requires hosting on a domain — the natural next step when We Deploy goes online. Move your data between devices with 💾 Backup &amp; Restore.</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>💻 Desktop (Chrome / Edge):</strong></p>
+      <div class="inst-step"><div class="inst-num">1</div><p>Click the <strong>install icon</strong> at the right of the address bar</p></div>
+      <div class="invoice-notes" style="margin-top:16px">💡 Your leads and settings are stored per device. Use 💾 Backup &amp; Restore to move them between your phone and computer.</div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="backupData()">💾 Backup my data first</button>
+      <button class="btn btn-primary" onclick="backupData()">💾 Backup my data</button>
       <button class="btn btn-ghost" onclick="closeM('installModal')">✕ Close</button>
     </div>
   </div>
@@ -1638,7 +1791,10 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="printInvoice()">🖨️ Print / Save PDF</button>
       <button class="btn btn-wa" onclick="sendInvoiceWA()">💬 Send via WhatsApp</button>
-      <button class="btn btn-blue" onclick="emailInvoice()">📧 Email Invoice</button>
+      <button class="btn btn-gmail" onclick="gmailInvoice()">✉️ Send via Gmail</button>
+      <button class="btn btn-purple" onclick="shareInvoicePDF()">📤 Share PDF</button>
+      <button class="btn btn-ghost" onclick="downloadInvoicePDF()">⬇ Download PDF</button>
+      <button class="btn btn-blue" onclick="emailInvoice()">📧 Other Email App</button>
       <button class="btn btn-ghost" onclick="closeM('invoiceModal')">✕ Close</button>
     </div>
   </div>
@@ -1964,6 +2120,8 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
+// ===== APP VERSION (change this when you release updates) =====
+const APP_VERSION='9.3';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function isOwner(){
  if(!CUR)return false;
@@ -2151,29 +2309,10 @@ const OWNERS=["Joseph","Grace","Daniel","Fatima","Amina","Peter","Linda","Sam","
 const STREETS=["Main Road","High Street","Independence Avenue","Market Street","Church Road","Station Road","Park Lane","Nelson Mandela Avenue","River Road","Union Avenue"];
 let ID=1000;
 function isoShift(days){return new Date(Date.now()+days*864e5).toISOString().slice(0,10)}
-const defaultInvoices=()=>[{num:'INV-006',to:"Mike's Auto Repair",total:'$2,400.00',status:'paid',date:'12 May 2025'},{num:'INV-005',to:'Sunrise Bakery',total:'$1,800.00',status:'paid',date:'2 May 2025'},{num:'INV-004',to:'FastFix Plumbing',total:'$2,600.00',status:'paid',date:'21 Apr 2025'}];
-const defaultPIPE=()=>[
- {id:'P1',s:1,name:'Sunrise Bakery',ind:'Restaurants & Food',sub:'Dubai 🇦🇪',val:'$1,800'},
- {id:'P2',s:2,name:'Windhoek Grill House',ind:'Restaurants & Food',sub:'Windhoek 🇳🇦',val:'$2,200'},
- {id:'P3',s:0,name:'Kalahari Plumbing',ind:'Home Services',sub:'Windhoek 🇳🇦',val:'$1,500'},
- {id:'P4',s:3,name:'Lekki Fashion Boutique',ind:'Retail & Shops',sub:'Lagos 🇳🇬',val:'$2,400'},
- {id:'P5',s:5,name:'FastFix Plumbing',ind:'Home Services',sub:'Cape Town 🇿🇦',val:'$2,600'},
- {id:'P6',s:4,name:'Mama Amina Restaurant',ind:'Restaurants & Food',sub:'Nairobi 🇰🇪',val:'$1,900'},
- {id:'P7',s:0,name:'Etosha Auto Repair',ind:'Auto Services',sub:'Oshakati 🇳🇦',val:'$1,750'},
- {id:'P8',s:1,name:'Bondi Beauty Salon',ind:'Beauty & Grooming',sub:'Sydney 🇦🇺',val:'$1,200'}
-];
-const defaultCRMS=()=>[
- {name:'Sunrise Bakery',meta:'2 days ago • WhatsApp • Dubai 🇦🇪',tag:'Hot',note:'Owner Ayesha interested in the full package: menu site + WhatsApp ordering. Budget ~$1,800. Wants mock-up by Friday — follow up Thursday 10am.',next:'Send mock-up Thursday'},
- {name:'Windhoek Grill House',meta:'5 days ago • Cold call • Windhoek 🇳🇦',tag:'Warm',note:'Spoke to the manager — owner travels a lot, best reached via WhatsApp. Slow season = perfect timing for a site relaunch.',next:'WhatsApp message today'},
- {name:'FastFix Plumbing',meta:'1 week ago • Email • Cape Town 🇿🇦',tag:'Won',note:'DEAL CLOSED 🎉 Signed $2,600 for site + 6 months maintenance. Invoice INV-004 paid. Ask for referrals.',next:'Ask for referral'},
- {name:'Lekki Fashion Boutique',meta:'2 weeks ago • Cold call • Lagos 🇳🇬',tag:'Follow-up',note:'Very price-sensitive. Suggested starter package at $990. Asked about a payment plan — consider 2-installment option.',next:'Send payment plan offer'}
-];
-const defaultPayments=()=>[
- {client:"Mike's Auto Repair",amount:2400,date:isoShift(-4),note:'Website + SEO package'},
- {client:'FastFix Plumbing',amount:2600,date:isoShift(-26),note:'Website + maintenance'},
- {client:'Sunrise Bakery',amount:1800,date:isoShift(-48),note:'Menu site + ordering'},
- {client:'Mama Amina Restaurant',amount:1900,date:isoShift(-70),note:'Restaurant site'}
-];
+const defaultInvoices=()=>[];
+const defaultPIPE=()=>[];
+const defaultCRMS=()=>[];
+const defaultPayments=()=>[];
 const state={view:'dashboard',leads:[],results:[],notes:{},lastSearch:null,q:'',seg:'all',leadPage:1,waMsgs:[],emails:[],curLead:null,invoices:defaultInvoices()};
 let PIPE=defaultPIPE(),CRMS=defaultCRMS();
 const scSel={country:null,city:null},lcSel={country:null,city:null};
@@ -2465,12 +2604,13 @@ function saveUD(){
  UD.invoices=state.invoices;
  UD.pipeline=PIPE;
  UD.crms=CRMS;
+ UD.statusTags={};state.leads.forEach(function(l){if(l.statusTag)UD.statusTags[l.id]=l.statusTag});
  lsSet('wd_data_'+CUR.id,JSON.stringify(UD));
 }
 function backupData(){
  if(!CUR||!UD)return showToast('Nothing to back up yet','info');
  const pack={app:'We Deploy',by:'Lameero Mendoza',user:{name:CUR.name,email:CUR.email,biz:CUR.biz},savedAt:new Date().toLocaleString(),
-  myLeads:state.leads.filter(l=>l.added),savedIds:state.leads.filter(l=>l.saved).map(l=>l.id),contactedIds:state.leads.filter(l=>l.contacted).map(l=>l.id),followups:UD.followups||{},deletedIds:UD.deletedIds,notes:state.notes,invoices:state.invoices,pipeline:PIPE,crms:CRMS,payments:UD.payments||[],target:UD.target||0};
+  myLeads:state.leads.filter(l=>l.added),savedIds:state.leads.filter(l=>l.saved).map(l=>l.id),contactedIds:state.leads.filter(l=>l.contacted).map(l=>l.id),followups:UD.followups||{},deletedIds:UD.deletedIds,notes:state.notes,invoices:state.invoices,pipeline:PIPE,crms:CRMS,payments:UD.payments||[],target:UD.target||0,statusTags:UD.statusTags||{},activity:UD.activity||[],outcomes:UD.outcomes||{},goals:UD.goals||null,proposals:UD.proposals||[],dealValue:UD.dealValue||0};
  const a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob([JSON.stringify(pack,null,2)],{type:'application/json'}));
  a.download='wedeploy-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -2484,8 +2624,8 @@ function restoreData(inp){
   try{
    const d=JSON.parse(reader.result);
    if(!d.app||d.app!=='We Deploy')return showToast('That file is not a We Deploy backup','error');
-   UD.myLeads=d.myLeads||[];UD.savedIds=d.savedIds||[];UD.contactedIds=d.contactedIds||[];UD.followups=d.followups||{};UD.deletedIds=d.deletedIds||[];UD.notes=d.notes||{};UD.invoices=d.invoices||null;UD.pipeline=d.pipeline||null;UD.crms=d.crms||null;UD.payments=d.payments||[];UD.target=d.target||0;
-   saveUD();bootApp();
+   UD.myLeads=d.myLeads||[];UD.savedIds=d.savedIds||[];UD.contactedIds=d.contactedIds||[];UD.followups=d.followups||{};UD.deletedIds=d.deletedIds||[];UD.notes=d.notes||{};UD.invoices=d.invoices||null;UD.pipeline=d.pipeline||null;UD.crms=d.crms||null;UD.payments=d.payments||[];UD.target=d.target||0;UD.statusTags=d.statusTags||{};UD.activity=d.activity||[];UD.outcomes=d.outcomes||{};UD.goals=d.goals||null;UD.proposals=d.proposals||[];UD.dealValue=d.dealValue||0;
+   lsSet('wd_data_'+CUR.id,JSON.stringify(UD));bootApp();
    showToast('📂 Backup restored','success');
   }catch(e){showToast('Could not read that backup file','error')}
   inp.value='';
@@ -2553,6 +2693,7 @@ function saveLogPayment(){
  if(amount<=0)return showToast('Enter an amount greater than zero','error');
  UD.payments=UD.payments||[];
  UD.payments.unshift({client:client,amount:amount,date:date,note:note});
+ logAct('payment',client+' — '+money0(amount));
  saveUD();renderEarnings();
  closeM('logPaymentModal');
  el('lp-client').value='';el('lp-amount').value='';el('lp-note').value='';
@@ -2607,7 +2748,7 @@ function renderFollowUps(){
   const overdue=diff<0,dueToday=diff===0;
   const cls=overdue?'chip-red':dueToday?'chip-orange':'chip-blue';
   const label=overdue?('⚠️ '+Math.abs(diff)+'d overdue'):dueToday?'⚡ Due today':(diff+'d left');
-  return '<div class="act-item"><div class="act-dot" style="background:'+(overdue?'var(--red)':dueToday?'var(--a)':'var(--blue)')+'"></div><div class="act-text">'+it.l.flag+' <strong>'+esc(it.l.name)+'</strong> — '+esc(it.l.city)+' <span class="chip '+cls+'" style="cursor:default">'+label+'</span></div><div class="act-btn view" title="Open lead" onclick="openLead(\''+it.l.id+'\')">👁</div></div>';
+  return '<div class="act-item"><div class="act-dot" style="background:'+(overdue?'var(--red)':dueToday?'var(--a)':'var(--blue)')+'"></div><div class="act-text">'+it.l.flag+' <strong>'+esc(it.l.name)+'</strong> — '+esc(it.l.city)+' <span class="chip '+cls+'" style="cursor:default">'+label+'</span></div><div class="act-btns" style="flex-shrink:0"><div class="act-btn" title="Add to Google Calendar" onclick="addFollowToCalendar(\''+it.l.id+'\')">📅</div><div class="act-btn save" title="Done" onclick="clearFollowUp(\''+it.l.id+'\')">✓</div><div class="act-btn view" title="Open lead" onclick="openLead(\''+it.l.id+'\')">👁</div></div></div>';
  }).join('');
  box.style.display='';
  setH('followUpBody',rows);
@@ -2716,6 +2857,8 @@ function bootApp(){
  (UD.myLeads||[]).forEach(function(l){state.leads.push(l)});
  (UD.savedIds||[]).forEach(function(id){const l=state.leads.find(function(x){return x.id===id});if(l)l.saved=true});
  (UD.contactedIds||[]).forEach(function(id){const l=state.leads.find(function(x){return x.id===id});if(l)l.contacted=true});
+ Object.keys(UD.statusTags||{}).forEach(function(id){const l=state.leads.find(function(x){return x.id===id});if(l)l.statusTag=UD.statusTags[id]});
+ UD.activity=UD.activity||[];
  state.notes=UD.notes||{};
  state.invoices=(UD.invoices&&UD.invoices.length)?UD.invoices:defaultInvoices();
  PIPE=UD.pipeline||defaultPIPE();
@@ -2728,6 +2871,8 @@ function bootApp(){
  try{renderCityList('sci')}catch(e){console.warn(e)}
  try{renderCityList('lci')}catch(e){console.warn(e)}
  try{updateStreak()}catch(e){console.warn(e)}
+ try{updateReminderBtn();setTimeout(function(){checkDueReminders(false)},3000)}catch(e){}
+ try{const vb=el('versionBadge');if(vb)vb.textContent='v'+APP_VERSION;document.querySelectorAll('.appVer').forEach(function(x){x.textContent='v'+APP_VERSION})}catch(e){}
  const t=new Date();
  setV('inv-date',t.toISOString().slice(0,10));
  setV('inv-due',new Date(Date.now()+14*864e5).toISOString().slice(0,10));
@@ -2742,6 +2887,7 @@ function sv(v){
   return;
  }
  state.view=v;
+ if(window.innerWidth<=900)closeSidebar();
  document.querySelectorAll('.view').forEach(function(x){x.classList.toggle('active',x.id==='view-'+v)});
  document.querySelectorAll('.nav-btn[data-view]').forEach(function(b){b.classList.toggle('active',b.dataset.view===v)});
  document.querySelectorAll('.topbar-pills .pill').forEach(function(p){p.classList.toggle('active',p.dataset.view===v)});
@@ -2753,8 +2899,22 @@ function sv(v){
  try{if(v==='pipeline')renderPipeline()}catch(e){}
  try{if(v==='crm')renderCRM()}catch(e){}
  try{if(v==='invoice-history')renderInvHistory()}catch(e){}
+ try{if(v==='dashboard')renderDashboard()}catch(e){console.warn(e)}
+ try{if(v==='analytics')renderAnalytics()}catch(e){console.warn(e)}
+ try{if(v==='proposal'){initProposalForm();renderProposalPreview()}}catch(e){console.warn(e)}
 }
-function toggleSidebar(){const s=el('sidebar');if(s)s.classList.toggle('open')}
+function toggleSidebar(){const s=el('sidebar');if(!s)return;const o=!s.classList.contains('open');s.classList.toggle('open',o);const b=el('sidebarBackdrop');if(b)b.classList.toggle('show',o)}
+function closeSidebar(){const s=el('sidebar');if(s)s.classList.remove('open');const b=el('sidebarBackdrop');if(b)b.classList.remove('show')}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar()});
+/* ===== INSTALL AS APP (PWA) ===== */
+let deferredInstall=null;
+if('serviceWorker' in navigator&&location.protocol==='https:'){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(e){console.warn('SW',e)})})}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstall=e;document.querySelectorAll('.install-btn').forEach(function(b){b.style.display=''})});
+window.addEventListener('appinstalled',function(){deferredInstall=null;document.querySelectorAll('.install-btn').forEach(function(b){b.style.display='none'});try{showToast('📲 We Deploy installed','success')}catch(e){}});
+function installApp(){
+ if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.finally(function(){deferredInstall=null});return}
+ showToast('📲 Open the browser menu (⋮) and tap "Install app" / "Add to Home screen"','info');
+}
 function logout(){
  lsDel('wd_session');ssDel('wd_session');
  CUR=null;UD=null;aiWelcomed=false;closeAI();
@@ -2848,6 +3008,7 @@ function runSearch(){
  setTimeout(function(){
   state.lastSearch={ct:ct,city:city};
   state.results=genLeads(ct,city,ind,type,11+Math.floor(Math.random()*13),'srch:'+ct.name+':'+(city||'all')+':'+ind+':'+type);
+  logAct('search',state.results.length+' businesses in '+(city?city+', ':'')+ct.name);
   renderResults();
   showToast('🎯 '+state.results.length+' businesses found in '+(city?city+', ':'')+ct.name,'success');
  },1500);
@@ -2907,25 +3068,34 @@ function filteredLeads(){
 function rowHTML(l){
  const s=l.score,cls=s>=80?'h':s>=60?'m':'l';
  return '<tr onclick="openLead(\''+l.id+'\')">'+
- '<td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:var(--a)"></td>'+
- '<td><div class="biz-name">'+esc(l.name)+'</div><div class="biz-sub">'+(l.website?esc(l.website):'No online presence')+'</div></td>'+
+ '<td><input type="checkbox" class="lead-cb" data-id="'+l.id+'" onclick="event.stopPropagation()" style="accent-color:var(--a)"></td>'+
+ '<td><div class="biz-name">'+esc(l.name)+
+  (l.statusTag==='hot'?' <span class="tag tag-hot">🔥 Hot</span>':l.statusTag==='warm'?' <span class="tag tag-warm">🟡 Warm</span>':l.statusTag==='cold'?' <span class="tag tag-cold">⚪ Cold</span>':'')+
+ '</div><div class="biz-sub">'+(l.website?esc(l.website):'No online presence')+'</div></td>'+
  '<td style="white-space:nowrap">'+IND[l.industry].icon+' '+l.industry+'</td>'+
  '<td style="white-space:nowrap">'+l.flag+' '+esc(l.city)+', '+l.country+'</td>'+
  '<td style="white-space:nowrap">'+l.phone+'</td>'+
- '<td>'+typeBadge(l.type)+(l.contacted?' <span class="badge badge-ok">📞 Contacted</span>':'')+'</td>'+
+ '<td>'+typeBadge(l.type)+(l.contacted?' <span class="badge badge-ok">📞 Contacted</span>':'')+outcomeChip(l)+'</td>'+
  '<td><div class="score-bar"><div class="score-track"><div class="score-fill sf-'+cls+'" style="width:'+s+'%"></div></div><span class="sn '+cls+'">'+s+'</span></div></td>'+
  '<td><div class="act-btns">'+
  '<div class="act-btn view" title="View" onclick="event.stopPropagation();openLead(\''+l.id+'\')">👁</div>'+
  '<div class="act-btn call" title="Call" onclick="event.stopPropagation();markContacted(\''+l.id+'\',\'call\');location.href=\'tel:'+l.phone.replace(/ /g,'')+'\'">📞</div>'+
  '<div class="act-btn wa" title="WhatsApp" onclick="event.stopPropagation();waLead(\''+l.id+'\')">💬</div>'+
+ '<div class="act-btn" title="Add to Pipeline" onclick="event.stopPropagation();addToPipeline(\''+l.id+'\')">📋</div>'+
  (isOwner()?'<div class="act-btn inv" title="Create Invoice" onclick="event.stopPropagation();invoiceLead(\''+l.id+'\')">🧾</div>':'<div class="act-btn inv" title="Invoice — owner only" style="opacity:.45" onclick="event.stopPropagation();openM(\'ownerUnlockModal\')">🔒</div>')+
  '<div class="act-btn save" title="'+(l.saved?'Saved':'Save')+'" onclick="event.stopPropagation();toggleSave(\''+l.id+'\')">'+(l.saved?'⭐':'☆')+'</div>'+
+ '<div class="act-btn" title="Hot" style="font-size:12px;opacity:'+(l.statusTag==='hot'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'hot\')">🔥</div>'+
+ '<div class="act-btn" title="Warm" style="font-size:12px;opacity:'+(l.statusTag==='warm'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'warm\')">🟡</div>'+
+ '<div class="act-btn" title="Cold" style="font-size:12px;opacity:'+(l.statusTag==='cold'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'cold\')">⚪</div>'+
  '<div class="act-btn del" title="Delete" onclick="event.stopPropagation();delLead(\''+l.id+'\')">🗑</div>'+
  '</div></td></tr>';
 }
 function markContacted(id,how){
  const l=findLead(id);
- if(!l||l.contacted)return;
+ if(!l)return;
+ logAct(how||'call',l.name,l.id);
+ if((how||'call')==='call')trackCall(l.id);
+ if(l.contacted){try{renderDashboard()}catch(e){}return}
  l.contacted=true;
  saveUD();renderLeads();updateCounts();
  showToast('📞 '+esc(l.name)+' marked as contacted','success');
@@ -3005,7 +3175,699 @@ function updateCounts(){
  setT('dsNW',state.leads.filter(function(l){return l.type==='no-website'}).length);
  setT('dsOD',state.leads.filter(function(l){return l.type==='outdated'}).length);
  setT('dsContacted',state.leads.filter(function(l){return l.contacted}).length);
+ try{renderDashboard()}catch(e){console.warn(e)}
 }
+
+/* ═════════════ MINI PDF WRITER (no libraries, works offline) ═════════════ */
+const PDF_W={r:[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584,350,556,350,222,556,333,1000,556,556,333,1000,667,333,1000,350,611,350,350,222,222,333,333,350,556,1000,333,1000,500,333,944,350,500,667,278,333,556,556,556,556,260,556,333,737,370,556,584,333,737,333,400,584,333,333,333,556,537,278,333,333,365,556,834,834,834,611,667,667,667,667,667,667,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,500,556,556,556,556,278,278,278,278,556,556,556,556,556,556,556,584,611,556,556,556,556,500,556,500],b:[278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584,350,556,350,278,556,500,1000,556,556,333,1000,667,333,1000,350,611,350,350,278,278,500,500,350,556,1000,333,1000,556,333,944,350,500,667,278,333,556,556,556,556,280,556,333,737,370,556,584,333,737,333,400,584,333,333,333,611,556,278,333,333,365,556,834,834,834,611,722,722,722,722,722,722,1000,722,667,667,667,667,278,278,278,278,722,722,778,778,778,778,778,584,778,722,722,722,722,667,667,611,556,556,556,556,556,556,889,556,556,556,556,556,278,278,278,278,611,611,611,611,611,611,611,584,611,611,611,611,611,556,611,556]};
+
+const PDF_CP={'€':128,'‚':130,'ƒ':131,'„':132,'…':133,'†':134,'‡':135,'ˆ':136,'‰':137,'Š':138,'‹':139,'Œ':140,'Ž':142,'‘':145,'’':146,'“':147,'”':148,'•':149,'–':150,'—':151,'˜':152,'™':153,'š':154,'›':155,'œ':156,'ž':158,'Ÿ':159,'→':0,'✓':0};
+function pdfCodes(str){
+ const out=[];
+ for(const ch of String(str==null?'':str)){
+  const c=ch.codePointAt(0);
+  if(c===10||c===13||c===9){out.push(32);continue}
+  if(c>=32&&c<=126){out.push(c);continue}
+  if(c>=160&&c<=255){out.push(c);continue}
+  if(PDF_CP[ch]){out.push(PDF_CP[ch]);continue}
+  if(ch==='→'){out.push(45,62);continue}
+  // emoji / unsupported symbols are dropped
+ }
+ return out;
+}
+function MiniPDF(){
+ this.W=595.28;this.H=841.89;this.pages=[];this.addPage();
+}
+MiniPDF.prototype.addPage=function(){this.cur=[];this.pages.push(this.cur);this.y=0};
+MiniPDF.prototype.width=function(str,size,bold){
+ const t=bold?PDF_W.b:PDF_W.r;let w=0;
+ pdfCodes(str).forEach(function(c){w+=(t[c-32]||500)});
+ return w*size/1000;
+};
+MiniPDF.prototype.col=function(hex){
+ hex=(hex||'#000000').replace('#','');
+ return [0,2,4].map(function(i){return (parseInt(hex.substr(i,2),16)/255).toFixed(3)}).join(' ');
+};
+MiniPDF.prototype.text=function(str,x,y,o){
+ o=o||{};const size=o.size||10,bold=!!o.bold;
+ const codes=pdfCodes(str);if(!codes.length)return;
+ let tx=x;const w=this.width(str,size,bold);
+ if(o.align==='right')tx=x-w;else if(o.align==='center')tx=x-w/2;
+ let s='';codes.forEach(function(c){const ch=String.fromCharCode(c);s+=(ch==='('||ch===')'||ch==='\\')?'\\'+ch:ch});
+ this.cur.push('BT /'+(bold?'F2':'F1')+' '+size+' Tf '+this.col(o.color||'#1a1a1a')+' rg '+tx.toFixed(2)+' '+(this.H-y).toFixed(2)+' Td ('+s+') Tj ET');
+};
+MiniPDF.prototype.rect=function(x,y,w,h,color){this.cur.push(this.col(color)+' rg '+x.toFixed(2)+' '+(this.H-y-h).toFixed(2)+' '+w.toFixed(2)+' '+h.toFixed(2)+' re f')};
+MiniPDF.prototype.line=function(x1,y1,x2,y2,color,lw){this.cur.push(this.col(color||'#dddddd')+' RG '+(lw||0.8)+' w '+x1.toFixed(2)+' '+(this.H-y1).toFixed(2)+' m '+x2.toFixed(2)+' '+(this.H-y2).toFixed(2)+' l S')};
+MiniPDF.prototype.wrap=function(str,maxW,size,bold){
+ const self=this,out=[];
+ String(str==null?'':str).split(/\n/).forEach(function(para){
+  const words=para.split(/\s+/).filter(Boolean);let line='';
+  if(!words.length){out.push('');return}
+  words.forEach(function(wd){
+   const t=line?line+' '+wd:wd;
+   if(self.width(t,size,bold)<=maxW||!line){line=t}else{out.push(line);line=wd}
+  });
+  if(line)out.push(line);
+ });
+ return out;
+};
+MiniPDF.prototype.output=function(){
+ const objs=[],self=this;
+ objs[1]='<< /Type /Catalog /Pages 2 0 R >>';
+ objs[3]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+ objs[4]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+ const kids=[];let n=5;
+ this.pages.forEach(function(pg){
+  const content=pg.join('\n');
+  const pid=n++,cid=n++;
+  objs[cid]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream';
+  objs[pid]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+self.W+' '+self.H+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents '+cid+' 0 R >>';
+  kids.push(pid+' 0 R');
+ });
+ objs[2]='<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+kids.length+' >>';
+ let out='%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';const offs=[];
+ for(let i=1;i<objs.length;i++){offs[i]=out.length;out+=i+' 0 obj\n'+objs[i]+'\nendobj\n'}
+ const xref=out.length;
+ out+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
+ for(let i=1;i<objs.length;i++)out+=String(offs[i]).padStart(10,'0')+' 00000 n \n';
+ out+='trailer\n<< /Size '+objs.length+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF';
+ const bytes=new Uint8Array(out.length);for(let i=0;i<out.length;i++)bytes[i]=out.charCodeAt(i)&255;
+ return new Blob([bytes],{type:'application/pdf'});
+};
+function curCode(){const c=el('inv-currency');return c?c.value.split(' ')[0]:'USD'}
+function pdfMoney(n){return curCode()+' '+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function pdfFileName(prefix,name){return (prefix+'-'+String(name||'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'')).slice(0,60)+'.pdf'}
+/* Share a PDF through the phone's share sheet (Gmail, WhatsApp, Drive…) or download it */
+function shareOrDownload(blob,filename,title,text){
+ const file=new File([blob],filename,{type:'application/pdf'});
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  return navigator.share({files:[file],title:title,text:text}).then(function(){showToast('📤 Shared '+filename,'success');return true}).catch(function(e){if(e&&e.name==='AbortError')return false;downloadBlob(blob,filename);return true});
+ }
+ downloadBlob(blob,filename);
+ showToast('⬇ '+filename+' downloaded — sharing files isn\'t supported in this browser','info');
+ return Promise.resolve(true);
+}
+function downloadBlob(blob,filename){
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();
+ setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000);
+}
+
+/* ═════════════ INVOICE PDF ═════════════ */
+function invoicePDF(d){
+ const P=new MiniPDF(),M=42,R=P.W-M,OR='#ff6b1a',GR='#6b6b6b';
+ let y=0;
+ P.rect(0,0,P.W,8,OR);
+ y=48;
+ P.text(d.from.name||myBiz(),M,y,{size:18,bold:true});
+ P.text('INVOICE',R,y,{size:22,bold:true,color:OR,align:'right'});
+ y+=16;
+ [d.from.person,[d.from.email,d.from.phone].filter(Boolean).join('  |  '),d.from.addr].filter(Boolean).forEach(function(t){P.wrap(t,300,9).forEach(function(l){P.text(l,M,y,{size:9,color:GR});y+=12})});
+ let my=64;
+ [['Invoice #',d.num],['Issued',d.date],['Due',d.due],['Terms',d.terms]].forEach(function(r){if(!r[1])return;P.text(r[0],R-110,my,{size:9,color:GR,align:'right'});P.text(r[1],R,my,{size:9,bold:true,align:'right'});my+=13});
+ y=Math.max(y,my)+14;
+ P.line(M,y,R,y,OR,1.5);y+=22;
+ P.text('BILL TO',M,y,{size:8,bold:true,color:GR});y+=14;
+ P.text(d.to.name||'Client',M,y,{size:11,bold:true});y+=13;
+ [d.to.person,d.to.addr,d.to.email,d.to.phone,d.to.country].filter(Boolean).forEach(function(t){P.wrap(t,320,9).forEach(function(l){P.text(l,M,y,{size:9,color:'#333333'});y+=12})});
+ y+=14;
+ // items table
+ const cQ=R-190,cR=R-105;
+ P.rect(M,y,R-M,22,'#f5efe6');
+ P.text('DESCRIPTION',M+8,y+14,{size:8,bold:true});P.text('QTY',cQ,y+14,{size:8,bold:true,align:'right'});P.text('RATE',cR,y+14,{size:8,bold:true,align:'right'});P.text('AMOUNT',R-8,y+14,{size:8,bold:true,align:'right'});
+ y+=22;
+ d.items.forEach(function(it){
+  const lines=P.wrap(it.desc,cQ-M-60,10);
+  const h=Math.max(24,lines.length*13+11);
+  if(y+h>P.H-120){P.addPage();y=50}
+  lines.forEach(function(l,i){P.text(l,M+8,y+15+i*13,{size:10})});
+  P.text(String(it.q),cQ,y+15,{size:10,align:'right'});
+  P.text(pdfMoney(it.p),cR,y+15,{size:10,align:'right'});
+  P.text(pdfMoney(it.amt),R-8,y+15,{size:10,bold:true,align:'right'});
+  y+=h;P.line(M,y,R,y,'#eeeeee');
+ });
+ y+=14;
+ if(y>P.H-200){P.addPage();y=50}
+ const tl=R-200;
+ const rows=[['Subtotal',pdfMoney(d.sub)]];
+ if(d.dis)rows.push(['Discount ('+d.dp+'%)','-'+pdfMoney(d.dis)]);
+ if(d.tax)rows.push(['Tax ('+d.tp+'%)',pdfMoney(d.tax)]);
+ if(d.shipping)rows.push(['Shipping',pdfMoney(d.shipping)]);
+ rows.forEach(function(r){P.text(r[0],tl,y,{size:10,color:GR});P.text(r[1],R-8,y,{size:10,align:'right'});y+=16});
+ P.line(tl,y-4,R,y-4,OR,1.5);y+=12;
+ P.text('TOTAL DUE',tl,y,{size:12,bold:true,color:OR});P.text(pdfMoney(d.total),R-8,y,{size:13,bold:true,color:OR,align:'right'});
+ y+=34;
+ function block(title,body){
+  if(!body)return;
+  const lines=P.wrap(body,R-M-24,9);
+  const h=lines.length*12+30;
+  if(y+h>P.H-50){P.addPage();y=50}
+  P.rect(M,y,R-M,h,'#faf7f2');
+  P.text(title,M+12,y+17,{size:9,bold:true});
+  lines.forEach(function(l,i){P.text(l,M+12,y+31+i*12,{size:9,color:'#444444'})});
+  y+=h+10;
+ }
+ block('PAYMENT INSTRUCTIONS',d.payment);
+ block('PAY ONLINE',[d.stripe?'Card (Stripe): '+d.stripe:'',d.paypal?'PayPal: '+d.paypal:'',d.qr?'Payment link: '+d.qr:''].filter(Boolean).join('\n'));
+ block('NOTES',d.notes);
+ P.text('Thank you for your business',P.W/2,P.H-30,{size:8,color:'#b8a88a',align:'center'});
+ return P.output();
+}
+function invoicePdfFor(){
+ if(!isOwner()){showToast('🔐 Owner access only','error');return null}
+ const d=invData();
+ if(!d.items.length){showToast('Add at least one item first','error');return null}
+ return d;
+}
+function downloadInvoicePDF(){
+ const d=invoicePdfFor();if(!d)return;
+ downloadBlob(invoicePDF(d),pdfFileName('Invoice-'+d.num,d.to.name));
+ showToast('⬇ Invoice '+d.num+' PDF downloaded','success');
+}
+function shareInvoicePDF(){
+ const d=invoicePdfFor();if(!d)return;
+ shareOrDownload(invoicePDF(d),pdfFileName('Invoice-'+d.num,d.to.name),'Invoice '+d.num,'Invoice '+d.num+' from '+(d.from.name||myBiz())+' — '+money(d.total)+' due '+d.due).then(function(ok){
+  if(ok){recordInvoice(d,'sent');closeM('invoiceModal')}
+ });
+}
+
+/* ═════════════ FOLLOW-UP REMINDERS ═════════════ */
+function gcalFollowUrl(l,dateISO){
+ const ymd=dateISO.replace(/-/g,'');
+ const details='Follow up with '+l.name+'\nPhone: '+(l.phone||'')+'\n'+(l.city?l.city+(l.country?', '+l.country:''):'')+'\n\nOpen We Deploy: '+location.origin+'/';
+ return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('📞 Follow up: '+l.name)+'&dates='+ymd+'T090000/'+ymd+'T091500&details='+encodeURIComponent(details);
+}
+function addFollowToCalendar(id){
+ const l=findLead(id||(state.curLead&&state.curLead.id));if(!l)return;
+ const d=(UD.followups||{})[l.id]||(el('m-follow')&&el('m-follow').value);
+ if(!d)return showToast('Set a follow-up date first','error');
+ window.open(gcalFollowUrl(l,d),'_blank');
+}
+function clearFollowUp(id){
+ if(UD.followups)delete UD.followups[id];
+ saveUD();renderFollowUps();showToast('✅ Follow-up done','success');
+}
+function notifSupported(){return 'Notification' in window&&'serviceWorker' in navigator}
+function enableReminders(){
+ if(!notifSupported())return showToast('Notifications aren\'t supported here — use 📅 Calendar instead','error');
+ Notification.requestPermission().then(function(p){
+  UD.remindersOn=p==='granted';saveUD();updateReminderBtn();
+  if(p==='granted'){showToast('🔔 Reminders on — you\'ll be notified about due follow-ups','success');checkDueReminders(true)}
+  else showToast('Notifications are blocked — allow them in your browser settings','error');
+ });
+}
+function updateReminderBtn(){
+ const b=el('reminderBtn');if(!b)return;
+ const on=notifSupported()&&Notification.permission==='granted'&&UD&&UD.remindersOn;
+ b.textContent=on?'🔔 Reminders on':'🔔 Turn on reminders';
+ b.classList.toggle('btn-green',!!on);
+}
+function checkDueReminders(force){
+ if(!UD||!UD.remindersOn||!notifSupported()||Notification.permission!=='granted')return;
+ const today=new Date().toISOString().slice(0,10);
+ UD.notified=UD.notified||{};
+ const due=state.leads.filter(function(l){const d=(UD.followups||{})[l.id];return d&&d<=today&&(force||UD.notified[l.id]!==today)});
+ if(!due.length)return;
+ due.forEach(function(l){UD.notified[l.id]=today});saveUD();
+ const title=due.length===1?'📞 Follow up: '+due[0].name:'📞 '+due.length+' follow-ups due today';
+ const body=due.slice(0,4).map(function(l){return l.name+(l.city?' — '+l.city:'')}).join('\n')+(due.length>4?'\n+'+(due.length-4)+' more':'');
+ navigator.serviceWorker.getRegistration().then(function(reg){
+  const opts={body:body,icon:'/icon-192.png',badge:'/icon-192.png',tag:'wd-followups',data:{url:'/'}};
+  if(reg&&reg.showNotification)reg.showNotification(title,opts);
+  else{try{new Notification(title,opts)}catch(e){}}
+ });
+}
+setInterval(function(){try{checkDueReminders(false)}catch(e){}},30*60*1000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){try{checkDueReminders(false)}catch(e){}}});
+
+/* ═════════════ MOVE TO PIPELINE ═════════════ */
+function pipeFor(l){return PIPE.find(function(p){return p.leadId===l.id||p.name.toLowerCase()===String(l.name).toLowerCase()})}
+function addToPipeline(id,stage,silent){
+ const l=findLead(id);if(!l)return null;
+ let p=pipeFor(l);
+ if(p){if(stage!=null&&stage>p.s){p.s=stage;logAct('stage',p.name+' → '+PSTAGES[stage].n);saveUD();try{renderPipeline()}catch(e){}}
+  if(!silent)showToast('📋 '+esc(l.name)+' is already in your pipeline ('+PSTAGES[p.s].n+')','info');return p}
+ const val=(UD&&UD.dealValue)||1500;
+ p={id:'P'+Date.now(),leadId:l.id,s:stage!=null?stage:(l.contacted?1:0),name:l.name,ind:l.industry,sub:(l.city||'')+' '+(l.flag||''),val:'$'+Number(val).toLocaleString()};
+ PIPE.push(p);
+ logAct('stage',p.name+' → '+PSTAGES[p.s].n);
+ saveUD();try{renderPipeline()}catch(e){}
+ if(!silent)showToast('📋 '+esc(l.name)+' added to Pipeline — '+PSTAGES[p.s].n,'success');
+ return p;
+}
+
+/* ═════════════ CALL OUTCOMES ═════════════ */
+const OUTCOMES={
+ 'no-answer':{l:'No answer',i:'📵',c:'var(--muted)'},
+ 'callback':{l:'Call back',i:'⏰',c:'var(--blue)'},
+ 'interested':{l:'Interested',i:'🔥',c:'var(--green)'},
+ 'not-interested':{l:'Not interested',i:'✋',c:'var(--red)'}
+};
+let pendingCall=null;
+function trackCall(id){
+ pendingCall={id:id,t:Date.now(),hidden:false};
+ setTimeout(function(){if(pendingCall&&pendingCall.id===id&&!pendingCall.hidden&&!document.hidden)openOutcome(id)},7000);
+}
+document.addEventListener('visibilitychange',function(){
+ if(!pendingCall)return;
+ if(document.hidden){pendingCall.hidden=true;return}
+ if(pendingCall.hidden&&Date.now()-pendingCall.t<3*3600*1000){const id=pendingCall.id;setTimeout(function(){openOutcome(id)},400)}
+});
+function openOutcome(id){
+ const l=findLead(id);if(!l)return;
+ pendingCall=null;
+ state.outcomeLead=l.id;
+ setT('oc-name',l.name);
+ setT('oc-sub',[l.city,l.phone].filter(Boolean).join(' • '));
+ setV('oc-note','');
+ const t=new Date(Date.now()+864e5).toISOString().slice(0,10);setV('oc-date',t);
+ const cb=el('oc-cb-row');if(cb)cb.style.display='none';
+ document.querySelectorAll('#outcomeModal .oc-btn').forEach(function(b){b.classList.remove('sel')});
+ closeM('leadModal');openM('outcomeModal');
+}
+function pickOutcome(btn,o){
+ document.querySelectorAll('#outcomeModal .oc-btn').forEach(function(b){b.classList.toggle('sel',b===btn)});
+ state.outcomePick=o;
+ const cb=el('oc-cb-row');if(cb)cb.style.display=(o==='callback'||o==='no-answer')?'':'none';
+ if(o==='no-answer'){const t=new Date(Date.now()+864e5).toISOString().slice(0,10);setV('oc-date',t)}
+}
+function saveOutcome(){
+ const l=findLead(state.outcomeLead),o=state.outcomePick;
+ if(!l)return closeM('outcomeModal');
+ if(!o)return showToast('Pick how the call went','error');
+ const note=(el('oc-note').value||'').trim();
+ UD.outcomes=UD.outcomes||{};
+ UD.outcomes[l.id]=UD.outcomes[l.id]||[];
+ UD.outcomes[l.id].unshift({o:o,t:Date.now(),note:note});
+ l.lastOutcome=o;
+ if(note){state.notes[l.id]=state.notes[l.id]||[];state.notes[l.id].unshift({text:OUTCOMES[o].i+' '+OUTCOMES[o].l+' — '+note,time:new Date().toLocaleString()})}
+ UD.followups=UD.followups||{};
+ let msg=OUTCOMES[o].i+' '+OUTCOMES[o].l+' — '+esc(l.name);
+ if(o==='callback'||o==='no-answer'){const d=el('oc-date').value;if(d){UD.followups[l.id]=d;msg+=' • follow-up '+fmtDate(d)}}
+ if(o==='interested'){l.statusTag='hot';delete UD.followups[l.id];addToPipeline(l.id,2,true);msg+=' • added to Pipeline'}
+ if(o==='not-interested'){l.statusTag='cold';delete UD.followups[l.id]}
+ logAct('outcome',l.name+' — '+OUTCOMES[o].l);
+ state.outcomePick=null;
+ saveUD();closeM('outcomeModal');
+ try{renderLeads();renderFollowUps()}catch(e){}
+ showToast(msg,'success');
+ if(o==='interested')setTimeout(function(){showToast('📄 Next step: send them a proposal','info');},900);
+ if(o==='interested')state.proposalSuggest=l.id;
+}
+function outcomeChip(l){
+ const list=(UD&&UD.outcomes&&UD.outcomes[l.id])||[];
+ if(!list.length)return '';
+ const o=OUTCOMES[list[0].o];if(!o)return '';
+ return ' <span class="badge" style="background:rgba(255,255,255,.06);color:'+o.c+'">'+o.i+' '+o.l+'</span>';
+}
+
+/* ═════════════ WHATSAPP QUEUE ═════════════ */
+function selectedLeadIds(){return Array.from(document.querySelectorAll('.lead-cb:checked')).map(function(c){return c.dataset.id})}
+function openWaQueue(src){
+ const sel=el('wq-src');
+ if(src&&sel)sel.value=src;
+ else if(sel)sel.value=selectedLeadIds().length?'selected':'hot';
+ buildWaQueue();
+ openM('waQueueModal');
+}
+function buildWaQueue(){
+ const src=el('wq-src').value;
+ let list=[];
+ if(src==='selected'){const ids=selectedLeadIds();list=state.leads.filter(function(l){return ids.indexOf(l.id)>-1})}
+ else if(src==='hot')list=state.leads.filter(function(l){return l.statusTag==='hot'});
+ else if(src==='warm')list=state.leads.filter(function(l){return l.statusTag==='warm'});
+ else if(src==='saved')list=state.leads.filter(function(l){return l.saved});
+ else if(src==='due'){const today=new Date().toISOString().slice(0,10);list=state.leads.filter(function(l){const d=(UD.followups||{})[l.id];return d&&d<=today})}
+ else list=state.leads.filter(function(l){return l.type==='no-website'&&!l.contacted&&l.statusTag!=='cold'}).sort(function(a,b){return b.score-a.score});
+ list=list.filter(function(l){return l.phone&&l.phone.replace(/\D/g,'').length>=7}).slice(0,25);
+ state.waq={ids:list.map(function(l){return l.id}),i:0,sent:0};
+ renderWaQueue();
+}
+function renderWaQueue(){
+ const q=state.waq,box=el('wq-body');if(!box||!q)return;
+ if(!q.ids.length){box.innerHTML='<div class="empty-mini" style="padding:24px 0">No leads in this list. Mark leads 🔥 Hot, ⭐ save them, or tick them in Lead Finder first.</div>';setT('wq-progress','');return}
+ if(q.i>=q.ids.length){
+  box.innerHTML='<div style="text-align:center;padding:24px 0"><div style="font-size:40px">🎉</div><div style="font-weight:800;font-size:16px;margin:6px 0">Queue finished</div><div style="color:var(--muted);font-size:13px">'+q.sent+' of '+q.ids.length+' messages sent</div></div>';
+  setT('wq-progress',q.ids.length+' / '+q.ids.length);return;
+ }
+ const l=findLead(q.ids[q.i]);
+ if(!l){q.i++;return renderWaQueue()}
+ setT('wq-progress',(q.i+1)+' / '+q.ids.length);
+ box.innerHTML='<div class="wq-bar"><i style="width:'+Math.round(q.i/q.ids.length*100)+'%"></i></div>'+
+ '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:12px 0 10px"><div><div style="font-weight:800;font-size:15px">'+esc(l.name)+'</div><div style="font-size:12px;color:var(--muted)">'+(l.flag||'')+' '+esc(l.city||'')+' • '+esc(l.phone)+'</div></div>'+typeBadge(l.type)+'</div>'+
+ '<textarea id="wq-msg" class="filter-input" rows="9" style="width:100%;resize:vertical;font-size:13px;line-height:1.5">'+esc(waTemplate(l.name,l.city,l.industry,l.type))+'</textarea>';
+}
+function waqSend(){
+ const q=state.waq;if(!q||q.i>=q.ids.length)return;
+ const l=findLead(q.ids[q.i]);if(!l)return waqSkip();
+ const msg=el('wq-msg').value;
+ window.open('https://wa.me/'+l.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+ markContacted(l.id,'whatsapp');
+ q.sent++;q.i++;renderWaQueue();
+}
+function waqSkip(){const q=state.waq;if(!q)return;q.i++;renderWaQueue()}
+
+/* ═════════════ PROPOSALS ═════════════ */
+const PROP_INCLUDES='Custom-designed website (mobile friendly)\nFREE custom mobile app on Play Store + App Store\nGoogle Maps + WhatsApp click-to-chat buttons\nBasic SEO so customers find you on Google\nDomain + hosting setup\nPublishing and launch — we handle everything';
+function initProposalForm(){
+ const ind=el('pr-ind');
+ if(ind&&!ind.options.length)ind.innerHTML=IND_NAMES.map(function(n){return '<option>'+esc(n)+'</option>'}).join('');
+ if(!el('pr-includes').value)setV('pr-includes',PROP_INCLUDES);
+ if(!el('pr-valid').value)setV('pr-valid',new Date(Date.now()+14*864e5).toISOString().slice(0,10));
+ if(!el('pr-price').value)setV('pr-price',(UD&&UD.dealValue)||1500);
+ if(!el('pr-delivery').value)setV('pr-delivery','Same day — live within 24 hours');
+ if(!el('pr-package').value)setV('pr-package','Website + Free Mobile App');
+}
+function openProposalFor(id){
+ const l=findLead(id||(state.curLead&&state.curLead.id));
+ sv('proposal');initProposalForm();
+ if(l){
+  setV('pr-client',l.name);setV('pr-city',l.city||'');setV('pr-phone',l.phone||'');state.proposalLead=l.id;
+  const ind=el('pr-ind');if(ind)ind.value=l.industry;
+  closeM('leadModal');
+ }
+ renderProposalPreview();
+}
+function propData(){
+ return {client:v('pr-client').trim(),person:v('pr-person').trim(),email:v('pr-email').trim(),phone:v('pr-phone').trim(),ind:v('pr-ind'),city:v('pr-city').trim(),
+  pkg:v('pr-package').trim()||'Website + Free Mobile App',price:parseFloat(v('pr-price'))||0,delivery:v('pr-delivery').trim(),valid:v('pr-valid'),
+  includes:v('pr-includes').split('\n').map(function(s){return s.replace(/^[•\-\*]\s*/,'').trim()}).filter(Boolean),notes:v('pr-notes').trim(),
+  from:{name:myBiz(),person:meFull(),email:myEmail(),phone:(CUR&&CUR.phone)||''}};
+}
+function renderProposalPreview(){
+ const p=propData(),box=el('pr-preview');if(!box)return;
+ box.innerHTML='<div class="prop-doc">'+
+ '<div class="prop-top"><div><div class="prop-brand">'+esc(p.from.name)+'</div><div class="prop-by">'+esc(p.from.person)+(p.from.email?' • '+esc(p.from.email):'')+'</div></div><div class="prop-tag">PROPOSAL</div></div>'+
+ '<div class="prop-for">Prepared for</div><div class="prop-client">'+(esc(p.client)||'[Client business]')+'</div>'+
+ '<div class="prop-sub">'+[p.person,p.ind,p.city].filter(Boolean).map(esc).join(' • ')+'</div>'+
+ '<div class="prop-h">The problem</div><p>'+esc(propProblem(p))+'</p>'+
+ '<div class="prop-h">What you get — '+esc(p.pkg)+'</div><ul>'+p.includes.map(function(i){return '<li>'+esc(i)+'</li>'}).join('')+'</ul>'+
+ '<div class="prop-price"><div><div class="prop-for">Investment</div><div class="prop-amt">'+money0(p.price)+'</div><div class="prop-sub">One-time • mobile app included free</div></div><div style="text-align:right"><div class="prop-for">Delivery</div><div style="font-weight:700">'+esc(p.delivery||'—')+'</div><div class="prop-sub">Valid until '+fmtDate(p.valid)+'</div></div></div>'+
+ '<div class="prop-h">Next steps</div><ol><li>Reply "Yes" or sign below</li><li>Quick 10-minute Google Meet to confirm your details</li><li>Your website + app go live</li></ol>'+
+ (p.notes?'<div class="prop-h">Notes</div><p>'+esc(p.notes)+'</p>':'')+
+ '</div>';
+}
+function propProblem(p){
+ return 'Most customers search online before they visit or call. Without a modern website, '+(p.client||'your business')+' is invisible to them'+(p.city?' in '+p.city:'')+' — and those customers go to competitors who show up first.';
+}
+function proposalPDF(p){
+ const P=new MiniPDF(),M=48,R=P.W-M,OR='#ff6b1a',GR='#6b6b6b';
+ P.rect(0,0,P.W,120,'#14110e');P.rect(0,120,P.W,4,OR);
+ P.text(p.from.name,M,52,{size:20,bold:true,color:'#ffffff'});
+ P.text([p.from.person,p.from.email,p.from.phone].filter(Boolean).join('  |  '),M,70,{size:9,color:'#cfc6b8'});
+ P.text('PROPOSAL',R,52,{size:22,bold:true,color:OR,align:'right'});
+ P.text(new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),R,70,{size:9,color:'#cfc6b8',align:'right'});
+ let y=160;
+ P.text('PREPARED FOR',M,y,{size:8,bold:true,color:GR});y+=20;
+ P.text(p.client||'Client',M,y,{size:18,bold:true});y+=16;
+ const sub=[p.person,p.ind,p.city].filter(Boolean).join('  |  ');if(sub){P.text(sub,M,y,{size:10,color:GR});y+=14}
+ y+=16;
+ function h(t){if(y>P.H-120){P.addPage();y=60}P.text(t,M,y,{size:12,bold:true,color:OR});y+=8;P.line(M,y,R,y,'#eadfce');y+=16}
+ function para(t){P.wrap(t,R-M,10.5).forEach(function(l){if(y>P.H-60){P.addPage();y=60}P.text(l,M,y,{size:10.5,color:'#333333'});y+=15});y+=8}
+ h('The problem');para(propProblem(p));
+ h('What you get - '+p.pkg);
+ p.includes.forEach(function(i){const ls=P.wrap(i,R-M-18,10.5);ls.forEach(function(l,k){if(y>P.H-60){P.addPage();y=60}if(k===0)P.text('•',M+2,y,{size:11,bold:true,color:OR});P.text(l,M+16,y,{size:10.5,color:'#333333'});y+=15})});
+ y+=12;
+ if(y>P.H-170){P.addPage();y=60}
+ P.rect(M,y,R-M,74,'#faf5ee');P.rect(M,y,4,74,OR);
+ P.text('INVESTMENT',M+18,y+22,{size:8,bold:true,color:GR});
+ P.text(pdfMoney(p.price),M+18,y+46,{size:20,bold:true});
+ P.text('One-time  |  mobile app included free',M+18,y+62,{size:8.5,color:GR});
+ P.text('DELIVERY',R-16,y+22,{size:8,bold:true,color:GR,align:'right'});
+ P.text(p.delivery||'-',R-16,y+42,{size:11,bold:true,align:'right'});
+ P.text('Valid until '+fmtDate(p.valid),R-16,y+62,{size:8.5,color:GR,align:'right'});
+ y+=100;
+ h('Next steps');
+ ['Reply "Yes" or sign below','Quick 10-minute Google Meet to confirm your details','Your website + app go live'].forEach(function(t,i){P.text((i+1)+'.',M+2,y,{size:10.5,bold:true,color:OR});P.text(t,M+18,y,{size:10.5,color:'#333333'});y+=16});
+ y+=6;
+ if(p.notes){h('Notes');para(p.notes)}
+ if(y>P.H-110){P.addPage();y=80}
+ y=Math.max(y+20,P.H-110);
+ P.line(M,y,M+200,y,'#999999');P.line(R-200,y,R,y,'#999999');
+ P.text('Client signature',M,y+14,{size:8,color:GR});P.text('Date',R-200,y+14,{size:8,color:GR});
+ return P.output();
+}
+function propCheck(){
+ const p=propData();
+ if(!p.client){showToast('Add the client business name first','error');el('pr-client').focus();return null}
+ if(!(p.price>0)){showToast('Add a price','error');el('pr-price').focus();return null}
+ return p;
+}
+function logProposal(p,via){
+ UD.proposals=UD.proposals||[];
+ UD.proposals.unshift({client:p.client,price:p.price,date:new Date().toISOString().slice(0,10),via:via});
+ logAct('proposal',p.client+' — '+money0(p.price)+' via '+via);
+ const l=state.proposalLead?findLead(state.proposalLead):state.leads.find(function(x){return x.name.toLowerCase()===p.client.toLowerCase()});
+ const card=l?pipeFor(l):PIPE.find(function(x){return x.name.toLowerCase()===p.client.toLowerCase()});
+ if(card&&card.s<3){card.s=3;card.val='$'+Number(p.price).toLocaleString();logAct('stage',card.name+' → '+PSTAGES[3].n)}
+ else if(!card&&l){const c=addToPipeline(l.id,3,true);if(c)c.val='$'+Number(p.price).toLocaleString()}
+ saveUD();try{renderPipeline()}catch(e){}
+}
+function downloadProposal(){const p=propCheck();if(!p)return;downloadBlob(proposalPDF(p),pdfFileName('Proposal',p.client));logProposal(p,'download');showToast('⬇ Proposal PDF downloaded','success')}
+function shareProposal(){const p=propCheck();if(!p)return;shareOrDownload(proposalPDF(p),pdfFileName('Proposal',p.client),'Proposal for '+p.client,'Proposal for '+p.client+' from '+p.from.name).then(function(ok){if(ok)logProposal(p,'share')})}
+function propText(p){
+ return 'Hi '+(p.person||p.client)+' 👋\n\nAs promised, here\'s your proposal from *'+p.from.name+'*:\n\n📦 *'+p.pkg+'*\n'+p.includes.map(function(i){return '✅ '+i}).join('\n')+'\n\n💰 Investment: *'+money0(p.price)+'* (one-time — mobile app included free)\n⚡ Delivery: '+p.delivery+'\n📅 Valid until '+fmtDate(p.valid)+'\n\nJust reply "Yes" and we\'ll get started 🚀';
+}
+function waProposal(){
+ const p=propCheck();if(!p)return;
+ const ph=p.phone.replace(/\D/g,'');
+ window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(propText(p)),'_blank');
+ logProposal(p,'WhatsApp');
+}
+function gmailProposal(){
+ const p=propCheck();if(!p)return;
+ if(!p.email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)){showToast('Add a valid client email first','error');el('pr-email').focus();return}
+ const body=propText(p).replace(/\*/g,'')+'\n\nKind regards,\n'+p.from.person+'\n'+p.from.name;
+ const subject='Your proposal — '+p.pkg+' for '+p.client;
+ const web='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(p.email)+'&su='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+ if(/Android/i.test(navigator.userAgent))location.href='intent:'+encodeURIComponent(p.email)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)+'#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url='+encodeURIComponent(web)+';end';
+ else{const w=window.open(web,'_blank');if(!w)location.href=web}
+ logProposal(p,'Gmail');
+}
+
+/* ═════════════ MONTHLY GOALS ═════════════ */
+function monthStart(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1).getTime()}
+function goalDefaults(){return Object.assign({calls:80,whatsapp:120,deals:4},(UD&&UD.goals)||{})}
+function renderGoals(){
+ const box=el('goalsBody');if(!box||!UD)return;
+ const g=goalDefaults(),m0=monthStart();
+ const ym=new Date().toISOString().slice(0,7);
+ const rev=(UD.payments||[]).filter(function(p){return String(p.date||'').slice(0,7)===ym}).reduce(function(s,p){return s+(p.amount||0)},0);
+ const rows=[
+  ['📞 Calls',acts('call',m0).length,g.calls,'var(--green)',null],
+  ['💬 WhatsApp',acts('whatsapp',m0).length,g.whatsapp,'#25d366',null],
+  ['✅ Deals closed',acts('deal',m0).length,g.deals,'var(--a)',null],
+  ['💰 Revenue',rev,UD.target||0,'var(--purple)','money']
+ ];
+ const dayN=new Date().getDate(),days=new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate();
+ box.innerHTML=rows.map(function(r){
+  const tgt=r[2],val=r[1],pct=tgt>0?Math.min(100,Math.round(val/tgt*100)):0;
+  const onPace=tgt>0&&val>=tgt*dayN/days;
+  const fmt=function(x){return r[4]==='money'?money0(x):x};
+  return '<div class="mini-bar-item"><div class="mini-bar-top"><span>'+r[0]+'</span><span style="font-weight:700">'+fmt(val)+' <span style="color:var(--muted);font-weight:500">/ '+(tgt?fmt(tgt):'<a style="color:var(--a);cursor:pointer" onclick="openGoals()">set</a>')+'</span>'+(tgt?' <span style="font-size:10px;color:'+(pct>=100?'var(--green)':onPace?'var(--green)':'var(--yellow)')+'">'+(pct>=100?'✓ done':onPace?'on pace':'behind')+'</span>':'')+'</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+pct+'%;background:'+r[3]+'"></div></div></div>';
+ }).join('')+'<div style="font-size:11px;color:var(--muted);margin-top:6px">Day '+dayN+' of '+days+' • resets on the 1st</div>';
+}
+function openGoals(){
+ const g=goalDefaults();
+ setV('gl-calls',g.calls);setV('gl-wa',g.whatsapp);setV('gl-deals',g.deals);setV('gl-rev',UD.target||'');setV('gl-deal',(UD.dealValue)||1500);
+ openM('goalsModal');
+}
+function saveGoals(){
+ const n=function(id){return Math.max(0,parseFloat(el(id).value)||0)};
+ UD.goals={calls:n('gl-calls'),whatsapp:n('gl-wa'),deals:n('gl-deals')};
+ UD.target=n('gl-rev');UD.dealValue=n('gl-deal')||1500;
+ saveUD();closeM('goalsModal');renderGoals();
+ try{if(state.view==='earnings')renderEarnings()}catch(e){}
+ showToast('🎯 Goals saved','success');
+}
+
+/* ═════════════ ANALYTICS: CALL OUTCOMES ═════════════ */
+function renderOutcomeStats(){
+ const box=el('anOutcomes');if(!box||!UD)return;
+ const c={};Object.keys(OUTCOMES).forEach(function(k){c[k]=0});
+ Object.keys(UD.outcomes||{}).forEach(function(id){const l=UD.outcomes[id];if(l&&l[0]&&c[l[0].o]!=null)c[l[0].o]++});
+ const tot=Object.keys(c).reduce(function(s,k){return s+c[k]},0);
+ box.innerHTML=tot?Object.keys(OUTCOMES).map(function(k){return barRow(OUTCOMES[k].i+' '+OUTCOMES[k].l,c[k],tot,OUTCOMES[k].c)}).join('')+'<div style="font-size:11px;color:var(--muted);margin-top:6px">Latest result per lead • '+tot+' leads called</div>':'<div class="empty-mini">After each call, tap how it went — results show up here</div>';
+}
+
+/* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
+function setLeadStatus(id,status){
+ const l=findLead(id);
+ if(!l)return;
+ if(l.statusTag===status){delete l.statusTag;saveUD();renderLeads();return showToast('Status cleared','info')}
+ l.statusTag=status; // 'hot' | 'warm' | 'cold'
+ saveUD();
+ renderLeads();
+ showToast(status==='hot'?'🔥 Marked as Hot':status==='warm'?'🟡 Marked as Warm':'⚪ Marked as Cold','info');
+}
+
+/* ===== ACTIVITY LOG — powers the real dashboard + analytics ===== */
+const ACT_META={call:['📞','var(--green)','Called'],whatsapp:['💬','#25d366','WhatsApp sent to'],email:['📧','var(--blue)','Email opened for'],search:['🔍','var(--blue)','Search —'],invoice:['🧾','var(--purple)','Invoice'],payment:['💰','var(--green)','Payment logged —'],deal:['✅','var(--green)','Deal closed —'],stage:['📋','var(--a)','Pipeline:'],outcome:['📝','var(--yellow)','Call result —'],proposal:['📄','var(--purple)','Proposal sent —']};
+function logAct(type,text,id){
+ if(!UD)return;
+ UD.activity=UD.activity||[];
+ UD.activity.unshift({t:Date.now(),type:type,text:String(text||''),id:id||null});
+ if(UD.activity.length>1000)UD.activity.length=1000;
+ saveUD();
+ try{renderDashboard()}catch(e){}
+}
+function acts(type,sinceMs,untilMs){
+ const list=(UD&&UD.activity)||[];
+ return list.filter(function(a){return (!type||a.type===type)&&(sinceMs==null||a.t>=sinceMs)&&(untilMs==null||a.t<untilMs)});
+}
+function startOfWeek(offsetWeeks){
+ const d=new Date();d.setHours(0,0,0,0);
+ const dow=(d.getDay()+6)%7; // Monday = 0
+ d.setDate(d.getDate()-dow-7*(offsetWeeks||0));
+ return d.getTime();
+}
+function timeAgo(t){
+ const s=Math.floor((Date.now()-t)/1000);
+ if(s<60)return 'just now';
+ if(s<3600)return Math.floor(s/60)+'m ago';
+ if(s<86400)return Math.floor(s/3600)+'h ago';
+ if(s<604800)return Math.floor(s/86400)+'d ago';
+ return new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function kfmt(n){n=Number(n)||0;return n>=1000?'$'+(n/1000).toFixed(n>=10000?0:1).replace(/\.0$/,'')+'k':'$'+Math.round(n)}
+function pipeVal(p){return parseMoney(p.val)}
+/* stat badge: shows "+N this wk" (green) or "−N this wk" vs last week */
+function setDelta(id,thisWk,lastWk,unit){
+ const b=el(id);if(!b)return;
+ if(thisWk===null){b.style.display='none';return}
+ b.style.display='';
+ const diff=thisWk-lastWk;
+ b.className='stat-change '+(diff<0?'down':'up');
+ b.textContent=(unit==='share')?thisWk+'%':'+'+thisWk;
+ b.title=(unit==='share')?'Share of all leads':'This week: '+thisWk+' • Last week: '+lastWk;
+}
+function barRow(label,val,max,color,right){
+ const w=max>0?Math.max(val>0?2:0,Math.round(val/max*100)):0;
+ return '<div class="mini-bar-item"><div class="mini-bar-top"><span>'+label+'</span><span style="font-weight:700">'+(right!=null?right:val)+'</span></div><div class="mini-bar-track"><div class="mini-bar-fill" style="width:'+w+'%;background:'+color+'"></div></div></div>';
+}
+
+/* ===== DASHBOARD (all numbers calculated from your data) ===== */
+function renderDashboard(){
+ if(!UD||!el('dsTotal'))return;
+ const L=state.leads,total=L.length;
+ const nw=L.filter(function(l){return l.type==='no-website'}).length;
+ const od=L.filter(function(l){return l.type==='outdated'}).length;
+ const pr=L.filter(function(l){return l.type==='prospect'}).length;
+ const contacted=L.filter(function(l){return l.contacted}).length;
+ const w0=startOfWeek(0),w1=startOfWeek(1);
+ const open=PIPE.filter(function(p){return p.s!==5});
+ const won=PIPE.filter(function(p){return p.s===5});
+ const pct=function(n){return total?Math.round(n/total*100):0};
+
+ setT('dsTotal',total);setT('dsNW',nw);setT('dsOD',od);setT('dsContacted',contacted);
+ setT('dsInv',state.invoices.length);
+ setT('dsPipe',kfmt(open.reduce(function(s,p){return s+pipeVal(p)},0)));
+ setT('dsWA',acts('whatsapp').length);
+ setT('dsWon',won.length);
+
+ setDelta('dcTotal',null);
+ setDelta('dcNW',pct(nw),0,'share');
+ setDelta('dcOD',pct(od),0,'share');
+ const cw=function(type){return [acts(type,w0).length,acts(type,w1,w0).length]};
+ const cc=[acts(null,w0).filter(function(a){return a.type==='call'||a.type==='whatsapp'||a.type==='email'}).length,acts(null,w1,w0).filter(function(a){return a.type==='call'||a.type==='whatsapp'||a.type==='email'}).length];
+ setDelta('dcContacted',cc[0],cc[1]);
+ const iv=cw('invoice');setDelta('dcInv',iv[0],iv[1]);
+ setDelta('dcPipe',null);
+ const wa=cw('whatsapp');setDelta('dcWA',wa[0],wa[1]);
+ const dl=cw('deal');setDelta('dcWon',dl[0],dl[1]);
+
+ // donut
+ const svg=el('dashDonut');
+ if(svg){
+  const C=2*Math.PI*40,segs=[[nw,'#f87171'],[od,'#f6c85f'],[pr,'#52c97a']];
+  let off=0,html='<circle class="donut-bg" cx="50" cy="50" r="40"/>';
+  if(total)segs.forEach(function(sg){if(!sg[0])return;const len=sg[0]/total*C;html+='<circle class="donut-seg" cx="50" cy="50" r="40" stroke="'+sg[1]+'" stroke-dasharray="'+len.toFixed(1)+' '+C.toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'"/>';off+=len});
+  svg.innerHTML=html;
+ }
+ setT('donutNum',total);
+ setH('dashLegend',[['No Website','var(--red)',nw],['Outdated','var(--yellow)',od],['Prospects','var(--green)',pr]].map(function(x){return '<div class="legend-item"><div class="legend-dot" style="background:'+x[1]+'"></div><div class="legend-name">'+x[0]+'</div><div class="legend-val">'+x[2]+'</div></div>'}).join(''));
+
+ // top industries
+ const byInd={};L.forEach(function(l){byInd[l.industry]=(byInd[l.industry]||0)+1});
+ const inds=Object.keys(byInd).map(function(k){return [k,byInd[k]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,5);
+ const cols=['var(--a)','var(--blue)','var(--green)','var(--purple)','var(--pink)'];
+ setH('dashIndustries',inds.length?inds.map(function(x,i){return barRow((IND[x[0]]?IND[x[0]].icon+' ':'')+esc(x[0]),x[1],total,cols[i])}).join(''):'<div class="empty-mini">Add leads to see your top industries</div>');
+
+ // recent activity
+ const recent=((UD.activity)||[]).slice(0,6);
+ setH('dashActivity',recent.length?recent.map(function(a){
+  const m=ACT_META[a.type]||['•','var(--muted)',''];
+  return '<div class="act-item"><div class="act-dot" style="background:'+m[1]+'"></div><div class="act-text">'+m[0]+' '+m[2]+' <strong>'+esc(a.text)+'</strong></div><div class="act-time">'+timeAgo(a.t)+'</div></div>';
+ }).join(''):'<div class="empty-mini">No activity yet — call, WhatsApp or search for leads and it will show up here</div>');
+
+ try{renderLeaderboard()}catch(e){}
+ try{renderGoals()}catch(e){}
+}
+
+/* ===== LEADERBOARD ===== */
+function renderLeaderboard(){
+ const box=el('leaderboardBody');
+ if(!box)return;
+ const w0=startOfWeek(0);
+ // Points this week: contact = 10, closed deal = 50, streak day = 5
+ const contacted=acts(null,w0).filter(function(a){return a.type==='call'||a.type==='whatsapp'||a.type==='email'}).length;
+ const closed=acts('deal',w0).length;
+ const streak=(UD&&UD.streakN)||0;
+ const base=contacted*10+closed*50;
+ const ranks=[
+  {name:meFull()||'You',score:base+streak*5,you:true},
+  {name:'Team Average',score:Math.round(base*0.7),you:false},
+  {name:'Top Performer (demo)',score:Math.round(base*1.3),you:false}
+ ].sort(function(a,b){return b.score-a.score});
+ const medals=['🥇','🥈','🥉'];
+ box.innerHTML=ranks.map(function(r,i){
+  return '<div class="lb-row"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">'+medals[i]+'</span><div><div style="font-weight:700;font-size:13px">'+esc(r.name)+'</div><div style="font-size:11px;color:var(--muted)">'+(r.you?'You':'Demo')+'</div></div></div><div style="font-weight:800;color:var(--a)">'+r.score+' pts</div></div>';
+ }).join('');
+}
+
+/* ===== ANALYTICS ===== */
+function renderAnalytics(){
+ if(!UD)return;
+ const w0=startOfWeek(0),w1=startOfWeek(1);
+ const L=state.leads,total=L.length;
+ setT('anPipe',kfmt(PIPE.reduce(function(s,p){return s+pipeVal(p)},0)));
+ setT('anCalls',acts('call').length);
+ setT('anWA',acts('whatsapp').length);
+ setT('anEmail',acts('email').length);
+ setDelta('acPipe',null);
+ ['call','whatsapp','email'].forEach(function(t,i){setDelta(['acCalls','acWA','acEmail'][i],acts(t,w0).length,acts(t,w1,w0).length)});
+
+ const contacted=L.filter(function(l){return l.contacted}).length;
+ const meeting=PIPE.filter(function(p){return p.s>=2}).length;
+ const proposal=PIPE.filter(function(p){return p.s>=3}).length;
+ const won=PIPE.filter(function(p){return p.s===5}).length;
+ const top=Math.max(total,1);
+ setH('anFunnel',
+  barRow('Leads Found',total,top,'var(--blue)')+
+  barRow('Contacted',contacted,top,'var(--a)')+
+  barRow('Meeting Set+',meeting,top,'var(--yellow)')+
+  barRow('Proposal Sent+',proposal,top,'var(--purple)')+
+  barRow('Closed Won',won,top,'var(--green)')+
+  (total?'<div style="font-size:11px;color:var(--muted);margin-top:6px">Contact rate '+Math.round(contacted/total*100)+'% • Close rate '+(contacted?Math.round(won/contacted*100):0)+'% of contacted</div>':''));
+
+ const byC={};
+ L.forEach(function(l){const k=l.country;if(!byC[k])byC[k]={n:0,c:0,flag:l.flag||''};byC[k].n++;if(l.contacted)byC[k].c++});
+ const cs=Object.keys(byC).map(function(k){return [k,byC[k]]}).sort(function(a,b){return b[1].c-a[1].c||b[1].n-a[1].n}).slice(0,5);
+ const cmax=cs.length?cs[0][1].n:1;
+ const ccol=['var(--blue)','var(--a)','var(--green)','var(--yellow)','var(--purple)'];
+ setH('anCountries',cs.length?cs.map(function(x,i){return barRow(x[1].flag+' '+esc(x[0]),x[1].n,Math.max.apply(null,cs.map(function(y){return y[1].n})),ccol[i],x[1].n+' · '+x[1].c)}).join(''):'<div class="empty-mini">No leads yet</div>');
+
+ const days=[];let dmax=1;
+ for(let i=6;i>=0;i--){
+  const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);
+  const a=d.getTime(),b=a+864e5;
+  const n=acts(null,a,b).filter(function(x){return x.type==='call'||x.type==='whatsapp'||x.type==='email'}).length;
+  dmax=Math.max(dmax,n);
+  days.push([d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric'}),n]);
+ }
+ try{renderOutcomeStats()}catch(e){}
+ setH('anDaily',days.map(function(x){return barRow(x[0],x[1],dmax,'var(--a)')}).join(''));
+}
+
 function findLead(id){return state.leads.find(function(x){return x.id===id})||state.results.find(function(x){return x.id===id})}
 function toggleSave(id){const l=findLead(id);if(!l)return;l.saved=!l.saved;updateCounts();renderLeads();saveUD();showToast(l.saved?'⭐ Saved '+esc(l.name):'Removed from saved','info')}
 function delLead(id){
@@ -3030,7 +3892,7 @@ function openLead(id){
  const notes=state.notes[l.id]||[];
  const nl=el('m-notes-list');
  if(nl)nl.innerHTML=notes.length?notes.map(function(n){return '<div class="crm-item-note" style="margin-bottom:6px">'+esc(n.text)+'<div style="font-size:10px;color:var(--muted);margin-top:3px">'+n.time+'</div></div>'}).join(''):'<div style="color:var(--muted);font-size:12px;margin-bottom:10px">No notes yet</div>';
- setH('modal-script-content',buildScript(l));
+ setH('modal-script-content',buildScript(l)+buildVoiceNote(l));
  setH('modal-wa-content',waCardHTML(l));
  setH('modal-email-content',emailCardHTML(l));
  setH('modal-mockup-content',buildMockup(l));
@@ -3068,9 +3930,32 @@ function invoiceLead(id){
  showToast('🧾 Client details filled','success');
 }
 function waTemplate(name,city,ind,type){
- const it=INTEL[ind]||INTEL['Home Services'];
+ const userName=me();
+ const bizName=myBiz();
  const gap=type==='no-website'?"doesn't seem to have a website yet":'website looks a bit outdated';
- return 'Hi '+name+'! 👋 I\'m '+me()+' from '+myBiz()+'.\n\nI noticed your '+ind.toLowerCase()+' business in '+city+' '+gap+' — and that\'s usually costing you customers.\n\nWe build '+it.value+'.\n\n⚡ One-time from $490 — no monthly fees\n⚡ Live in 7 days — we handle everything\n\nWant me to send a *free mock-up* of what yours could look like? No cost, no obligation 🙂';
+ return `Hi *${name}* 👋
+
+I'm *${userName}* from *${bizName}*.
+
+I noticed your *${ind}* business in *${city}* ${gap}.
+
+That's usually costing you customers every single day.
+
+Here's what makes us different 👇
+
+🔥 Every website comes with a *FREE custom mobile app*
+→ Live on Play Store + App Store
+→ At zero extra cost. You only pay for the website.
+
+⚡ Live *the same day* (within 24 hours)
+⚡ We handle everything
+⚡ Built specifically for *${ind}* businesses
+
+When you're free, we can jump on a quick Google Meet so I can show you exactly what yours would look like.
+
+No cost. No pressure.
+
+Just reply "Yes" and I'll lock in a time 👇`;
 }
 function waLead(id){
  const l=findLead(id);if(!l)return;
@@ -3098,15 +3983,37 @@ function renderWA(){
 function openWaGeneric(i){window.open('https://wa.me/?text='+encodeURIComponent(state.waMsgs[i]),'_blank')}
 function scriptSection(t,html){return '<div class="script-section"><h4>'+t+'</h4><div class="script-text"><button class="script-copy" onclick="event.stopPropagation();copyEl(this)">copy</button>'+html+'</div></div>'}
 function buildScript(l){
- const it=INTEL[l.industry]||INTEL['Home Services'];
+ const userName=me();
+ const bizName=myBiz();
+ const name=l.name||'there';
+ const city=l.city||'';
+ const ind=l.industry||l.ind||'business';
  const nw=l.type==='no-website';
- const gap=nw?"don't seem to have a website":'website looks like it hasn\'t been updated in years';
- return '<div class="script-card"><div class="script-head"><h3>📞 Cold Call Script — '+esc(l.name)+(l.city?' <span style="color:var(--muted);font-weight:400">('+esc(l.city)+')</span>':'')+'</h3><span class="badge '+(nw?'badge-ns':'badge-od')+'">'+(nw?'🚫 No Website':'⚠️ Outdated')+'</span></div><div class="script-body">'+
- scriptSection('👋 Opener — first 10 seconds','Hi, am I speaking with the owner of <strong>'+esc(l.name)+'</strong>?<br><br>Perfect! My name is <strong>'+esc(me())+'</strong> from '+esc(myBiz())+' — I\'ll take just 30 seconds. I was searching for '+esc(l.industry.toLowerCase())+' in <em>'+esc(l.city)+'</em> and noticed you '+gap+' — that\'s exactly why I\'m calling.')+
- scriptSection('🎯 The pitch — 20 seconds','Here\'s the thing: '+it.pain+'.<br><br>What we do is simple — we build '+it.value+'. One-time cost of <em>$490–$2,500</em>, live within 7 days, and '+it.busy+'.')+
- scriptSection('🛡 Objection handling','<strong>"I get all my business from word of mouth."</strong><br>That\'s excellent — keep it! But '+it.word+'. A website multiplies word of mouth instead of replacing it.<br><br><strong>"I don\'t have time for this."</strong><br>You don\'t need any time — we do everything: design, text, photos, launch. You just approve.<br><br><strong>"It\'s too expensive."</strong><br>Think of it this way: '+it.miss+' costs you more than the entire website.<br><br><strong>"Just send me some info."</strong><br>Sure — what\'s your WhatsApp or email? I\'ll send a free mock-up of your homepage.')+
- scriptSection('✅ The close','Here\'s my offer: I\'ll create a <strong>free, no-obligation mock-up homepage</strong> for <strong>'+esc(l.name)+'</strong> and send it within 48 hours. If you love it, we talk numbers. If not, you keep it free.<br><br><em>Tip: open the 🎨 Mockup tab and show them the preview right now.</em>')+
- '</div></div>';
+ const gap=nw?"I noticed you don't have a website yet":'I noticed your current website looks a bit outdated';
+ return `<div class="script-card">
+<div class="script-head">
+  <h3>📞 Cold Call Script — ${esc(name)} ${city?`<span style="color:var(--muted);font-weight:400">(${esc(city)})</span>`:''}</h3>
+  <span class="badge ${nw?'badge-ns':'badge-od'}">${nw?'🚫 No Website':'⚠️ Outdated'}</span>
+</div>
+<div class="script-body">
+${scriptSection('👋 OPENING (10–15 seconds)',
+`Hi ${esc(name)}, this is <strong>${esc(userName)}</strong> from <strong>${esc(bizName)}</strong>.<br>Do you have 30 seconds?`)}
+${scriptSection('🎯 THE HOOK',
+`${gap}.<br>Most ${esc(ind)} businesses${city?' in '+esc(city):''} are losing customers every day because of that.`)}
+${scriptSection('🔥 THE DIFFERENCE (this is the key)',
+`Here's what makes us different:<br><br>Every website we build comes with a <strong>free custom mobile app</strong> that goes live on the Play Store and App Store — at no extra cost.<br>You only pay for the website.<br><br>And we deliver the entire thing <strong>the same day — within 24 hours</strong>.`)}
+${scriptSection('💡 VALUE',
+`We handle everything — design, mobile app, publishing, the lot.<br>Built specifically for ${esc(ind)} businesses like yours.`)}
+${scriptSection('✅ THE ASK',
+`When you're free, I can jump on a quick Google Meet and show you exactly what yours would look like.<br>Takes about 10 minutes. No cost, no obligation.<br><br>Would later today or tomorrow work better for you?`)}
+${scriptSection('🛡 IF THEY HESITATE',
+`• "No website needed" → "That's exactly why I'm calling — most of your competitors already have one + a mobile app."<br>
+• "How much?" → "It depends on exactly what you need. Let's jump on a quick call first so I can show you the options."<br>
+• "Send me info" → "Happy to. What's the best WhatsApp number? I'll send a short demo right now."`)}
+${scriptSection('🔒 CLOSE',
+`Perfect. I'll send you a Google Meet link / WhatsApp you the details right after this call.`)}
+</div>
+</div>`;
 }
 function buildFollowup(l){
  return '<div class="script-card"><div class="script-head"><h3>📞 Follow-up Call — Day 3</h3><span class="badge badge-pr">Script 2</span></div><div class="script-body">'+
@@ -3120,10 +4027,31 @@ function buildVoicemail(l){
  scriptSection('Say this after the beep','Hi, this message is for the owner of <strong>'+esc(l.name)+'</strong>. My name is '+esc(me())+' from '+esc(myBiz())+' — I build websites for '+esc(l.industry.toLowerCase())+' in <em>'+esc(l.city)+'</em>. I have a free sample homepage ready to send you — no cost, no catch. You can reach me on WhatsApp. Again — '+esc(me())+', '+esc(myBiz())+'. Thanks!')+
  '</div></div>';
 }
+function buildVoiceNote(l){
+ const userName=me();
+ const bizName=myBiz();
+ const name=l.name||'there';
+ const city=l.city||'';
+ const ind=l.industry||l.ind||'business';
+ const gap=l.type==='no-website'?"doesn't have a proper website yet":'has a website that looks a bit outdated';
+ return `<div class="script-card">
+<div class="script-head">
+  <h3>🎙 Voice Note Script (15 seconds)</h3>
+  <span class="badge badge-pr">Record & Send</span>
+</div>
+<div class="script-body">
+  <div class="script-section">
+    <h4>🎙 RECORD THIS EXACTLY</h4>
+    <div class="script-text"><button class="script-copy" onclick="event.stopPropagation();copyEl(this)">copy</button>Hi ${esc(name)}, this is ${esc(userName)} from ${esc(bizName)}.<br>I noticed your ${esc(ind)} business${city?' in '+esc(city):''} ${gap}.<br><br>We build websites that come with a free custom mobile app on the Play Store and App Store — you only pay for the website, and it's live the same day.<br><br>When you're free, I can jump on a quick Google Meet and show you exactly what yours would look like. No cost.<br><br>Just reply to this message and I'll send the link. Talk soon!</div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin-top:10px">💡 Tip: Record this in a quiet place, smile while talking, and keep it under 18 seconds. Voice notes get much higher reply rates than text.</div>
+</div>
+</div>`;
+}
 function renderScripts(){
  const ind=el('scriptIndustry').value,type=el('scriptType').value;
  const p={id:null,name:'[Business Name]',city:'[City]',country:'',flag:'',industry:ind,type:type,phone:'[Phone]',score:0};
- setH('scriptsArea',nameBarHTML()+buildScript(p)+buildFollowup(p)+buildVoicemail(p)+'<div class="chip chip-orange" style="cursor:default">💡 Personalize the opener with one specific detail — it doubles conversion</div>');
+ setH('scriptsArea',nameBarHTML()+buildScript(p)+buildFollowup(p)+buildVoicemail(p)+buildVoiceNote(p)+'<div class="chip chip-orange" style="cursor:default">💡 Personalize the opener with one specific detail — it doubles conversion</div>');
 }
 function emailCardHTML(l){
  const it=INTEL[l.industry];
@@ -3132,7 +4060,14 @@ function emailCardHTML(l){
  '<div class="email-field"><label>To</label><input value="owner@'+(slug(l.name)||'business')+'.com" readonly></div>'+
  '<div class="email-field"><label>Subject</label><input value="Quick question about '+esc(l.name)+'" readonly></div>'+
  '<div class="email-field"><label>Body</label><textarea class="email-body-area" readonly>'+esc(body)+'</textarea></div>'+
- '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="copyEmailBody(this)">📋 Copy email</button></div></div></div>';
+ '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="copyEmailBody(this)">📋 Copy email</button><button class="btn btn-ghost btn-sm" onclick="mailLead(\''+l.id+'\',this)">📤 Mail client</button></div></div></div>';
+}
+function mailLead(id,btn){
+ const l=findLead(id);if(!l)return;
+ const card=btn.closest('.email-card');
+ const subj=card.querySelectorAll('input')[1].value,body=card.querySelector('textarea').value;
+ markContacted(l.id,'email');
+ location.href='mailto:?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
 }
 function renderEmails(){
  const ind=el('emailIndustry').value;const it=INTEL[ind];
@@ -3147,7 +4082,7 @@ function renderEmails(){
  }).join(''));
 }
 function copyEmailBody(btn){const ta=btn.closest('.email-card').querySelector('textarea');copyStr(ta.value)}
-function openMail(i){const e=state.emails[i];location.href='mailto:?subject='+encodeURIComponent(e.s)+'&body='+encodeURIComponent(e.b)}
+function openMail(i){const e=state.emails[i];logAct('email','template email');location.href='mailto:?subject='+encodeURIComponent(e.s)+'&body='+encodeURIComponent(e.b)}
 const v=id=>el(id)?el(id).value:'';
 function curSym(){const c=el('inv-currency');return c?c.value.split(' ').pop():'$'}
 function money(n){return curSym()+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2})}
@@ -3276,6 +4211,7 @@ function previewInvoice(){
 }
 function recordInvoice(d,status){
  state.invoices.unshift({num:d.num,to:d.to.name||'Client',total:money(d.total),status:status,date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});
+ logAct('invoice',(d.num||'Invoice')+' to '+(d.to.name||'Client')+' — '+money(d.total));
  saveUD();
  if(state.view==='invoice-history')renderInvHistory();
 }
@@ -3288,9 +4224,61 @@ function sendInvoiceWA(){
  recordInvoice(d,'sent');closeM('invoiceModal');
  showToast('💬 Invoice '+d.num+' sent via WhatsApp','success');
 }
+function invoiceEmail(d){
+ const subject='Invoice '+d.num+' from '+(d.from.name||myBiz())+' — '+money(d.total)+' due '+d.due;
+ const L=[];
+ L.push('Hi '+(d.to.person||d.to.name||'there')+',','');
+ L.push('Thank you for your business! Please find your invoice details below.','');
+ L.push('INVOICE '+d.num);
+ L.push('Issued: '+d.date+'   |   Due: '+d.due+' ('+d.terms+')','');
+ L.push('ITEMS');
+ d.items.forEach(function(i){L.push('• '+i.desc+' — '+i.q+' × '+money(i.p)+' = '+money(i.amt))});
+ L.push('');
+ L.push('Subtotal: '+money(d.sub));
+ if(d.dis)L.push('Discount ('+d.dp+'%): -'+money(d.dis));
+ if(d.tax)L.push('Tax ('+d.tp+'%): '+money(d.tax));
+ if(d.shipping)L.push('Shipping: '+money(d.shipping));
+ L.push('TOTAL DUE: '+money(d.total),'');
+ if(d.payment)L.push('HOW TO PAY',d.payment,'');
+ if(d.stripe)L.push('Pay by card (Stripe): '+d.stripe);
+ if(d.paypal)L.push('Pay with PayPal: '+d.paypal);
+ if(d.stripe||d.paypal)L.push('');
+ if(d.notes)L.push('Notes: '+d.notes,'');
+ L.push('If you have any questions, just reply to this email.','');
+ L.push('Kind regards,',d.from.person||meFull(),d.from.name||myBiz());
+ if(d.from.phone)L.push(d.from.phone);
+ if(d.from.email)L.push(d.from.email);
+ return {to:(d.to.email||'').trim(),subject:subject,body:L.join('\n')};
+}
+function invEmailReady(d){
+ const to=(d.to.email||'').trim();
+ if(!to){showToast('Add the client email first','error');const f=el('inv-to-email');if(f){f.focus();f.scrollIntoView({block:'center'})}return false}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)){showToast('That client email doesn\'t look right','error');return false}
+ return true;
+}
+function gmailInvoice(){
+ const d=invData();if(!invEmailReady(d))return;
+ const m=invoiceEmail(d);
+ const web='https://mail.google.com/mail/?view=cm&fs=1&to='+encodeURIComponent(m.to)+'&su='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.body);
+ const ua=navigator.userAgent||'';
+ if(/Android/i.test(ua)){
+  // Opens the Gmail app with everything filled in; falls back to Gmail in the browser if the app isn't installed
+  location.href='intent:'+encodeURIComponent(m.to)+'?subject='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.body)+'#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url='+encodeURIComponent(web)+';end';
+ }else if(/iPhone|iPad|iPod/i.test(ua)){
+  location.href='googlegmail://co?to='+encodeURIComponent(m.to)+'&subject='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.body);
+  setTimeout(function(){if(!document.hidden)window.open(web,'_blank')},1200);
+ }else{
+  const w=window.open(web,'_blank');if(!w)location.href=web;
+ }
+ recordInvoice(d,'sent');closeM('invoiceModal');
+ showToast('✉️ Gmail opening — invoice '+d.num+' for '+esc(m.to),'success');
+}
 function emailInvoice(){
- const d=invData();recordInvoice(d,'sent');closeM('invoiceModal');
- showToast('📧 Invoice '+d.num+' emailed to '+(d.to.email||'client'),'success');
+ const d=invData();if(!invEmailReady(d))return;
+ const m=invoiceEmail(d);
+ location.href='mailto:'+encodeURIComponent(m.to)+'?subject='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.body);
+ recordInvoice(d,'sent');closeM('invoiceModal');
+ showToast('📧 Email app opening — invoice '+d.num+' for '+esc(m.to),'success');
 }
 function printInvoice(){
  const d=invData();
@@ -3325,6 +4313,7 @@ function markPaid(i){
   UD.payments=UD.payments||[];
   UD.payments.unshift({client:iv.to,amount:amt,date:new Date().toISOString().slice(0,10),note:'Invoice '+iv.num,ref:iv.num});
   showToast('✅ Payment logged — '+iv.total+' from '+esc(iv.to),'success');
+  logAct('payment',iv.to+' — '+iv.total);
  }else{
   UD.payments=(UD.payments||[]).filter(function(p){return p.ref!==iv.num});
   showToast('Invoice marked as sent','info');
@@ -3351,7 +4340,8 @@ function dropCard(e,col){
   if(p){
    const was=p.s;
    p.s=col;
-   if(col===5&&was!==5){confetti();showToast('🎉 DEAL CLOSED — '+esc(p.name)+'!','success')}
+   if(col===5&&was!==5){confetti();showToast('🎉 DEAL CLOSED — '+esc(p.name)+'!','success');logAct('deal',p.name+' — '+p.val)}
+   else if(col!==was)logAct('stage',p.name+' → '+PSTAGES[col].n)
   }
   dragId=null;renderPipeline();saveUD();
  }
@@ -3366,6 +4356,7 @@ function addPipelineLead(){
  showToast('✅ '+esc(name)+' added to pipeline','success');
 }
 function renderCRM(){
+ if(!CRMS.length){setH('crmArea','<div class="empty-state"><div class="empty-icon">🗂</div><h3>No CRM notes yet</h3><p>Add a note after each conversation to keep track of your deals</p></div>');return}
  setH('crmArea',CRMS.map(function(c){
   return '<div class="crm-item"><div class="crm-item-top"><div><div class="crm-item-name">'+esc(c.name)+'</div><div class="crm-item-meta">'+esc(c.meta)+'</div></div>'+
   '<span class="tag '+(c.tag==='Hot'?'tag-hot':c.tag==='Warm'?'tag-warm':'tag-new')+'">'+esc(c.tag)+'</span></div>'+
