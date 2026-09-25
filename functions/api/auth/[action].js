@@ -31,6 +31,10 @@ export async function onRequest(context) {
         return json({ error: 'Name, email and password (min 6 chars) required' }, 400, cors);
       }
 
+      if (!(await signupsOpen(env)) && email.toLowerCase() !== OWNER_EMAIL) {
+        return json({ error: 'New sign-ups are closed right now' }, 403, cors);
+      }
+
       const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase()).first();
       if (existing) {
         return json({ error: 'Email already registered' }, 409, cors);
@@ -64,7 +68,11 @@ export async function onRequest(context) {
 
       const hash = await hashPassword(password, user.salt);
       if (hash !== user.hash) {
-        return json({ error: 'Incorrect email or password' }, 401, cors);
+        return json({ error: 'Incorrect email or password', exists: true }, 401, cors);
+      }
+
+      if (await isBanned(env, user)) {
+        return json({ error: 'This account has been suspended. Contact the owner.' }, 403, cors);
       }
 
       const sessionId = await createSession(env, user.id);
@@ -93,6 +101,7 @@ export async function onRequest(context) {
       const user = await env.DB.prepare('SELECT id, name, email, biz, owner_unlocked FROM users WHERE id = ?')
         .bind(session.user_id).first();
       if (!user) return json({ error: 'User not found' }, 404, cors);
+      if (await isBanned(env, user)) return json({ error: 'This account has been suspended' }, 403, cors);
 
       return json({ ok: true, user }, 200, cors);
     }
@@ -114,6 +123,24 @@ export async function onRequest(context) {
 }
 
 // Helper functions
+const OWNER_EMAIL = 'delonmayne@gmail.com';
+
+// Owner switches live in wd_site (created by /api/wd). Missing table = defaults.
+async function signupsOpen(env) {
+  try {
+    const row = await env.DB.prepare("SELECT v FROM wd_site WHERE k = 'config'").first();
+    if (!row) return true;
+    return JSON.parse(row.v).allowSignups !== false;
+  } catch (e) { return true; }
+}
+async function isBanned(env, user) {
+  if (String(user.email || '').toLowerCase() === OWNER_EMAIL) return false;
+  try {
+    const f = await env.DB.prepare('SELECT banned FROM wd_flags WHERE user_id = ?').bind(user.id).first();
+    return !!(f && f.banned);
+  } catch (e) { return false; }
+}
+
 function json(data, status = 200, cors = {}) {
   return new Response(JSON.stringify(data), {
     status,
