@@ -35,6 +35,13 @@ function json(data, status = 200) {
 const int = (v, max = 1e9) => Math.max(0, Math.min(max, Math.floor(Number(v) || 0)));
 const str = (v, max = 120) => String(v == null ? '' : v).slice(0, max);
 
+// same password scrambling as functions/api/auth/[action].js (passwords are never stored in plain text)
+async function wdHash(pw, salt) {
+  const data = new TextEncoder().encode('wd·' + salt + '·' + pw + '·' + salt);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 async function ensureTables(DB) {
   await DB.batch([
     DB.prepare('CREATE TABLE IF NOT EXISTS wd_site (k TEXT PRIMARY KEY, v TEXT)'),
@@ -78,13 +85,46 @@ async function handleWd(context, segs) {
     }
     if (path === 'pulse' && m === 'GET') return handlePulse(DB);
 
+    // ---------- announcements: everyone reads, only the owner posts ----------
+    if (path === 'anns' && m === 'GET') {
+      await DB.prepare('CREATE TABLE IF NOT EXISTS wd_anns (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, title TEXT, body TEXT, created INTEGER)').run();
+      const res = await DB.prepare('SELECT id, type, title, body, created FROM wd_anns ORDER BY id DESC LIMIT 50').all();
+      return json({ ok: true, anns: res.results || [] });
+    }
+
     const me = await authUser(request, DB);
     if (!me) return json({ error: 'Please sign in again' }, 401);
     const flags = (await DB.prepare('SELECT hidden, banned, badge FROM wd_flags WHERE user_id = ?').bind(me.id).first()) || { hidden: 0, banned: 0, badge: '' };
     if (flags.banned && !me.isOwner) return json({ error: 'This account has been suspended' }, 403);
 
+    // ---------- change my password ----------
+    if (path === 'change-password' && m === 'POST') {
+      const b = await request.json().catch(() => ({}));
+      const cur = String(b.current || ''), next = String(b.next || '');
+      if (next.length < 6) return json({ error: 'New password must be at least 6 characters' }, 400);
+      const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
+      if (!u || (await wdHash(cur, u.salt)) !== u.hash) return json({ error: 'Your current password is not correct' }, 401);
+      const salt = Math.random().toString(36).slice(2, 10);
+      await DB.prepare('UPDATE users SET salt = ?, hash = ? WHERE id = ?').bind(salt, await wdHash(next, salt), me.id).run();
+      const sid = request.headers.get('Authorization')?.replace('Bearer ', '');
+      await DB.prepare('DELETE FROM sessions WHERE user_id = ? AND id <> ?').bind(me.id, sid || '').run();   // log out other devices
+      return json({ ok: true });
+    }
+
     if (path === 'me' && m === 'GET') {
       return json({ ok: true, owner: me.isOwner, badge: flags.badge || '', hidden: !!flags.hidden, name: me.name });
+    }
+
+    if ((path === 'anns' && m === 'POST') || (path === 'anns/delete' && m === 'POST')) {
+      if (!me.isOwner) return json({ error: 'Only the owner can post announcements' }, 403);
+      await DB.prepare('CREATE TABLE IF NOT EXISTS wd_anns (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, title TEXT, body TEXT, created INTEGER)').run();
+      const b = await request.json().catch(() => ({}));
+      if (path === 'anns/delete') { await DB.prepare('DELETE FROM wd_anns WHERE id = ?').bind(int(b.id)).run(); return json({ ok: true }); }
+      const type = ['update', 'feature', 'notice', 'maintenance'].includes(b.type) ? b.type : 'notice';
+      const title = str(b.title, 140).trim(), body = str(b.body, 5000).trim();
+      if (!title || !body) return json({ error: 'Add a title and a message' }, 400);
+      await DB.prepare('INSERT INTO wd_anns (type, title, body, created) VALUES (?,?,?,?)').bind(type, title, body, Date.now()).run();
+      return json({ ok: true });
     }
 
     const grown = await handleGrowth({ request, env, DB, path, m, me });
@@ -99,7 +139,7 @@ async function handleWd(context, segs) {
         name: str(b.name ?? cur.name, 40).trim() || DEFAULT_SITE.name,
         version: str(b.version ?? cur.version, 20).trim(),
         tagline: str(b.tagline ?? cur.tagline, 140),
-        banner: str(b.banner ?? cur.banner, 280),
+        banner: str(b.banner ?? cur.banner, 2000),
         bannerOn: !!(b.bannerOn ?? cur.bannerOn),
         maintenance: !!(b.maintenance ?? cur.maintenance),
         maintenanceMsg: str(b.maintenanceMsg ?? cur.maintenanceMsg, 200),
@@ -180,6 +220,35 @@ async function handleWd(context, segs) {
         const sums = await q('SELECT COALESCE(SUM(leads),0) AS leads, COALESCE(SUM(contacts),0) AS contacts, COALESCE(SUM(deals),0) AS deals, COALESCE(SUM(sales),0) AS sales, COALESCE(SUM(proposals),0) AS proposals FROM wd_profiles');
         const banned = await q('SELECT COUNT(*) AS n FROM wd_flags WHERE banned = 1');
         return json({ ok: true, stats: { users: users.n || 0, newWeek: newWeek.n || 0, activeWeek: active.n || 0, banned: banned.n || 0, ...sums } });
+      }
+
+      // ---- support: view one user's account data (read-only) ----
+      if (path === 'admin/user-data' && m === 'GET') {
+        const id = str(new URL(request.url).searchParams.get('id'), 80);
+        const u = await DB.prepare('SELECT id, name, email, biz, created FROM users WHERE id = ?').bind(id).first();
+        if (!u) return json({ error: 'User not found' }, 404);
+        await DB.prepare('CREATE TABLE IF NOT EXISTS user_data (user_id TEXT PRIMARY KEY, data TEXT, updated INTEGER)').run();
+        const row = await DB.prepare('SELECT data, updated FROM user_data WHERE user_id = ?').bind(id).first();
+        let data = null; try { data = row ? JSON.parse(row.data) : null; } catch (e) { data = null; }
+        const prof = await DB.prepare('SELECT * FROM wd_profiles WHERE user_id = ?').bind(id).first();
+        const last = await DB.prepare('SELECT MAX(created) AS t FROM sessions WHERE user_id = ?').bind(id).first();
+        return json({ ok: true, user: u, profile: prof || null, data, synced: row ? row.updated : null, lastLogin: last ? last.t : null });
+      }
+
+      // ---- support: reset a user's password to a temporary one ----
+      if (path === 'admin/reset-password' && m === 'POST') {
+        const b = await request.json().catch(() => ({}));
+        const u = await DB.prepare('SELECT id, email FROM users WHERE id = ?').bind(str(b.id, 80)).first();
+        if (!u) return json({ error: 'User not found' }, 404);
+        if (String(u.email).toLowerCase() === OWNER_EMAIL) return json({ error: 'Change your own password from Settings' }, 400);
+        const abc = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+        const rnd = crypto.getRandomValues(new Uint8Array(10));
+        const temp = Array.from(rnd).map(x => abc[x % abc.length]).join('');
+        const salt = Math.random().toString(36).slice(2, 10);
+        const hash = await wdHash(temp, salt);
+        await DB.prepare('UPDATE users SET salt = ?, hash = ? WHERE id = ?').bind(salt, hash, u.id).run();
+        await DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(u.id).run();
+        return json({ ok: true, email: u.email, tempPassword: temp });
       }
 
       if (path === 'admin/user' && m === 'POST') {
