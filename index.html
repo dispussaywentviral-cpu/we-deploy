@@ -625,7 +625,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .prop-amt{font-size:22px;font-weight:800}
 @media(max-width:900px){.prop-grid{grid-template-columns:minmax(0,1fr)}.oc-btn{padding:14px 8px}}
 .site-banner{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(90deg,rgba(255,107,26,.18),rgba(255,179,71,.08));border-bottom:1px solid rgba(255,107,26,.3);font-size:13px;font-weight:600}
-.site-banner span:first-of-type{flex:1}.sb-x{cursor:pointer;opacity:.7;padding:0 4px}
+.site-banner span:first-of-type{flex:0 0 auto}.site-banner .sb-text{text-align:left}.sb-x{cursor:pointer;opacity:.7;padding:0 4px}
 #maintScreen{position:fixed;inset:0;z-index:5000;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px}
 .rank-card{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(167,139,250,.08));border:1px solid rgba(255,140,66,.25);border-radius:16px;padding:14px 16px;flex-wrap:wrap}
 .rank-lvl{width:68px;height:68px;border-radius:50%;background:var(--panel2);border:2px solid var(--a);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
@@ -695,6 +695,16 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .theme-dot{width:34px;height:34px;border-radius:50%;margin:0 auto 6px}.theme-n{font-size:12px;font-weight:700}.theme-l{font-size:10px;color:var(--muted)}
 .auth-pulse{font-size:12px;color:var(--text2);margin-top:10px;padding:8px 12px;border-radius:99px;background:rgba(82,201,122,.1);border:1px solid rgba(82,201,122,.25);display:inline-block}
 @media(max-width:900px){.money-v{font-size:28px}.champ-row{gap:4px}}
+.dev-card{border-color:rgba(246,200,95,.5)!important;background:linear-gradient(135deg,rgba(246,200,95,.16),rgba(244,114,182,.08))!important}
+.dev-lvl{border-color:#f6c85f!important}.dev-lvl .rank-num{color:#f6c85f}
+.dev-titles{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.dev-titles span{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:rgba(246,200,95,.14);color:#f6c85f;border:1px solid rgba(246,200,95,.3)}
+.dev-rp{border-color:#f6c85f!important;background:linear-gradient(135deg,rgba(246,200,95,.14),transparent)!important}
+.dev-ok{font-size:13px;line-height:1.6;padding:12px;border-radius:12px;border:1px solid rgba(82,201,122,.35);background:rgba(82,201,122,.08)}.dev-ok span{color:var(--muted);font-size:12px}
+.sb-text{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;cursor:pointer;line-height:1.45}
+.sb-more{flex-shrink:0;border:1px solid rgba(255,140,66,.5);background:rgba(255,140,66,.12);color:var(--a);font-weight:700;font-size:11px;padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit}
+.banner-full{white-space:pre-wrap;font-size:14px;line-height:1.7;color:var(--text)}
+table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.data-table td{padding:7px 5px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;text-align:left}
+.pwr-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.08em;text-align:center;padding:14px;border-radius:12px;background:var(--panel2);border:1px dashed var(--a);color:var(--a);user-select:all}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
 .btn-gmail:hover{background:#f6f8fc;border-color:#ea4335}
 .tag-cold{background:rgba(148,163,184,.15);color:var(--muted)}
@@ -794,7 +804,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   <div class="logo-wrap">
     <div class="logo-icon">🎯</div>
     <div class="logo-text">We<span>Deploy</span></div>
-    <span id="versionBadge" style="font-size:10px;color:var(--muted);background:var(--panel3);padding:2px 7px;border-radius:99px;margin-left:6px">v10.0</span>
+    <span id="versionBadge" style="font-size:10px;color:var(--muted);background:var(--panel3);padding:2px 7px;border-radius:99px;margin-left:6px">v10.4</span>
   </div>
   <div class="topbar-sep"></div>
   <div class="topbar-search">
@@ -819,7 +829,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="avatar" id="avatar" title="Account menu" onclick="toggleUserMenu()">WD</div>
   </div>
 </header>
-<div class="site-banner" id="siteBanner" style="display:none">📢 <span id="siteBannerText"></span><span class="sb-x" onclick="this.parentElement.style.display='none'" title="Hide">✕</span></div>
+<div class="site-banner" id="siteBanner" style="display:none"><span style="flex-shrink:0">📢</span><span id="siteBannerText" class="sb-text" onclick="openBanner()"></span><button class="sb-more" id="sbMore" onclick="openBanner()">Read more</button><span class="sb-x" onclick="this.parentElement.style.display='none'" title="Hide">✕</span></div>
 
 <div class="body">
 <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
@@ -960,7 +970,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         <div style="font-size:11px;color:var(--muted)">Create & send</div>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.0</span></div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.4</span></div>
   </div>
 </div>
 
@@ -1140,7 +1150,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 
 <div class="view" id="view-invoice">
   <div class="page-head">
-    <div class="page-head-left"><h1>🧾 Invoice Builder</h1><p>Owner-only tool — create, preview and download professional invoices</p></div>
+    <div class="page-head-left"><h1>🧾 Invoice Builder</h1><p>Private — other users can't see your invoices</p></div>
     <div class="page-head-right">
       <div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div>
       <button class="btn btn-ghost btn-sm" onclick="sv('invoice-history')">📂 History</button>
@@ -1328,7 +1338,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
         </table>
       </div>
     </div>
-    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.0</span></div>
+    <div class="footer-credit">🎯 We Deploy • Engineered by <strong>Lameero Mendoza</strong> • <span class="appVer">v10.4</span></div>
   </div>
 </div>
 
@@ -1477,7 +1487,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
           <div style="font-size:11px;color:var(--muted);margin:-4px 0 10px"><span id="op-default-ver"></span> • leave the version empty to use it • <a style="color:var(--a);cursor:pointer" onclick="resetVersion()">reset</a></div>
           <div class="form-group" style="margin-bottom:10px"><label>Tagline (sign-in screen)</label><input id="op-tagline" maxlength="140"></div>
           <h3 style="margin-top:6px">📢 Site-wide banner</h3>
-          <div class="form-group" style="margin-bottom:6px"><label>Message shown at the top for everyone</label><input id="op-banner" maxlength="280" placeholder="e.g. 🎉 New: Proposals + Leaderboard are live!"></div>
+          <div class="form-group" style="margin-bottom:6px"><label>Message shown at the top for everyone <span id="op-banner-count" style="float:right;font-weight:500;letter-spacing:0"></span></label><textarea id="op-banner" rows="8" maxlength="2000" oninput="bannerCount()" placeholder="Write as much as you like — long updates, lists, emojis… Users see the first lines at the top and tap &quot;Read more&quot; for the full message." style="resize:vertical;min-height:170px;line-height:1.5"></textarea></div>
           <label class="op-switch"><span>Show banner</span><input type="checkbox" id="op-bannerOn"></label>
           <div class="form-group" style="margin:10px 0 6px"><label>💡 Tip of the day (leave empty for the built-in daily tips)</label><input id="op-tip" maxlength="280" placeholder="e.g. Call restaurants between 2–4pm"></div>
           <h3 style="margin-top:12px">⚙️ Switches</h3>
@@ -1562,8 +1572,8 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
           <h3>🧹 Start Fresh</h3><p>Reset your leads, invoices, pipeline, payments, stats and XP back to zero</p>
           <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openM('freshModal')">🧹 Reset everything to zero</button>
         </div>
-        <div class="settings-section">
-          <h3>👑 Owner Access</h3><p>Unlock the Invoice Builder and Announcement posting (Lameero Mendoza only)</p>
+        <div class="settings-section" id="ownerAccessBox">
+          <h3>👑 Owner Access</h3><p>Unlock owner tools (Lameero Mendoza only)</p>
           <button class="btn btn-primary btn-sm" onclick="openM('ownerUnlockModal')">👑 Unlock Owner Access</button>
         </div>
         <div class="settings-section">
@@ -1818,6 +1828,41 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   </div>
 </div>
 
+<!-- FULL BANNER MESSAGE -->
+<div class="modal-overlay" id="bannerModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head"><h2>📢 Message from the team</h2><div class="modal-close" onclick="closeM('bannerModal')" title="Close">✕</div></div>
+    <div class="modal-body"><div class="banner-full" id="bannerFull"></div></div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="closeM('bannerModal')">Got it 👍</button></div>
+  </div>
+</div>
+
+<!-- OWNER: VIEW USER ACCOUNT -->
+<div class="modal-overlay" id="userViewModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head"><div><h2>👁 <span id="uv-name">Account</span></h2><div style="font-size:11px;color:var(--muted);margin-top:3px">Read-only support view • owner only</div></div><div class="modal-close" onclick="closeM('userViewModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="seg-tabs" id="uvTabs">
+        <div class="seg-tab active" data-t="summary" onclick="uvTab('summary')">👤 Summary</div>
+        <div class="seg-tab" data-t="invoices" onclick="uvTab('invoices')">🧾 Invoices</div>
+        <div class="seg-tab" data-t="leads" onclick="uvTab('leads')">🏢 Leads</div>
+        <div class="seg-tab" data-t="pipeline" onclick="uvTab('pipeline')">📋 Pipeline</div>
+        <div class="seg-tab" data-t="payments" onclick="uvTab('payments')">💰 Payments</div>
+        <div class="seg-tab" data-t="activity" onclick="uvTab('activity')">⚡ Activity</div>
+      </div>
+      <div id="uv-body" style="overflow-x:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OWNER: PASSWORD RESET RESULT -->
+<div class="modal-overlay" id="pwResetModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h2>🔑 Password reset</h2><div class="modal-close" onclick="closeM('pwResetModal')" title="Close">✕</div></div>
+    <div class="modal-body" id="pwr-body"></div>
+  </div>
+</div>
+
 <!-- OWNER UNLOCK MODAL -->
 <div class="modal-overlay" id="ownerUnlockModal">
   <div class="modal" style="max-width:420px">
@@ -1872,7 +1917,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="modal-body">
       <div class="form-group" style="margin-bottom:10px"><label>Type</label><select class="filter-input" id="annf-type"><option value="update">🚀 Update (new version)</option><option value="feature">✨ New Feature</option><option value="notice">📢 Notice</option><option value="maintenance">🔧 Maintenance</option></select></div>
       <div class="form-group" style="margin-bottom:10px"><label>Title</label><input class="filter-input" id="annf-title" placeholder="e.g. v9.1 is live!"></div>
-      <div class="form-group"><label>Message</label><textarea class="filter-input" id="annf-body" rows="4" placeholder="Tell your users what's new…" style="resize:vertical"></textarea></div>
+      <div class="form-group"><label>Message</label><textarea class="filter-input" id="annf-body" rows="10" maxlength="5000" placeholder="Tell your users what's new…" style="resize:vertical;min-height:200px;line-height:1.5"></textarea></div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="saveAnn()">📢 Publish</button>
@@ -1969,7 +2014,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
       <div class="about-hero">
         <div class="about-logo">🎯</div>
         <div class="about-name">We<span>Deploy</span></div>
-        <div class="about-version">Lead Finder Pro • <span class="appVer">v10.0</span></div>
+        <div class="about-version">Lead Finder Pro • <span class="appVer">v10.4</span></div>
       </div>
       <div class="about-credit">
         <div class="ac-role">Engineered by</div>
@@ -2168,7 +2213,7 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
     <div class="um-biz" id="um-biz"></div>
     <div class="um-role" id="um-role"></div>
   </div>
-  <div class="um-item gold" onclick="toggleUserMenu();openM('ownerUnlockModal')">👑 Unlock Owner Access</div>
+  <div class="um-item gold" id="umUnlock" onclick="toggleUserMenu();openM('ownerUnlockModal')">👑 Unlock Owner Access</div>
   <div class="um-item" onclick="openAnnouncements();toggleUserMenu()">📢 Announcements</div>
   <div class="um-item" onclick="openSupport();toggleUserMenu()">🎧 Support & Feedback</div>
   <div class="um-item" onclick="toggleUserMenu();openFAQ()">❓ FAQ</div>
@@ -2380,8 +2425,9 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='10.0';   // ← Change this number whenever you update the site
+const APP_VERSION='10.4';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
+function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
  if(!CUR)return false;
  const em=String(CUR.email||'').toLowerCase().trim();
@@ -2406,17 +2452,18 @@ function applyOwnerGates(){
  const own=isOwner();
  const no=el('navOwner');if(no)no.style.display=own?'':'none';
  const uo=el('umOwner');if(uo)uo.style.display=own?'':'none';
+ const inv0=canInvoice();
  const pill=el('pillInvoice');
- if(pill)pill.style.display=own?'':'none';
+ if(pill)pill.style.display=inv0?'':'none';
  const inv=el('navInvoice');
- if(inv)inv.classList.toggle('locked',!own);
+ if(inv)inv.classList.toggle('locked',!inv0);
  const badge=el('invBadge');
- if(badge)badge.textContent=own?'👑 Owner':'🔒';
+ if(badge)badge.textContent='🔒 Private';
  const card=el('dashInvCard');
  if(card){
-  if(own){
+  if(inv0){
    card.setAttribute('onclick',"sv('invoice')");
-   card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Create & send</div>';
+   card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Create & send • private</div>';
   }else{
    card.setAttribute('onclick',"openM('ownerUnlockModal')");
    card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Owner only</div>';
@@ -2425,7 +2472,7 @@ function applyOwnerGates(){
 }
 const FAQS=[
  {q:'How do I find leads in my city?',a:'Go to Find New Leads (🔍 in the top bar), pick a country, pick a city (or leave it for countrywide), choose an industry and lead type, then hit Search. Click ➕ Add to Leads to save them.'},
- {q:"Why can't I see the Invoice Builder?",a:"The Invoice Builder is owner-only — reserved for Lameero Mendoza. If that's you, unlock it from the avatar menu → 👑 Unlock Owner Access (verify with the owner email), or sign in with the owner email directly. Other members request invoices via Support."},
+ {q:'Can other people see my invoices?',a:"No — other users can never see your invoices, business details or payment info, and you can't see theirs. The site owner can view accounts only to help with support (for example if something isn't working or you're locked out). Your password is never visible to anyone — it's stored scrambled."},
  {q:'How do I get paid / log a payment?',a:'Earnings view (💰 in the sidebar): click "+ Log Payment". Also, marking an invoice as Paid in the Invoice History auto-logs the payment into your earnings and the revenue chart.'},
  {q:"What's the difference between No Website and Outdated?",a:"No-website businesses have zero online presence — they get the highest opportunity scores (72–95). Outdated means their site is old (pre-2015) — easier to pitch because they already value having a site."},
  {q:"How do I show a client their future website?",a:"Open any lead → 🎨 Mockup tab — a realistic preview of their future site, themed for their industry. Show it during the call, then use the pitch line underneath it."},
@@ -3088,7 +3135,7 @@ function startApp(u,isNew){
    const shell=el('appShell');
    if(shell){shell.classList.remove('reveal');void shell.offsetWidth;shell.style.display='';shell.classList.add('reveal')}
    showToast(isNew?'🎉 Welcome to '+siteName()+', '+esc(u.name.split(' ')[0])+'!':'👋 Welcome back, '+esc(u.name.split(' ')[0])+'!','success');
-   if(isOwner())setTimeout(function(){showToast('👑 Owner verified — Invoice Builder unlocked. Welcome, Lameero Mendoza.','success')},1600);
+   if(isOwner())setTimeout(function(){showToast('👑 Owner verified — welcome back, Lameero Mendoza.','success')},1600);
    if(!aiWelliked){}else{}
    if(!aiWelcomed){aiUnreadN=1;const a=el('aiUnread');if(a){a.textContent='1';a.style.display='grid'}}
   });
@@ -3136,6 +3183,7 @@ function bootApp(){
  try{updateStreak()}catch(e){console.warn(e)}
  try{updateReminderBtn();setTimeout(function(){checkDueReminders(false)},3000)}catch(e){}
  try{growthBoot()}catch(e){console.warn(e)}
+ try{loadAnns()}catch(e){}
  try{refreshInvNum();applySite();loadSite();renderMyRank();syncOwnerFlags();setTimeout(function(){pushProfile(true)},4000)}catch(e){console.warn(e)}
  if(UD&&!UD.role&&!state.rolePrompted){state.rolePrompted=true;setTimeout(function(){try{if(UD&&!UD.role)openRolePicker(true)}catch(e){console.warn(e)}},1500)}
  try{const vb=el('versionBadge');if(vb)vb.textContent='v'+APP_VERSION;document.querySelectorAll('.appVer').forEach(function(x){x.textContent='v'+APP_VERSION})}catch(e){}
@@ -3148,11 +3196,7 @@ function bootApp(){
 }
 function sv(v){
  if(v==='owner'&&!isOwner()){showToast('👑 Owner only','error');return}
- if((v==='invoice'||v==='invoice-history')&&!isOwner()){
-  showToast('🔐 The Invoice Builder is reserved for Lameero Mendoza. Unlock owner access to use it.','error');
-  openM('ownerUnlockModal');
-  return;
- }
+ if((v==='invoice'||v==='invoice-history')&&!canInvoice()){showToast('🔐 Sign in to use your private Invoice Builder','error');return}
  state.view=v;
  if(window.innerWidth<=900)closeSidebar();
  document.querySelectorAll('.view').forEach(function(x){x.classList.toggle('active',x.id==='view-'+v)});
@@ -3353,7 +3397,7 @@ function rowHTML(l){
  '<div class="act-btn call" title="Call" onclick="event.stopPropagation();markContacted(\''+l.id+'\',\'call\');location.href=\'tel:'+l.phone.replace(/ /g,'')+'\'">📞</div>'+
  '<div class="act-btn wa" title="WhatsApp" onclick="event.stopPropagation();waLead(\''+l.id+'\')">💬</div>'+
  '<div class="act-btn" title="Add to Pipeline" onclick="event.stopPropagation();addToPipeline(\''+l.id+'\')">📋</div>'+
- (isOwner()?'<div class="act-btn inv" title="Create Invoice" onclick="event.stopPropagation();invoiceLead(\''+l.id+'\')">🧾</div>':'<div class="act-btn inv" title="Invoice — owner only" style="opacity:.45" onclick="event.stopPropagation();openM(\'ownerUnlockModal\')">🔒</div>')+
+ (canInvoice()?'<div class="act-btn inv" title="Create Invoice" onclick="event.stopPropagation();invoiceLead(\''+l.id+'\')">🧾</div>':'<div class="act-btn inv" title="Invoice — owner only" style="opacity:.45" onclick="event.stopPropagation();openM(\'ownerUnlockModal\')">🔒</div>')+
  '<div class="act-btn save" title="'+(l.saved?'Saved':'Save')+'" onclick="event.stopPropagation();toggleSave(\''+l.id+'\')">'+(l.saved?'⭐':'☆')+'</div>'+
  '<div class="act-btn" title="Hot" style="font-size:12px;opacity:'+(l.statusTag==='hot'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'hot\')">🔥</div>'+
  '<div class="act-btn" title="Warm" style="font-size:12px;opacity:'+(l.statusTag==='warm'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'warm\')">🟡</div>'+
@@ -3604,7 +3648,7 @@ function invoicePDF(d){
  return P.output();
 }
 function invoicePdfFor(){
- if(!isOwner()){showToast('🔐 Owner access only','error');return null}
+ if(!canInvoice()){showToast('🔐 Sign in to use invoices','error');return null}
  const d=invData();
  if(!d.items.length){showToast('Add at least one item first','error');return null}
  return d;
@@ -3994,7 +4038,7 @@ function applySite(){
   const vb=el('versionBadge');if(vb)vb.textContent=siteVersion();
   document.querySelectorAll('.appVer').forEach(function(x){x.textContent=siteVersion()});
   const bn=el('siteBanner');
-  if(bn){const on=SITE.bannerOn&&SITE.banner;bn.style.display=on?'':'none';if(on)setH('siteBannerText',esc(SITE.banner))}
+  if(bn){const on=SITE.bannerOn&&SITE.banner;bn.style.display=on?'':'none';if(on){setH('siteBannerText',esc(SITE.banner.replace(/\s*\n+\s*/g,' ').replace(/\s{2,}/g,' ')));const mo=el('sbMore');if(mo)mo.style.display=(SITE.banner.length>110||SITE.banner.indexOf('\n')>-1)?'':'none'}}
   const mt=el('maintScreen');
   if(mt){const block=SITE.maintenance&&CUR&&!isOwner();mt.style.display=block?'flex':'none';if(block)setT('maintMsg',SITE.maintenanceMsg||'')}
   const lbNav=document.querySelector('.nav-btn[data-view="leaderboard"]');if(lbNav)lbNav.style.display=(SITE.leaderboardOn||isOwner())?'':'none';
@@ -4122,7 +4166,7 @@ function gainXP(type,n){
  if(type==='proposal')S.proposals=(S.proposals||0)+1;
  if(type==='payment')S.sales=(S.sales||0)+(Number(n)||0);
  const after=levelFor(UD.xp);
- if(after>before){
+ if(after>before&&!isOwner()){
   const r0=rankFor(before),r1=rankFor(after);
   setTimeout(function(){
    if(r1[1]!==r0[1]){confetti();showToast(r1[2]+' RANK UP! You are now a '+roleTitle({noMarket:true}),'success')}
@@ -4182,7 +4226,7 @@ function renderLeaderboardView(){
     const medal=x.rank===1?'🥇':x.rank===2?'🥈':x.rank===3?'🥉':'#'+x.rank;
     return '<div class="lb-row'+(x.you?' lb-you':'')+'"><div class="lb-rank">'+medal+'</div><div class="lb-av">'+esc(initials(x.name))+'</div>'+
     '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(x.name)+(x.you?' <span class="tag tag-warm">You</span>':'')+(x.badge?' <span class="lb-badge">'+esc(x.badge)+'</span>':'')+(x.hidden?' <span class="tag tag-cold">hidden</span>':'')+'</div>'+
-    '<div class="lb-role">'+esc(rankFor(x.level||1)[2]+' '+(x.role||'Rookie'))+' · LVL '+(x.level||1)+'</div></div>'+
+    '<div class="lb-role">'+((x.level||1)>=999?esc(x.role||'👑 Developer')+' · <b style="color:#f6c85f">DEV ∞</b>':esc(rankFor(x.level||1)[2]+' '+(x.role||'Rookie'))+' · LVL '+(x.level||1))+'</div></div>'+
     '<div class="lb-val">'+lbVal(x,by)+'</div></div>';
    }).join(''):'<div class="empty-mini">No one on the board yet — be the first!</div>';
    renderDashLb();
@@ -4208,7 +4252,7 @@ function renderDashLb(){
 function renderOwnerPanel(){
  if(!isOwner()){sv('dashboard');return showToast('👑 Owner only','error')}
  setV('op-name',SITE.name);setV('op-version',SITE.version);setV('op-tagline',SITE.tagline);
- setV('op-banner',SITE.banner);setCHK('op-bannerOn',!!SITE.bannerOn);
+ setV('op-banner',SITE.banner);setCHK('op-bannerOn',!!SITE.bannerOn);bannerCount();
  setCHK('op-signups',SITE.allowSignups!==false);setCHK('op-lb',SITE.leaderboardOn!==false);
  setCHK('op-maint',!!SITE.maintenance);setV('op-maintMsg',SITE.maintenanceMsg);
  setT('op-default-ver','Built-in version: v'+APP_VERSION);
@@ -4260,9 +4304,11 @@ function renderOwnerUsers(){
   return '<div class="op-user'+(u.banned?' banned':'')+'"><div class="lb-av">'+esc(initials(u.name))+'</div>'+
   '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(u.name)+(own?' <span class="tag tag-warm">👑 You</span>':'')+(u.banned?' <span class="tag tag-hot">⛔ Banned</span>':'')+(u.hidden?' <span class="tag tag-cold">Hidden</span>':'')+(u.badge?' <span class="lb-badge">'+esc(u.badge)+'</span>':'')+'</div>'+
   '<div class="lb-role">'+esc(u.email)+(u.biz?' • '+esc(u.biz):'')+'</div>'+
-  '<div class="lb-role">'+esc(u.role||'No role yet')+' • LVL '+(u.level||1)+' • '+(u.xp||0)+' XP</div>'+
+  '<div class="lb-role">'+esc(u.role||'No role yet')+' • '+lvlLabel(u.level)+' • '+(u.xp||0)+' XP</div>'+
   '<div class="rank-stats" style="margin-top:4px"><span>🔍 '+(u.leads||0)+'</span><span>📞 '+(u.contacts||0)+'</span><span>✅ '+(u.deals||0)+'</span><span>💰 '+money0(u.sales||0)+'</span><span>📅 joined '+(u.created?new Date(u.created).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—')+'</span>'+(u.last_login?'<span>🔑 last login '+timeAgo(u.last_login)+'</span>':'')+'</div>'+
   (own?'':'<div class="op-actions">'+
+   '<button class="btn btn-primary btn-sm" onclick="supportView(\''+u.id+'\')">👁 View account</button>'+
+   '<button class="btn btn-ghost btn-sm" onclick="supportReset(\''+u.id+'\',\''+esc(u.name).replace(/'/g,"\\'")+'\')">🔑 Reset password</button>'+
    '<select onchange="opAction(\''+u.id+'\',\'badge\',this.value)">'+state.opBadges.map(function(b){return '<option value="'+esc(b)+'"'+(b===(u.badge||'')?' selected':'')+'>'+(b?esc(b):'No badge')+'</option>'}).join('')+'</select>'+
    '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\''+(u.hidden?'unhide':'hide')+'\')">'+(u.hidden?'👁 Show on board':'🙈 Hide from board')+'</button>'+
    '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\'reset\')">🧹 Reset stats</button>'+
@@ -4489,7 +4535,7 @@ window.gainXP=function(type,n){
  const gained=((UD&&UD.xp)||0)-before;if(gained>0)addWeekXp(gained);
  bumpDay(type,type==='lead'?Math.max(1,n||1):1);
  const lvl1=levelFor(UD.xp);
- if(lvl1>lvl0){const rk1=rankFor(lvl1);if(rk1[1]!==rk0)feedPost('rank','ranked up to '+rk1[2]+' '+rk1[1]+' (level '+lvl1+')');else if(lvl1%5===0)feedPost('level','reached level '+lvl1+' ⬆️')}
+ if(lvl1>lvl0&&!isOwner()){const rk1=rankFor(lvl1);if(rk1[1]!==rk0)feedPost('rank','ranked up to '+rk1[2]+' '+rk1[1]+' (level '+lvl1+')');else if(lvl1%5===0)feedPost('level','reached level '+lvl1+' ⬆️')}
  if(type==='deal')feedPost('deal','closed a deal'+(UD.role&&UD.role.market?' in '+UD.role.market:'')+' 🎉');
  checkMissions();checkBadges();
  const t=unlockedThemes();if(t.length>(UD.themesSeen||1)){UD.themesSeen=t.length;setTimeout(function(){showToast('🎨 New theme unlocked: '+t[t.length-1].n+' — Settings → Themes','success')},1400)}
@@ -5022,6 +5068,160 @@ window.aiRespond=function(input){
  return _aiRespondG.call(this,aiFix(input));
 };
 
+/* ═════════════ DEVELOPER ACCOUNT (owner only) ═════════════
+   Exclusive role nobody else can pick, immune to levels/ranks, every badge + theme. */
+const DEV_TITLE='Founder · Lead Developer · Architect';
+const DEV_TITLES=['👑 Founder','💻 Lead Developer','🏛 Architect','🛡 Site Guardian','⚙️ System Admin','🌍 Creator of '+'We Deploy'];
+function lvlLabel(l){return (l||1)>=999?'DEV ∞':'LVL '+(l||1)}
+const _roleTitleD=window.roleTitle;
+window.roleTitle=function(opts){if(isOwner())return '👑 '+DEV_TITLE;return _roleTitleD.apply(this,arguments)};
+const _rankCardD=window.rankCardHTML;
+window.rankCardHTML=function(){
+ if(!isOwner())return _rankCardD.apply(this,arguments);
+ const S=(UD&&UD.stats)||{};
+ return '<div class="rank-card dev-card"><div class="rank-lvl dev-lvl"><div class="rank-emoji">👑</div><div class="rank-num">DEV ∞</div></div>'+
+ '<div style="flex:1;min-width:0"><div class="rank-title">'+esc(DEV_TITLE)+'</div>'+
+ '<div class="rank-bar"><i style="width:100%;background:linear-gradient(90deg,#f6c85f,#ff9f43,#f472b6)"></i></div>'+
+ '<div class="rank-sub">Developer account — immune to levels & ranks • every badge and theme unlocked</div>'+
+ '<div class="dev-titles">'+DEV_TITLES.map(function(t){return '<span>'+esc(t)+'</span>'}).join('')+'</div>'+
+ '<div class="rank-stats"><span>🔍 '+(S.leads||0)+' leads</span><span>📞 '+(S.contacts||0)+' contacts</span><span>✅ '+(S.deals||0)+' deals</span><span>💰 '+money0(S.sales||0)+'</span></div></div></div>';
+};
+const _renderMyRankD=window.renderMyRank;
+window.renderMyRank=function(){
+ _renderMyRankD.apply(this,arguments);
+ if(isOwner()){const um=el('um-role');if(um)um.innerHTML='👑 <b style="color:#f6c85f">'+esc(DEV_TITLE)+'</b> · DEV ∞'}
+};
+const _openRolePickerD=window.openRolePicker;
+window.openRolePicker=function(first){
+ const show=function(x,v){const n=typeof x==='string'?el(x):x;if(n)n.style.display=v?'':'none'};
+ const form=document.querySelector('#roleModal .form-row');
+ const sub=document.querySelector('#roleModal .modal-head > div > div');
+ if(!isOwner()){if(sub&&!el('rp-count'))sub.innerHTML='<b id="rp-count"></b> roles to choose from — your title levels up as you use the site';show('rp-search',1);show(form,1);show('rp-preview',1);return _openRolePickerD.apply(this,arguments)}
+ setT('rp-head','👑 Your exclusive role');
+ if(sub)sub.innerHTML='Only your account can hold this role — it never levels down or resets';
+ show('rp-search',0);show(form,0);show('rp-preview',0);
+ setH('rp-paths','<div class="rp-card sel dev-rp" style="grid-column:1/-1"><div class="rp-i">👑</div><div><div class="rp-n">'+esc(DEV_TITLE)+'</div><div class="rp-d">Developer-only role. No other account can choose it. Immune to levels and ranks, with every title, badge and theme unlocked.</div><div class="dev-titles" style="margin-top:8px">'+DEV_TITLES.map(function(t){return '<span>'+esc(t)+'</span>'}).join('')+'</div></div></div>');
+ openM('roleModal');
+};
+const _saveRoleD=window.saveRole;
+window.saveRole=function(){if(isOwner()){closeM('roleModal');showToast('👑 Developer role active','success');return}return _saveRoleD.apply(this,arguments)};
+const _renderRolePathsD=window.renderRolePaths;
+window.renderRolePaths=function(){if(isOwner())return;return _renderRolePathsD.apply(this,arguments)};
+const _badgesHTMLD=window.badgesHTML;
+window.badgesHTML=function(){if(isOwner()&&UD){UD.badges=BADGES.map(function(b){return b[0]})}return _badgesHTMLD.apply(this,arguments)};
+const _checkBadgesD=window.checkBadges;
+window.checkBadges=function(){if(isOwner()&&UD){UD.badges=BADGES.map(function(b){return b[0]});return}return _checkBadgesD.apply(this,arguments)};
+const _pushProfileD=window.pushProfile;
+window.pushProfile=function(now){
+ if(!isOwner())return _pushProfileD.apply(this,arguments);
+ if(!onlineSite()||!srvToken()||!UD)return;
+ if(pushTimer){clearTimeout(pushTimer);pushTimer=null}
+ const S=UD.stats||{};const w=UD.wxp&&UD.wxp.k===weekKeyUTC()?UD.wxp.xp:0;
+ wdApi('profile','PUT',{role:'👑 '+DEV_TITLE,path:'founder',ind:'',market:'',xp:UD.xp||0,level:999,leads:S.leads||0,contacts:S.contacts||0,deals:S.deals||0,sales:S.sales||0,proposals:S.proposals||0,week_key:weekKeyUTC(),week_xp:w,streak:UD.streakN||0,badges:BADGES.length,city:''});
+};
+// owner: never ask to unlock again
+const _openMD=window.openM;
+window.openM=function(id){if(id==='ownerUnlockModal'&&isOwner()){showToast('👑 You\'re already verified as the owner — nothing to unlock','info');return}return _openMD.apply(this,arguments)};
+function applyDevUI(){
+ const own=isOwner();
+ const box=el('ownerAccessBox');
+ if(box)box.innerHTML=own?'<h3>👑 Owner Access</h3><div class="dev-ok">✅ <b>Verified owner — '+esc((CUR&&CUR.name)||'Lameero Mendoza')+'</b><br><span>Developer account • Owner Panel, Invoice Builder and Announcements are unlocked for good.</span></div><button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="sv(\'owner\')">👑 Open Owner Panel</button>':
+  '<h3>👑 Owner Access</h3><p>Unlock owner tools (Lameero Mendoza only)</p><button class="btn btn-primary btn-sm" onclick="openM(\'ownerUnlockModal\')">👑 Unlock Owner Access</button>';
+ const um=el('umUnlock');if(um)um.style.display=own?'none':'';
+ if(own&&UD&&(!UD.role||UD.role.path!=='founder')){UD.role={path:'founder',ind:'',market:'',since:Date.now()};saveUD()}
+}
+const _applyOwnerGatesD=window.applyOwnerGates;
+window.applyOwnerGates=function(){_applyOwnerGatesD.apply(this,arguments);try{applyDevUI();renderMyRank()}catch(e){}};
+
+/* ═════════════ ANNOUNCEMENTS FOR EVERYONE (stored on the server) ═════════════ */
+let ANN_SRV=null;
+function annFromSrv(a){return {id:a.id,srv:true,ts:a.created,type:a.type,title:a.title,body:a.body}}
+function loadAnns(){
+ if(!onlineSite())return Promise.resolve();
+ return fetch('/api/wd/anns').then(function(r){return r.json()}).then(function(r){
+  if(r&&r.ok){ANN_SRV=r.anns.map(annFromSrv);try{updateAnnBadge();renderDashAnn();if(el('annModal')&&el('annModal').classList.contains('open'))renderAnns()}catch(e){}}
+ }).catch(function(){});
+}
+const _getAnnsS=window.getAnns;
+window.getAnns=function(){if(ANN_SRV)return ANN_SRV;return onlineSite()?[]:_getAnnsS.apply(this,arguments)};
+const _saveAnnS=window.saveAnn;
+window.saveAnn=function(){
+ if(!onlineSite())return _saveAnnS.apply(this,arguments);
+ if(!isOwner())return showToast('Only the owner can post announcements','error');
+ const type=el('annf-type').value,title=el('annf-title').value.trim(),body=el('annf-body').value.trim();
+ if(!title||!body)return showToast('Fill in the title and message','error');
+ if(!srvToken())return showToast('Sign out and sign in again so your account connects to the server','error');
+ wdApi('anns','POST',{type:type,title:title,body:body}).then(function(r){
+  if(r&&r.ok){closeM('annFormModal');el('annf-title').value='';el('annf-body').value='';loadAnns().then(function(){renderAnns();showToast('📢 Announcement published — every user will see it','success')})}
+  else showToast('⚠️ '+((r&&r.error)||'Could not publish'),'error');
+ });
+};
+const _delAnnS=window.delAnn;
+window.delAnn=function(i){
+ const a=getAnns()[i];
+ if(!a||!a.srv)return _delAnnS.apply(this,arguments);
+ if(state.annDel!==a.id){state.annDel=a.id;setTimeout(function(){state.annDel=null},4000);return showToast('Tap 🗑 again to remove it for everyone','info')}
+ wdApi('anns/delete','POST',{id:a.id}).then(function(r){if(r&&r.ok){loadAnns().then(function(){renderAnns();showToast('Announcement removed for everyone','info')})}else showToast('⚠️ '+((r&&r.error)||'Could not remove'),'error')});
+};
+setInterval(function(){try{if(CUR&&!document.hidden)loadAnns()}catch(e){}},5*60*1000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&CUR)loadAnns()});
+
+/* ═════════════ BIG BANNER: preview on top, full message on tap ═════════════ */
+function openBanner(){setH('bannerFull',esc(SITE.banner||''));openM('bannerModal')}
+function bannerCount(){const t=el('op-banner'),c=el('op-banner-count');if(t&&c)c.textContent=t.value.length+' / 2000'}
+
+/* ═════════════ OWNER SUPPORT TOOLS + WORKING CHANGE PASSWORD ═════════════ */
+function doChangePw(){
+ const cur=el('cp-pw1').value,nw=el('cp-pw2').value,nw2=el('cp-pw3').value,err=el('cp-err');
+ const fail=function(m){err.textContent=m;err.classList.add('show')};
+ err.classList.remove('show');
+ if(!cur||!nw)return fail('Fill in your current and new password');
+ if(nw.length<6)return fail('New password must be at least 6 characters');
+ if(nw!==nw2)return fail("New passwords don't match");
+ const updateLocal=function(){try{const us=getUsers();const u=us[CUR.email];if(u){u.salt=Math.random().toString(36).slice(2,10);u.hash=hashPass(nw,u.salt);saveUsers(us)}}catch(e){}};
+ const done=function(){updateLocal();['cp-pw1','cp-pw2','cp-pw3'].forEach(function(i){setV(i,'')});closeM('changePwModal');showToast('🔑 Password updated','success')};
+ if(onlineSite()&&srvToken()){
+  wdApi('change-password','POST',{current:cur,next:nw}).then(function(r){if(r&&r.ok)done();else fail((r&&r.error)||'Could not change password — check your connection')});
+ }else{
+  try{const u=getUsers()[CUR.email];if(!u||u.hash!==hashPass(cur,u.salt))return fail('Your current password is not correct')}catch(e){return fail('Could not check your password')}
+  done();
+ }
+}
+function supportView(id){
+ setH('uv-body','<div class="empty-mini">Loading account…</div>');setT('uv-name','Account');openM('userViewModal');
+ wdApi('admin/user-data?id='+encodeURIComponent(id)).then(function(r){
+  if(!r||!r.ok){setH('uv-body','<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>');return}
+  state.uv=r;setT('uv-name',r.user.name);uvTab('summary');
+ });
+}
+function uvTab(t){
+ const r=state.uv;if(!r)return;const d=r.data||{},p=r.profile||{};
+ document.querySelectorAll('#uvTabs .seg-tab').forEach(function(x){x.classList.toggle('active',x.dataset.t===t)});
+ const dt=function(ts){return ts?new Date(ts).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—'};
+ const row=function(k,v){return '<div class="info-row"><div class="info-key">'+k+'</div><div class="info-val">'+v+'</div></div>'};
+ let h='';
+ if(t==='summary'){
+  h=row('Name',esc(r.user.name))+row('Email',esc(r.user.email))+row('Business',esc(r.user.biz||'—'))+row('Joined',dt(r.user.created))+row('Last login',dt(r.lastLogin))+row('Last synced',r.synced?dt(r.synced):'<span style="color:var(--muted)">Never synced — their data is only on their own device</span>')+
+   row('Role',esc(p.role||'—'))+row('Level / XP',(p.level||1)+' / '+(p.xp||0))+row('Stats',(p.leads||0)+' leads • '+(p.contacts||0)+' contacts • '+(p.deals||0)+' deals • '+money0(p.sales||0))+
+   row('Saved data',((d.myLeads||[]).length)+' leads • '+((d.invoices||[]).length)+' invoices • '+((d.pipeline||[]).length)+' pipeline • '+((d.payments||[]).length)+' payments');
+ }
+ if(t==='invoices')h=(d.invoices||[]).length?'<table class="data-table" style="width:100%"><thead><tr><th>#</th><th>Client</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>'+d.invoices.map(function(i){return '<tr><td>'+esc(i.num)+'</td><td>'+esc(i.to)+'</td><td>'+esc(i.total)+'</td><td>'+esc(i.status)+'</td><td>'+esc(i.date)+'</td></tr>'}).join('')+'</tbody></table>':'<div class="empty-mini">No invoices</div>';
+ if(t==='leads')h=(d.myLeads||[]).length?(d.myLeads.slice(0,200).map(function(l){return '<div class="drop-row"><div style="flex:1;min-width:0"><div class="lb-name">'+esc(l.name)+'</div><div class="lb-role">'+esc(l.industry||'')+' • '+esc(l.city||'')+(l.phone?' • '+esc(l.phone):'')+'</div></div></div>'}).join('')+(d.myLeads.length>200?'<div class="empty-mini">+'+(d.myLeads.length-200)+' more</div>':'')):'<div class="empty-mini">No saved leads</div>';
+ if(t==='pipeline')h=(d.pipeline||[]).length?d.pipeline.map(function(x){return '<div class="drop-row"><div style="flex:1"><div class="lb-name">'+esc(x.name)+'</div><div class="lb-role">'+esc((PSTAGES[x.s]||{}).n||'')+' • '+esc(x.val||'')+'</div></div></div>'}).join(''):'<div class="empty-mini">Pipeline empty</div>';
+ if(t==='payments')h=(d.payments||[]).length?d.payments.map(function(x){return '<div class="drop-row"><div style="flex:1"><div class="lb-name">'+esc(x.client)+' — '+money0(x.amount)+'</div><div class="lb-role">'+esc(x.date||'')+' '+esc(x.note||'')+'</div></div></div>'}).join(''):'<div class="empty-mini">No payments</div>';
+ if(t==='activity')h=(d.activity||[]).length?d.activity.slice(0,60).map(function(a){return '<div class="feed-row"><div class="feed-ic">'+((ACT_META[a.type]||['•'])[0])+'</div><div style="flex:1">'+esc(a.type)+' — '+esc(a.text)+'</div><div class="act-time">'+timeAgo(a.t)+'</div></div>'}).join(''):'<div class="empty-mini">No activity recorded</div>';
+ setH('uv-body',h);
+}
+function supportReset(id,name){
+ if(state.pwConfirm!==id){state.pwConfirm=id;setTimeout(function(){if(state.pwConfirm===id)state.pwConfirm=null},4000);return showToast('Tap again to reset '+name+"'s password",'info')}
+ state.pwConfirm=null;
+ wdApi('admin/reset-password','POST',{id:id}).then(function(r){
+  if(!r||!r.ok)return showToast('⚠️ '+((r&&r.error)||'Could not reset'),'error');
+  setH('pwr-body','<p style="font-size:13px;color:var(--text2);margin-bottom:10px">New temporary password for <b>'+esc(name)+'</b> ('+esc(r.email)+'):</p><div class="pwr-code">'+esc(r.tempPassword)+'</div><p style="font-size:12px;color:var(--muted);margin-top:10px">They\'ve been signed out everywhere. Send them this password — after signing in they should change it in 👤 menu → 🔑 Change Password.</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary btn-sm" onclick="copyStr(\''+esc(r.tempPassword)+'\')">📋 Copy</button><button class="btn btn-wa btn-sm" onclick="window.open(\'https://wa.me/?text='+encodeURIComponent('Hi '+name.split(' ')[0]+', your '+siteName()+' password was reset. Sign in with '+r.email+' and this temporary password: '+r.tempPassword+' — then change it in 🔑 Change Password.')+'\',\'_blank\')">💬 Send via WhatsApp</button></div>');
+  openM('pwResetModal');
+ });
+}
+
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
  const l=findLead(id);
@@ -5212,8 +5412,8 @@ function openLead(id){
  setH('modal-email-content',emailCardHTML(l));
  setH('modal-mockup-content',buildMockup(l));
  const ib=el('m-inv-btn'),il=el('m-inv-lock');
- if(ib)ib.style.display=isOwner()?'inline-flex':'none';
- if(il)il.style.display=isOwner()?'none':'inline-flex';
+ if(ib)ib.style.display=canInvoice()?'inline-flex':'none';
+ if(il)il.style.display=canInvoice()?'none':'inline-flex';
  setV('m-follow',(UD.followups&&UD.followups[l.id])||'');
  const fi=el('m-follow-info');if(fi)fi.textContent=(UD.followups&&UD.followups[l.id])?('⏰ '+fmtDate(UD.followups[l.id])):'';
  const cb=el('m-call-btn');if(cb)cb.onclick=function(){markContacted(l.id,'call');location.href='tel:'+l.phone.replace(/\s/g,'')};
@@ -5238,7 +5438,7 @@ function callCurLead(){if(state.curLead){markContacted(state.curLead.id,'call');
 function saveCurLead(){if(state.curLead)toggleSave(state.curLead.id)}
 function openInvoiceFor(){if(state.curLead)invoiceLead(state.curLead.id)}
 function invoiceLead(id){
- if(!isOwner())return showToast('🔐 Invoice tool locked — unlock owner access first','error');
+ if(!canInvoice())return showToast('🔐 Sign in to use invoices','error');
  const l=findLead(id);if(!l)return;
  setV('inv-to-name',l.name);setV('inv-to-phone',l.phone);setV('inv-to-addr',l.addr||'');
  closeM('leadModal');sv('invoice');
@@ -5518,7 +5718,7 @@ function buildInvoiceHTML(d){
  '</div></div>';
 }
 function previewInvoice(){
- if(!isOwner())return showToast('🔐 Owner access only','error');
+ if(!canInvoice())return showToast('🔐 Sign in to use invoices','error');
  const d=invData();
  if(!d.items.length)return showToast('Add at least one item first','error');
  setH('invoicePreviewBody',buildInvoiceHTML(d));
@@ -5782,13 +5982,13 @@ function aiRespond(input){
 }
 const AI_INTENTS=[
  {k:['who made','who created','who built','who developed','creator','founder','lameero','credit','mastermind'],re:()=>({text:'I was created by **Lameero Mendoza** — 🏆 Founder, Lead Developer & Architect of We Deploy. One mastermind, every line of code.\n\nHe\'s also the only one with Invoice access. Contact: 📞 081 727 4007 / ✉️ delonmayne@gmail.com',chips:[{t:'⭐ About & Credits',a:"openM('aboutModal')"},{t:'👑 Unlock owner access',a:"openM('ownerUnlockModal')"}]})},
- {k:['unlock','owner access','owner mode','locked invoice','why cant i invoice','invoice lock','become owner'],re:()=>({text:isOwner()?'👑 You\'re already **verified as the owner** — the Invoice Builder and Announcements are yours.':'👑 **Unlock Owner Access** (avatar menu) — enter the owner email to verify you\'re Lameero Mendoza. Unlocks the 🧾 Invoice Builder and 📢 Announcement posting for your account.',chips:[{t:'👑 Unlock now',a:"openM('ownerUnlockModal')"}]})},
+ {k:['unlock','owner access','owner mode','become owner'],re:()=>({text:isOwner()?'👑 You\'re already **verified as the owner** — the Invoice Builder and Announcements are yours.':'👑 **Unlock Owner Access** (avatar menu) — enter the owner email to verify you\'re Lameero Mendoza. Unlocks the 🧾 Invoice Builder and 📢 Announcement posting for your account.',chips:[{t:'👑 Unlock now',a:"openM('ownerUnlockModal')"}]})},
  {k:['get paid','paid','receive payment','payment methods'],re:()=>({text:'💵 **Getting paid:**\n\n• Mark an invoice **Paid** in Invoice History → auto-logged in 💰 Earnings\n• Or log manually: Earnings → **+ Log Payment**\n• Set a monthly target — hit 100% for confetti 🎉',chips:[{t:'💰 Open Earnings',a:"sv('earnings')"}]})},
  {k:['support','ticket','bug','report a','feedback','something broke','not working','problem','issue','contact'],re:()=>({text:'🎧 **Help & Support Center**:\n\n• **🎧 Support tickets** • **🐛 Bug reports** • **💡 Feedback** • **❓ FAQ**\n\n**Contact Lameero:** 📞 081 727 4007 / ✉️ delonmayne@gmail.com',chips:[{t:'🎧 Open Support',a:"openSupport()"},{t:'❓ Open FAQ',a:"openFAQ()"}]})},
  {k:['faq','frequently asked','help topics','common questions'],re:()=>({text:'❓ The **FAQ Help Center** has searchable answers to the 14 most common questions. It\'s in the sidebar, the Support Center and right here:',chips:[{t:'❓ Open FAQ',a:"openFAQ()"}]})},
  {k:['donate','donation','coffee','tip','contribute'],re:()=>({text:'☕ **Support We Deploy!**\n\nBuilt by one person — **Lameero Mendoza**. Donate $5 ☕ / $10 / $25 🍕 / $50 🚀 or custom — via WhatsApp or Email. 100% goes to Lameero.',chips:[{t:'☕ Donate',a:"openM('donateModal')"}]})},
  {k:['announcement','announcements','whats new','changelog','news','latest'],re:()=>({text:'📢 The **Announcement Center** (🔔 topbar) shows every update Lameero ships — red badge when new.\n\nLatest: **'+esc((getAnns()[0]||{}).title||'—')+'**',chips:[{t:'📢 Open Announcements',a:"openAnnouncements()"}]})},
- {k:['invoice','bill','receipt','invoicing'],re:()=>isOwner()?({text:'🔐 Owner verified — **full Invoice access.** Open any lead → 🧾 Create Invoice to auto-fill client details. Line items, tax, 8 currencies, PDF printing, WhatsApp sending, history with auto-logged payments.',chips:[{t:'🧾 Open Invoice Builder',a:"sv('invoice')"}]}):({text:'🔐 The **Invoice Builder is owner-only** — reserved for **Lameero Mendoza**. Unlock via 👑 (avatar menu) if that\'s you. Otherwise contact Lameero via Support.',chips:[{t:'👑 Unlock owner access',a:"openM('ownerUnlockModal')"},{t:'🎧 Contact Lameero',a:"openSupport()"}]})},
+ {k:['invoice','bill','receipt','invoicing','invoices'],re:()=>({text:'🧾 **Your Invoice Builder is private to your account.** Open any lead → 🧾 Create Invoice to auto-fill the client, add line items, tax and payment details, then send it by WhatsApp, Gmail or as a PDF. Other users can never see them (the site owner can view accounts only for support).',chips:[{t:'🧾 Open Invoice Builder',a:"sv('invoice')"},{t:'📂 My invoices',a:"sv('invoice-history')"}]})},
  {k:[' hello',' hi ',' hey','good morning','good evening','greetings'],re:()=>({text:'Hello! 👋 I can help you **find leads**, **write scripts**, **get paid**, **get support** and anything else in this app. Tap the buttons below me anytime.',chips:[{t:'🔍 Find leads',q:'how do I find leads'},{t:'📊 My stats',q:'show my stats'},{t:'❓ FAQ',q:'faq'}]})},
  {k:['what can you do','feature','capabilit','options','overview'],re:()=>({text:'Here\'s what I help with:\n\n**🔎 Lead Finding** — 65 countries, 12 industries\n**📞 Call Scripts** • **💬 WhatsApp** • **📧 Emails**\n**🎨 Mockups** • **💰 Earnings** • **📋 Pipeline**\n**🗂 CRM** • **⏰ Follow-ups** • **🔥 Streaks**\n**📢 Announcements** • **🎧 Support** • **❓ FAQ**\n**🌗 Themes** • **💾 Backup** • **⬇ Export** • **☕ Donations**\n\nTry the buttons below me.',chips:[{t:'🔍 Find leads',a:"sv('search')"},{t:'💰 Earnings',a:"sv('earnings')"},{t:'❓ FAQ',a:"openFAQ()"}]})},
  {k:['find lead','search lead','how do i find','new lead','generate lead','find client','find business'],re:()=>({text:'Finding leads:\n\n**1.** Find New Leads (🔍 topbar)\n**2.** Pick a country — 65 across 7 regions\n**3.** City dropdown fills automatically\n**4.** Industry + lead type\n**5.** Search → businesses in that exact location\n\nThen **➕ Add to Leads**.',chips:[{t:'🔍 Open Find Leads',a:"sv('search')"},{t:'🇳🇦 Search Windhoek',a:"quickPick('Namibia','Windhoek','Restaurants & Food')"}]})},

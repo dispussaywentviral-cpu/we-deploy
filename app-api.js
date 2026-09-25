@@ -108,7 +108,9 @@
           window.__startApp(u || { email:email, name:(res.user.name||''), biz:(res.user.biz||'') }, false);
           return;
         }
-        var lu = localLogin(email, pw);
+        // Account exists on the server with a different password (e.g. owner reset it):
+        // never fall back to an old password saved on this device.
+        var lu = (res && res.exists) ? null : localLogin(email, pw);
         if(lu){
           createSession(lu, remember);
           busy = false;
