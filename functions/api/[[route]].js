@@ -752,6 +752,21 @@ async function handleGrowth(ctx) {
   }
 
   // ---------- big searches: the browser asks the map directly; the server checks permission, logs the scan, returns claims ----------
+  // city → map coordinates (asked once, then remembered for everyone)
+  if (path === 'geo' && m === 'GET') {
+    const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
+    if (!city || !country) return json({ error: 'Pick a city' }, 400);
+    await DB.prepare('CREATE TABLE IF NOT EXISTS wd_geo (k TEXT PRIMARY KEY, lat REAL, lon REAL, created INTEGER)').run();
+    const k = (city + '|' + country).toLowerCase();
+    const hit = await DB.prepare('SELECT lat, lon FROM wd_geo WHERE k = ?').bind(k).first();
+    if (hit) return json({ ok: true, lat: hit.lat, lon: hit.lon, cached: true });
+    try {
+      const g = await osmFetchJSON('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' + encodeURIComponent(city + ', ' + country), {}, 10000);
+      if (!g || !g[0]) return json({ error: 'City not found on the map' }, 404);
+      await DB.prepare('INSERT OR REPLACE INTO wd_geo (k, lat, lon, created) VALUES (?, ?, ?, ?)').bind(k, Number(g[0].lat), Number(g[0].lon), Date.now()).run();
+      return json({ ok: true, lat: Number(g[0].lat), lon: Number(g[0].lon) });
+    } catch (e) { return json({ error: 'Map lookup failed: ' + String(e.message || e).slice(0, 80) }, 502); }
+  }
   if (path === 'search/allow' && m === 'POST') {
     { const no = restricted(me.flags, 'search', me); if (no) return no; }
     const recent = await q('SELECT COUNT(*) AS n FROM wd_scans WHERE user_id = ? AND created > ?', me.id, Date.now() - 3600e3);
