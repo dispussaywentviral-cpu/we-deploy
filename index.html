@@ -447,7 +447,9 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .invoice-total-row.grand{font-size:16px;font-weight:800;color:var(--a);padding-top:8px;border-top:1px solid var(--line2)}
 .invoice-total-label{color:var(--muted)}
 .invoice-notes{background:var(--panel2);border-radius:10px;padding:14px;font-size:12px;color:var(--muted);border:1px solid var(--line)}
-.inv-builder{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.inv-builder{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.inv-builder>*,.inv-section{min-width:0}
+.inv-section table{width:100%}.inv-section table input{min-width:0;width:100%}
 .inv-section{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
 .inv-section h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
@@ -585,10 +587,11 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
   .settings-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .dash-grid{grid-template-columns:1fr}
-  .inv-builder{grid-template-columns:1fr}
+  .inv-builder{grid-template-columns:minmax(0,1fr)}
   .about-stats{grid-template-columns:repeat(2,1fr)}
   .quick-grid{grid-template-columns:1fr 1fr!important}
-  .ai-launcher{right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:60px;height:60px;font-size:27px}
+  .ai-launcher{right:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:50px;height:50px;font-size:23px}
+  .scroll-area{padding-bottom:110px!important}
   .ai-panel{top:106px;bottom:calc(84px + env(safe-area-inset-bottom));right:12px;left:12px;width:auto;max-height:none;border-radius:16px}
   .ai-head{padding:12px 14px}
   .ai-body{padding:12px}
@@ -758,6 +761,65 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 .tk-new{border-color:rgba(255,122,26,.5)!important}
 .tk-reply{margin-top:6px;font-size:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:7px 9px;color:var(--text2)}
 .tk-replybox{margin-top:8px}
+.danger-armed{background:rgba(248,113,113,.15)!important;color:var(--red)!important;border-color:var(--red)!important}
+.money-help{font-size:10px;font-weight:600;color:var(--muted);background:rgba(255,255,255,.06);border-radius:6px;padding:2px 6px;margin-left:4px;vertical-align:middle}
+@media(max-width:700px){
+ #view-earnings table{min-width:0!important;width:100%}
+ #view-earnings thead{display:none}
+ .pay-cards tr{display:grid;grid-template-columns:1fr auto auto;gap:3px 10px;padding:12px 14px;border-bottom:1px solid var(--line);align-items:center}
+ .pay-cards td{padding:0!important;border:0!important;white-space:normal!important}
+ .pay-cards td:nth-child(1){grid-column:1;grid-row:1;font-weight:700}
+ .pay-cards td:nth-child(2){grid-column:2;grid-row:1;text-align:right}
+ .pay-cards td:nth-child(5){grid-column:3;grid-row:1/4}
+ .pay-cards td:nth-child(3){grid-column:1/3;grid-row:2;font-size:11px;color:var(--muted)}
+ .pay-cards td:nth-child(4){grid-column:1/3;grid-row:3;font-size:12px;color:var(--text2)}
+}
+.pay-intro{font-size:12px;color:var(--muted);margin:-4px 0 10px;line-height:1.5}
+.pay-group{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.pay-gh{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px}
+.pay-group .form-row{margin-bottom:8px}
+.pay-group input,.pay-group select{width:100%;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px}
+.pay-group .form-group+.form-group{margin-top:8px}
+.opt{font-size:10px;font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:4px}
+.pay-note{font-size:11px;color:var(--muted);margin-top:6px}
+.pay-hint{font-size:11px;margin-top:3px}.pay-hint.ok{color:var(--green)}.pay-hint.bad{color:var(--red)}
+input.pay-bad{border-color:var(--red)!important}
+#tourLayer{position:fixed;inset:0;z-index:99990;display:none}
+.tour-hole{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.72),0 0 0 3px var(--a);transition:all .3s ease;pointer-events:none}
+.tour-card{position:fixed;background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:top .3s,left .3s}
+.tour-card.center{left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:min(360px,calc(100vw - 32px))!important}
+.tour-card h3{font-size:16px;margin:4px 0 6px}.tour-card p{font-size:13px;line-height:1.6;color:var(--text2)}
+.tour-step{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--a)}
+.tour-dots{display:flex;gap:4px;margin:12px 0}.tour-dots i{width:6px;height:6px;border-radius:3px;background:var(--line2)}.tour-dots i.on{width:18px;background:var(--a)}
+.tour-btns{display:flex;gap:6px;align-items:center}.tour-skip{color:var(--muted)!important}
+
+@media(max-width:640px){
+ #view-leads .filter-bar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;text-align:left!important}
+ #view-leads .filter-bar>*{min-width:0!important;width:100%!important;text-align:left!important}
+ #view-leads .filter-bar label{text-align:left!important}
+ .bulk-bar,.bulk-actions{flex-wrap:wrap!important}
+}
+@media(max-width:640px){
+ .inv-section table:has(#invItems) thead{display:none}
+ #invItems tr{display:grid;grid-template-columns:56px minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+ #invItems td{padding:0!important}
+ #invItems td:first-child{grid-column:1/-1}
+ #invItems input{width:100%!important;min-width:0!important}
+}
+#waIndustry,#scriptIndustry,#emailIndustry{max-width:100%!important;min-width:0;flex:1 1 180px;text-overflow:ellipsis}
+.tpl-for{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
+.tpl-for span{font-size:12px;font-weight:700;color:var(--text2)}.tpl-for select{flex:1;min-width:180px}
+.mod-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.mod-h{font-size:13px;font-weight:700;margin-bottom:8px}
+.mod-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.mod-row select{width:auto;flex:1;min-width:120px}
+.mod-checks{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;font-size:13px;color:var(--text2)}.mod-checks input{accent-color:var(--a);margin-right:6px}
+.get-started{background:linear-gradient(135deg,rgba(255,122,26,.14),rgba(255,122,26,.04));border:1px solid rgba(255,122,26,.35);border-radius:16px;padding:16px;margin-bottom:18px}
+.get-started h3{font-size:16px;margin-bottom:4px}.get-started p{font-size:12px;color:var(--text2);margin-bottom:12px}
+.gs-steps{display:grid;gap:8px}
+.gs-step{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.gs-step b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--a);color:#000;font-size:12px;flex-shrink:0}
+.gs-step.done{opacity:.55}.gs-step.done b{background:var(--green)}
+.gs-step span{font-size:13px;line-height:1.4}.gs-step small{display:block;color:var(--muted);font-size:11px}
 .ai-tag{font-size:9px;font-weight:800;letter-spacing:.08em;background:var(--a);color:#000;border-radius:5px;padding:2px 5px;vertical-align:middle;margin-left:4px}
 .pwr-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.08em;text-align:center;padding:14px;border-radius:12px;background:var(--panel2);border:1px dashed var(--a);color:var(--a);user-select:all}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
@@ -882,11 +944,10 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="pill" data-view="crm" onclick="sv('crm')">🗂 CRM</div>
   </div>
   <div class="topbar-right">
-    <button class="btn btn-primary btn-sm" onclick="openM('exportModal')">⬇ Export</button>
+    <button class="btn btn-primary btn-sm" title="Download your leads as a file" onclick="openM('exportModal')">⬇ My leads</button>
     <button class="btn btn-ghost btn-icon btn-sm" id="themeBtn" title="Light/Dark mode" onclick="toggleTheme()" style="font-size:15px">🌙</button>
     <button class="btn btn-ghost btn-icon btn-sm" title="Announcement Center" onclick="openAnnouncements()" style="position:relative;font-size:15px">🔔<span class="ai-unread" id="annBadge" style="display:none">1</span></button>
     <button class="btn btn-ghost btn-icon btn-sm" title="About We Deploy" onclick="openM('aboutModal')" style="font-size:14px">⭐</button>
-    <button class="btn btn-ghost btn-icon btn-sm" title="We Deploy AI" onclick="openAI()" style="font-size:16px">🤖</button>
     <div class="avatar" id="avatar" title="Account menu" onclick="toggleUserMenu()">WD</div>
   </div>
 </header>
@@ -898,26 +959,26 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
   <div class="sidebar-top"><span class="sidebar-top-title">Menu</span><button class="sidebar-close" onclick="closeSidebar()" title="Close menu" aria-label="Close menu">✕</button></div>
   <div class="sidebar-section">Main</div>
   <button class="nav-btn active" data-view="dashboard" onclick="sv('dashboard')"><div class="nav-icon">📊</div>Dashboard</button>
-  <button class="nav-btn" data-view="leads" onclick="sv('leads')"><div class="nav-icon">🏢</div>Lead Finder<span class="nav-badge" id="navLeadCount">247</span></button>
-  <button class="nav-btn" data-view="search" onclick="sv('search')"><div class="nav-icon">🔍</div>Search Businesses</button>
-  <button class="nav-btn" data-view="pipeline" onclick="sv('pipeline')"><div class="nav-icon">📋</div>Pipeline<span class="nav-badge blue" id="navPipe">18</span></button>
+  <button class="nav-btn" data-view="leads" onclick="sv('leads')"><div class="nav-icon">🏢</div>My Leads<span class="nav-badge" id="navLeadCount">0</span></button>
+  <button class="nav-btn" data-view="search" onclick="sv('search')"><div class="nav-icon">🔍</div>Find Leads</button>
+  <button class="nav-btn" data-view="pipeline" onclick="sv('pipeline')"><div class="nav-icon">📋</div>Pipeline<span class="nav-badge blue" id="navPipe">0</span></button>
   <button class="nav-btn" data-view="leaderboard" onclick="sv('leaderboard')"><div class="nav-icon">🏆</div>Leaderboard</button>
-  <button class="nav-btn" data-view="community" onclick="sv('community')"><div class="nav-icon">🌍</div>Community<span class="nav-badge green">LIVE</span></button>
+  <button class="nav-btn" data-view="community" onclick="sv('community')"><div class="nav-icon">🌍</div>Community</button>
   <div class="sidebar-section">Outreach Tools</div>
-  <button class="nav-btn" data-view="scripts" onclick="sv('scripts')"><div class="nav-icon">📞</div>Call Scripts<span class="nav-badge green">AI</span></button>
-  <button class="nav-btn" data-view="whatsapp" onclick="sv('whatsapp')"><div class="nav-icon">💬</div>WhatsApp Messages<span class="nav-badge" style="background:#25d366">WA</span></button>
+  <button class="nav-btn" data-view="scripts" onclick="sv('scripts')"><div class="nav-icon">📞</div>Call Scripts</button>
+  <button class="nav-btn" data-view="whatsapp" onclick="sv('whatsapp')"><div class="nav-icon">💬</div>WhatsApp Messages</button>
   <button class="nav-btn" data-view="email" onclick="sv('email')"><div class="nav-icon">📧</div>Email Templates</button>
   <div class="sidebar-section">Business Tools</div>
   <button class="nav-btn" id="navOwner" data-view="owner" onclick="sv('owner')" style="display:none;color:var(--a)"><div class="nav-icon">👑</div>Owner Panel</button>
   <button class="nav-btn" data-view="invoice" id="navInvoice" onclick="sv('invoice')"><div class="nav-icon">🧾</div>Invoice Builder<span class="nav-badge purple" id="invBadge">👑</span></button>
   <button class="nav-btn" data-view="proposal" onclick="sv('proposal')"><div class="nav-icon">📄</div>Proposals</button>
-  <button class="nav-btn" data-view="earnings" onclick="sv('earnings')"><div class="nav-icon">💰</div>Earnings<span class="nav-badge green">$</span></button>
+  <button class="nav-btn" data-view="earnings" onclick="sv('earnings')"><div class="nav-icon">💰</div>Earnings</button>
   <button class="nav-btn" data-view="crm" onclick="sv('crm')"><div class="nav-icon">🗂</div>CRM Notes</button>
   <button class="nav-btn" data-view="analytics" onclick="sv('analytics')"><div class="nav-icon">📈</div>Analytics</button>
   <div class="sidebar-section">Segments</div>
-  <button class="nav-btn" onclick="sv('leads');filterSeg('no-website',null)"><div class="nav-icon">🚫</div>No Website<span class="nav-badge red" id="navNW">89</span></button>
-  <button class="nav-btn" onclick="sv('leads');filterSeg('outdated',null)"><div class="nav-icon">⚠️</div>Outdated Sites<span class="nav-badge yellow" id="navOD">134</span></button>
-  <button class="nav-btn" onclick="sv('leads');filterSeg('saved',null)"><div class="nav-icon">⭐</div>Saved Leads<span class="nav-badge green" id="navSV">24</span></button>
+  <button class="nav-btn" onclick="sv('leads');filterSeg('no-website',null)"><div class="nav-icon">🚫</div>No Website<span class="nav-badge red" id="navNW">0</span></button>
+  <button class="nav-btn" onclick="sv('leads');filterSeg('outdated',null)"><div class="nav-icon">⚠️</div>Outdated Sites<span class="nav-badge yellow" id="navOD">0</span></button>
+  <button class="nav-btn" onclick="sv('leads');filterSeg('saved',null)"><div class="nav-icon">⭐</div>Saved Leads<span class="nav-badge green" id="navSV">0</span></button>
   <div class="sidebar-section">Account</div>
   <button class="nav-btn" data-view="settings" onclick="sv('settings')"><div class="nav-icon">⚙️</div>Settings</button>
   <div class="sidebar-promo" style="margin-top:12px">
@@ -942,11 +1003,11 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="page-head-left"><h1>Dashboard</h1><p>Your full lead operation at a glance</p></div>
     <div class="page-head-right">
       <span class="chip chip-orange" id="streakChip" style="cursor:default;display:none">🔥 Streak</span>
-      <select class="filter-input btn-sm" style="width:auto"><option>Last 7 days</option><option>Last 30 days</option><option>All Time</option></select>
-      <button class="btn btn-primary btn-sm" onclick="sv('search')">+ Find New Leads</button>
+      <button class="btn btn-primary btn-sm" onclick="sv('search')">🔍 Find Leads</button>
     </div>
   </div>
   <div class="scroll-area">
+    <div id="getStarted"></div>
     <div id="dashAnn" style="display:none"></div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-top"><div class="stat-icon">🏢</div><span class="stat-change up" id="dcTotal" style="display:none"></span></div><div class="stat-val" id="dsTotal">0</div><div class="stat-label">Total Leads</div></div>
@@ -1037,12 +1098,12 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 
 <div class="view" id="view-leads">
   <div class="page-head">
-    <div class="page-head-left"><h1>Lead Finder</h1><p>Businesses without websites or with outdated sites worldwide</p></div>
+    <div class="page-head-left"><h1>🏢 My Leads</h1><p>Every business you’ve found or saved — tap one to call, WhatsApp or email it</p></div>
     <div class="page-head-right">
       <div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div>
       <button class="btn btn-wa btn-sm" onclick="openWaQueue()">🚀 WhatsApp Queue</button>
       <button class="btn btn-ghost btn-sm" onclick="openM('exportModal')">⬇ Export CSV</button>
-      <button class="btn btn-primary btn-sm" onclick="sv('search')">+ Find More Leads</button>
+      <button class="btn btn-primary btn-sm" onclick="sv('search')">🔍 Find Leads</button>
     </div>
   </div>
   <div class="scroll-area">
@@ -1105,7 +1166,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 
 <div class="view" id="view-search">
   <div class="page-head">
-    <div class="page-head-left"><h1>Find New Leads</h1><p>Search any country, any city, any industry — worldwide</p></div>
+    <div class="page-head-left"><h1>🔍 Find Leads</h1><p>Search any country, any city, any industry — worldwide</p></div>
     <div class="page-head-right"><div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div></div>
   </div>
   <div class="scroll-area">
@@ -1161,7 +1222,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 
 <div class="view" id="view-scripts">
   <div class="page-head">
-    <div class="page-head-left"><h1>📞 Cold Call Scripts</h1><p>AI-generated scripts tailored to each lead type and industry</p></div>
+    <div class="page-head-left"><h1>📞 Cold Call Scripts</h1><p>Ready-made call scripts for each industry — tap ✏️ to edit, then copy</p></div>
     <div class="page-head-right">
       <div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div>
       <select class="filter-input btn-sm" style="width:auto" id="scriptIndustry" onchange="renderScripts()">
@@ -1180,7 +1241,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 
 <div class="view" id="view-whatsapp">
   <div class="page-head">
-    <div class="page-head-left"><h1>💬 WhatsApp Messages</h1><p>Ready-to-send automated messages for every lead scenario</p></div>
+    <div class="page-head-left"><h1>💬 WhatsApp Messages</h1><p>Ready-made WhatsApp messages — tap ✏️ to edit, then open in WhatsApp</p></div>
     <div class="page-head-right">
       <div class="view-close" title="Close — back to Dashboard" onclick="sv('dashboard')">✕</div>
       <select class="filter-input btn-sm" style="width:auto" id="waIndustry" onchange="renderWA()">
@@ -1229,7 +1290,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           </div>
           <div class="form-row">
             <div class="form-group"><label>Email</label><input id="inv-from-email" placeholder="delonmayne@gmail.com"></div>
-            <div class="form-group"><label>Phone</label><input id="inv-from-phone" placeholder="081 727 4007"></div>
+            <div class="form-group"><label>Phone</label><input id="inv-from-phone" placeholder="Your phone / WhatsApp"></div>
           </div>
           <div class="form-group"><label>Address</label><input id="inv-from-addr" placeholder="Your business address"></div>
         </div>
@@ -1264,7 +1325,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
             <div class="form-group"><label>Shipping mode</label><select id="inv-shipping-mode" onchange="updateInvoiceEstimate()" style="background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);width:100%"><option value="estimate">Auto country estimate</option><option value="manual">Manual shipping fee</option><option value="none">No shipping</option></select></div>
             <div class="form-group"><label>Shipping fee</label><input id="inv-shipping" type="number" value="0" min="0" oninput="calcInvTotal()"></div>
           </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:8px">Estimates are editable planning amounts, not tax or carrier quotes. Currency formats the invoice; destination country drives the preset.</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">Tax is only an estimate — check the correct rate for your country.</div>
           <div class="form-row">
             <div class="form-group"><label>Discount %</label><input id="inv-discount" type="number" value="0" min="0" max="100" oninput="calcInvTotal()"></div>
           </div>
@@ -1277,17 +1338,10 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
             <thead><tr><th style="width:40%">Description</th><th>Qty</th><th>Rate</th><th>Amount</th><th></th></tr></thead>
             <tbody id="invItems">
               <tr>
-                <td><input placeholder="Website Design" value="Website Design" oninput="calcInvTotal()"></td>
+                <td><input placeholder="e.g. Website design" oninput="calcInvTotal()"></td>
                 <td><input type="number" value="1" min="1" style="width:50px" oninput="calcInvTotal()"></td>
-                <td><input type="number" value="1200" min="0" oninput="calcInvTotal()"></td>
-                <td class="item-amt" style="color:var(--green);font-weight:700;padding:6px 4px;white-space:nowrap">$1,200.00</td>
-                <td><button class="btn btn-red btn-xs" onclick="removeInvItem(this)">✕</button></td>
-              </tr>
-              <tr>
-                <td><input placeholder="SEO Setup" value="SEO Setup" oninput="calcInvTotal()"></td>
-                <td><input type="number" value="1" min="1" style="width:50px" oninput="calcInvTotal()"></td>
-                <td><input type="number" value="500" min="0" oninput="calcInvTotal()"></td>
-                <td class="item-amt" style="color:var(--green);font-weight:700;padding:6px 4px;white-space:nowrap">$500.00</td>
+                <td><input type="number" placeholder="0" min="0" style="min-width:72px" oninput="calcInvTotal()"></td>
+                <td class="item-amt" style="color:var(--green);font-weight:700;padding:6px 4px;white-space:nowrap">$0.00</td>
                 <td><button class="btn btn-red btn-xs" onclick="removeInvItem(this)">✕</button></td>
               </tr>
             </tbody>
@@ -1311,15 +1365,47 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           <div class="form-group"><label>Payment Terms</label><select id="inv-terms" style="background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text);width:100%"><option>Due in 14 days</option><option>Due in 30 days</option><option>Due on receipt</option><option>50% upfront, 50% on delivery</option></select></div>
         </div>
         <div class="inv-section">
-          <h3>💳 Payment Instructions</h3>
-          <div class="form-group"><label>Bank details and payment links</label><textarea id="inv-payment" rows="5" placeholder="Example:&#10;Bank: Example Bank&#10;Account name: Your Business&#10;Account number: 123456789&#10;SWIFT/BIC: EXAMPXXX&#10;PayPal: https://paypal.me/yourname&#10;Wise: https://wise.com/pay/me/yourname" style="width:100%;margin-top:4px;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;resize:vertical"></textarea></div>
-          <div class="form-row" style="margin-top:10px">
-            <div class="form-group"><label>Stripe Payment Link</label><input id="inv-stripe" type="url" placeholder="https://buy.stripe.com/…"></div>
-            <div class="form-group"><label>PayPal Checkout Link</label><input id="inv-paypal" type="url" placeholder="https://paypal.me/… or checkout link"></div>
+          <h3>💳 How your client pays you</h3>
+          <p class="pay-intro">Fill in only what you use — empty boxes are left off the invoice. These details appear on the invoice, the PDF, WhatsApp and email.</p>
+          <div class="pay-group">
+            <div class="pay-gh">🏦 Bank transfer</div>
+            <div class="form-row">
+              <div class="form-group"><label>Bank name</label><input id="inv-bank-name" placeholder="e.g. FNB Namibia"></div>
+              <div class="form-group"><label>Account holder</label><input id="inv-bank-holder" placeholder="Name on the account"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Account number</label><input id="inv-bank-acc" inputmode="numeric" placeholder="e.g. 62012345678"></div>
+              <div class="form-group"><label>Branch code</label><input id="inv-bank-branch" inputmode="numeric" placeholder="e.g. 280172"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Account type</label><select id="inv-bank-type"><option value="">— choose —</option><option>Cheque / Current</option><option>Savings</option><option>Business</option><option>Transmission</option></select></div>
+              <div class="form-group"><label>SWIFT / BIC <span class="opt">international only</span></label><input id="inv-bank-swift" placeholder="e.g. FIRNNANX"></div>
+            </div>
+            <div class="pay-note">The invoice number is added automatically as the payment reference.</div>
           </div>
-          <div class="form-group" style="margin-top:10px"><label>QR Code Target</label><input id="inv-qr" type="url" placeholder="Paste a mobile-money, Stripe, PayPal, Wise, or crypto wallet payment URL"></div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="saveInvoiceDefaults()">💾 Save as defaults</button><button class="btn btn-ghost btn-sm" onclick="clearInvoiceDefaults()">↺ Clear saved defaults</button><span style="font-size:11px;color:var(--muted)">Defaults are saved only in this browser.</span></div>
-          <div style="font-size:11px;color:var(--muted);margin-top:6px">Payment details appear on the invoice preview, printed invoice, WhatsApp message, and online-payment buttons. The QR code uses the QR target URL.</div>
+          <div class="pay-group">
+            <div class="pay-gh">📱 Mobile money / eWallet</div>
+            <div class="form-group"><input id="inv-mobile" placeholder="e.g. FNB eWallet / MTC Maris: 081 123 4567 (Your Name)"></div>
+          </div>
+          <div class="pay-group">
+            <div class="pay-gh">🔗 Online payment links <span class="opt">clients tap these to pay by card</span></div>
+            <div class="form-group"><label>PayPal link</label><input id="inv-paypal" type="url" inputmode="url" placeholder="paypal.me/yourname" oninput="payLinkCheck(this)"><div class="pay-hint"></div></div>
+            <div class="form-group"><label>Stripe payment link</label><input id="inv-stripe" type="url" inputmode="url" placeholder="buy.stripe.com/…" oninput="payLinkCheck(this)"><div class="pay-hint"></div></div>
+            <div class="form-group"><label>Other link <span class="opt">Wise, Payoneer, PayFast…</span></label><input id="inv-other-link" type="url" inputmode="url" placeholder="wise.com/pay/me/yourname" oninput="payLinkCheck(this)"><div class="pay-hint"></div></div>
+          </div>
+          <div class="pay-group">
+            <div class="pay-gh">▣ QR code on the invoice</div>
+            <div class="form-group"><select id="inv-qr-src" onchange="payQrUI()"><option value="auto">Automatic — use my first payment link</option><option value="paypal">PayPal link</option><option value="stripe">Stripe link</option><option value="other">Other link</option><option value="custom">A different link…</option><option value="none">No QR code</option></select></div>
+            <div class="form-group" id="inv-qr-wrap" style="display:none;margin-top:8px"><input id="inv-qr" type="url" inputmode="url" placeholder="Paste the link the QR code should open" oninput="payLinkCheck(this)"><div class="pay-hint"></div></div>
+            <div class="pay-note" id="inv-qr-now"></div>
+          </div>
+          <div class="pay-group">
+            <div class="pay-gh">📝 Extra payment note <span class="opt">optional</span></div>
+            <div class="form-group"><textarea id="inv-payment" rows="2" placeholder="e.g. Please send proof of payment on WhatsApp to 081 123 4567" style="width:100%;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;resize:vertical"></textarea></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px"><button class="btn btn-primary btn-sm" onclick="saveInvoiceDefaults()">💾 Save my payment details</button><button class="btn btn-ghost btn-sm" onclick="clearInvoiceDefaults()">↺ Clear</button></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Saved to your account — filled in automatically on every new invoice, on any device.</div>
+
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-primary" onclick="previewInvoice()" style="flex:1">👁 Preview & Download</button>
@@ -1367,8 +1453,8 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="stats-grid">
       <div class="stat-card green"><div class="stat-top"><div class="stat-icon">💰</div></div><div class="stat-val" id="er-total">$0</div><div class="stat-label">Total Earned</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon">📅</div></div><div class="stat-val" id="er-month">$0</div><div class="stat-label">This Month</div></div>
-      <div class="stat-card red"><div class="stat-top"><div class="stat-icon">⏳</div><span class="stat-change up">chasing</span></div><div class="stat-val" id="er-out">$0</div><div class="stat-label">Outstanding</div></div>
-      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">📊</div><span class="stat-change up">avg</span></div><div class="stat-val" id="er-avg">$0</div><div class="stat-label">Avg Deal Size</div></div>
+      <div class="stat-card red"><div class="stat-top"><div class="stat-icon">⏳</div></div><div class="stat-val" id="er-out">$0</div><div class="stat-label">Outstanding</div></div>
+      <div class="stat-card blue"><div class="stat-top"><div class="stat-icon">📊</div></div><div class="stat-val" id="er-avg">$0</div><div class="stat-label">Avg Deal Size</div></div>
     </div>
     <div class="dash-grid">
       <div class="widget">
@@ -1390,12 +1476,12 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="table-wrap">
       <div class="table-hdr">
         <div class="table-title">Payment Log</div>
-        <button class="btn btn-green btn-sm" onclick="openLogPayment()">+ Log Payment</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="delAllPayments(this)">🗑 Delete all</button><button class="btn btn-green btn-sm" onclick="openLogPayment()">+ Log Payment</button></div>
       </div>
       <div class="tbl-scroll">
         <table>
           <thead><tr><th>Client</th><th>Amount</th><th>Date</th><th>Note</th><th></th></tr></thead>
-          <tbody id="er-pays"></tbody>
+          <tbody id="er-pays" class="pay-cards"></tbody>
         </table>
       </div>
     </div>
@@ -1500,7 +1586,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           <button class="btn btn-green" style="flex:1" onclick="waProposal()">💬 Send via WhatsApp</button>
           <button class="btn btn-gmail" style="flex:1" onclick="gmailProposal()">✉️ Send via Gmail</button>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px">Sending a proposal moves the deal to <strong>Proposal Sent</strong> in your Pipeline. Currency follows your Invoice settings.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px">Sending a proposal moves the deal to <strong>Proposal Sent</strong> in your Pipeline. Currency is the same one you picked on the Invoice page.</div>
       </div>
       <div id="pr-preview"></div>
     </div>
@@ -1540,6 +1626,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="inv-section" style="margin-bottom:14px">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap"><h3 style="margin:0">🛡 Security Center</h3><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="openReportsInbox()">📥 Reports inbox <span class="owner-rep-badge" style="display:none">0</span></button><button class="btn btn-ghost btn-sm" onclick="loadSecCenter()">🔄</button></div></div>
       <div id="secCenter" style="margin-top:10px"></div>
+      <div id="ipBlocks"></div>
     </div>
     <div class="prop-grid">
       <div style="display:flex;flex-direction:column;gap:14px">
@@ -1655,7 +1742,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           <button class="btn btn-primary btn-sm" onclick="openM('ownerUnlockModal')">👑 Unlock Owner Access</button>
         </div>
         <div class="settings-section">
-          <h3>🎧 Support, Reports & Feedback</h3><p>Tickets, bug reports and feedback go straight to Lameero Mendoza</p>
+          <h3>🎧 Support, Reports & Feedback</h3><p>Questions, bug reports and feedback go straight to the We Deploy team</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-primary btn-sm" onclick="openSupport()">🎧 Support Center</button>
             <button class="btn btn-ghost btn-sm" onclick="openFAQ()">❓ FAQ</button>
@@ -1754,6 +1841,28 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="modal-actions"><button class="btn btn-ghost" onclick="closeM('deleteAccModal')">Keep my account</button><button class="btn btn-red" onclick="doDeleteAccount()">🗑 Delete forever</button></div>
   </div>
 </div>
+<div class="modal-overlay" id="modModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><h2>🛡 Moderate member</h2><div class="modal-close" onclick="closeM('modModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div id="mod-head" style="display:flex;gap:10px;align-items:center;margin-bottom:10px"></div>
+      <div id="mod-last" class="sec-sum"></div>
+      <div class="form-group" style="margin-bottom:12px"><label>Reason <span class="opt">shown to them</span></label><input class="filter-input" id="mod-reason" maxlength="200" placeholder="e.g. Spamming the Win Wall"></div>
+      <div class="mod-box"><div class="mod-h">🔇 Restrict <span class="opt">they can still sign in</span></div>
+        <div class="mod-checks"><label><input type="checkbox" id="mod-r-post"> Posting (Win Wall, feed, challenges)</label><label><input type="checkbox" id="mod-r-ai"> AI assistant</label><label><input type="checkbox" id="mod-r-search"> Business search</label></div>
+        <div class="mod-row"><span id="mod-r-durwrap"></span><button class="btn btn-primary btn-sm" onclick="modDo('restrict')">🔇 Restrict</button><button class="btn btn-ghost btn-sm" onclick="modDo('unrestrict')">Lift</button></div></div>
+      <div class="mod-box"><div class="mod-h">⏸ Suspend <span class="opt">can't sign in until it ends</span></div>
+        <div class="mod-row" id="mod-s-row"></div></div>
+      <div class="mod-box"><div class="mod-h">⛔ Ban / 🗑 Delete</div>
+        <div class="mod-row"><button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="modDo('ban')">⛔ Ban forever</button><button class="btn btn-ghost btn-sm" onclick="modDo('unban')">✅ Unban</button><button class="btn btn-ghost btn-sm" onclick="modDo('logout')">🚪 Sign out everywhere</button><button class="btn btn-red btn-sm" onclick="modDo('delete')">🗑 Delete account</button></div>
+        <div class="pay-note">Delete removes the account and all their data — they'd have to create a new account. Ban keeps them out for good.</div></div>
+      <div class="mod-box"><div class="mod-h">🌐 Sign-ins, devices &amp; IP addresses</div>
+        <div class="mod-row" style="margin-bottom:8px"><span style="font-size:12px;color:var(--muted)">Block IP for</span><span id="mod-ip-row"></span></div>
+        <div id="mod-logins"></div>
+        <div class="pay-note">Blocking an IP stops sign-ins and new accounts from that network. Careful: mobile networks can share one IP between many people.</div></div>
+    </div>
+  </div>
+</div>
 <!-- LAMEERO'S ASSISTANT -->
 <div class="ai-launcher" id="aiLauncher" onclick="toggleAI()" title="We Deploy AI">🤖<span class="ai-unread" id="aiUnread" style="display:none">1</span></div>
 <div class="ai-panel" id="aiPanel">
@@ -1816,7 +1925,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           <button class="btn btn-green btn-sm" onclick="callCurLead()">📞 Call Now</button>
           <button class="btn btn-teal btn-sm" onclick="switchMTab(document.querySelector('#leadModal .mtab:nth-child(3)'),'mt-wa')">💬 WhatsApp</button>
           <button class="btn btn-purple btn-sm" id="m-inv-btn" onclick="openInvoiceFor()">🧾 Create Invoice</button>
-          <button class="btn btn-ghost btn-sm" id="m-inv-lock" style="display:none" onclick="openM('ownerUnlockModal')">🔒 Invoice — owner only</button>
+          <button class="btn btn-ghost btn-sm" id="m-inv-lock" style="display:none" onclick="openM('ownerUnlockModal')">🔒 Invoice — sign in first</button>
           <button class="btn btn-ghost btn-sm" onclick="saveCurLead()">⭐ Save Lead</button>
         </div>
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
@@ -2349,6 +2458,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
   <div class="um-item gold" id="umUnlock" onclick="toggleUserMenu();openM('ownerUnlockModal')">👑 Unlock Owner Access</div>
   <div class="um-item" onclick="openAnnouncements();toggleUserMenu()">📢 Announcements</div>
   <div class="um-item gold" id="umReports" style="display:none" onclick="toggleUserMenu();openReportsInbox()">📥 Reports inbox <span class="owner-rep-badge" style="display:none">0</span></div>
+  <div class="um-item" onclick="toggleUserMenu();startTour()">🧭 Take the tour</div>
   <div class="um-item" onclick="openSupport();toggleUserMenu()">🎧 Support & Feedback</div>
   <div class="um-item" onclick="toggleUserMenu();reportIssue()">🚩 Report a problem</div>
   <div class="um-item" onclick="toggleUserMenu();sv('settings');setTimeout(function(){var s=el('secSettings');if(s)s.scrollIntoView({behavior:'smooth'})},300)">🛡 Privacy &amp; Security</div>
@@ -2561,7 +2671,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='10.8';   // ← Change this number whenever you update the site
+const APP_VERSION='11.0';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -2594,7 +2704,7 @@ function applyOwnerGates(){
  const inv=el('navInvoice');
  if(inv)inv.classList.toggle('locked',!inv0);
  const badge=el('invBadge');
- if(badge)badge.textContent='🔒 Private';
+ if(badge){badge.textContent='';badge.style.display='none'}
  const card=el('dashInvCard');
  if(card){
   if(inv0){
@@ -2602,7 +2712,7 @@ function applyOwnerGates(){
    card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Create & send • private</div>';
   }else{
    card.setAttribute('onclick',"openM('ownerUnlockModal')");
-   card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Owner only</div>';
+   card.innerHTML='<div style="font-size:24px;margin-bottom:8px">🧾</div><div style="font-weight:700;font-size:13px;margin-bottom:3px">Invoice</div><div style="font-size:11px;color:var(--muted)">Sign in to use</div>';
   }
  }
 }
@@ -2811,7 +2921,6 @@ function seedAnns(){
  const now=Date.now();
  return [
   {id:'a1',type:'update',ts:now,title:'🚀 v9.1 — crash-proof login',body:'Login can no longer be blocked by anything — every part of the startup is protected, and the app now detects and reports a damaged/copied-incomplete file automatically. Also new: 👑 Owner Unlock, ❓ FAQ Center, full-height Assistant, 5-second intro, and ✕ close buttons on all views. — Lameero'},
-  {id:'a2',type:'notice',ts:now-864e5,title:'🔐 Invoice Builder — owner access only',body:'Reserved for Lameero Mendoza. Unlock via 👑 avatar menu (verify with owner email) or contact Lameero via Support (081 727 4007).'},
   {id:'a3',type:'feature',ts:now-864e5*3,title:'🎧 Support • 💡 Feedback • ☕ Donations • 🤖 Assistant',body:'Open tickets, report bugs, rate the app, donate, and chat with We Deploy AI — one-tap buttons ready to go.'},
   {id:'a5',type:'update',ts:now-864e5*30,title:'🎉 Welcome to We Deploy',body:'Find businesses without websites in 65 countries, generate call scripts, send WhatsApp messages and close deals. Built by one mastermind: Lameero Mendoza. 🧠'}
  ];
@@ -3533,7 +3642,7 @@ function rowHTML(l){
  '<div class="act-btn call" title="Call" onclick="event.stopPropagation();markContacted(\''+l.id+'\',\'call\');location.href=\'tel:'+l.phone.replace(/ /g,'')+'\'">📞</div>'+
  '<div class="act-btn wa" title="WhatsApp" onclick="event.stopPropagation();waLead(\''+l.id+'\')">💬</div>'+
  '<div class="act-btn" title="Add to Pipeline" onclick="event.stopPropagation();addToPipeline(\''+l.id+'\')">📋</div>'+
- (canInvoice()?'<div class="act-btn inv" title="Create Invoice" onclick="event.stopPropagation();invoiceLead(\''+l.id+'\')">🧾</div>':'<div class="act-btn inv" title="Invoice — owner only" style="opacity:.45" onclick="event.stopPropagation();openM(\'ownerUnlockModal\')">🔒</div>')+
+ (canInvoice()?'<div class="act-btn inv" title="Create Invoice" onclick="event.stopPropagation();invoiceLead(\''+l.id+'\')">🧾</div>':'<div class="act-btn inv" title="Sign in to create invoices" style="opacity:.45" onclick="event.stopPropagation();openM(\'ownerUnlockModal\')">🔒</div>')+
  '<div class="act-btn save" title="'+(l.saved?'Saved':'Save')+'" onclick="event.stopPropagation();toggleSave(\''+l.id+'\')">'+(l.saved?'⭐':'☆')+'</div>'+
  '<div class="act-btn" title="Hot" style="font-size:12px;opacity:'+(l.statusTag==='hot'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'hot\')">🔥</div>'+
  '<div class="act-btn" title="Warm" style="font-size:12px;opacity:'+(l.statusTag==='warm'?'1':'.45')+'" onclick="event.stopPropagation();setLeadStatus(\''+l.id+'\',\'warm\')">🟡</div>'+
@@ -3557,7 +3666,7 @@ function renderLeads(){
  if(state.leadPage>pages)state.leadPage=pages;
  const slice=list.slice((state.leadPage-1)*PAGE,state.leadPage*PAGE);
  const lb=el('leadsBody');
- if(lb)lb.innerHTML=slice.length?slice.map(rowHTML).join(''):'<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🔍</div><h3>No leads match your filters</h3><p>Try clearing filters or run a new search</p></div></td></tr>';
+ if(lb)lb.innerHTML=slice.length?slice.map(rowHTML).join(''):'<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🔍</div><h3>'+(state.leads.length?'No leads match your filters':'No leads yet')+'</h3><p>'+(state.leads.length?'Try clearing the filters above':'Tap <b>🔍 Find Leads</b>, pick your city and save the businesses you want to contact')+'</p></div></td></tr>';
  setT('showCount',list.length);
  renderPagination(list.length,pages);
  renderSegTabs();
@@ -4438,7 +4547,7 @@ function renderOwnerUsers(){
  box.innerHTML=list.length?list.map(function(u){
   const own=String(u.email).toLowerCase()==='delonmayne@gmail.com';
   return '<div class="op-user'+(u.banned?' banned':'')+'"><div class="lb-av">'+esc(initials(u.name))+'</div>'+
-  '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(u.name)+(own?' <span class="tag tag-warm">👑 You</span>':'')+(u.banned?' <span class="tag tag-hot">⛔ Banned</span>':'')+(u.hidden?' <span class="tag tag-cold">Hidden</span>':'')+(u.badge?' <span class="lb-badge">'+esc(u.badge)+'</span>':'')+'</div>'+
+  '<div style="flex:1;min-width:0"><div class="lb-name">'+esc(u.name)+(own?' <span class="tag tag-warm">👑 You</span>':'')+(modStatusTags(u)?' '+modStatusTags(u):'')+(u.hidden?' <span class="tag tag-cold">Hidden</span>':'')+(u.badge?' <span class="lb-badge">'+esc(u.badge)+'</span>':'')+'</div>'+
   '<div class="lb-role">'+esc(u.email)+(u.biz?' • '+esc(u.biz):'')+'</div>'+
   '<div class="lb-role">'+esc(u.role||'No role yet')+' • '+lvlLabel(u.level)+' • '+(u.xp||0)+' XP</div>'+
   '<div class="rank-stats" style="margin-top:4px"><span>🔍 '+(u.leads||0)+'</span><span>📞 '+(u.contacts||0)+'</span><span>✅ '+(u.deals||0)+'</span><span>💰 '+money0(u.sales||0)+'</span><span>📅 joined '+(u.created?new Date(u.created).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—')+'</span>'+(u.last_login?'<span>🔑 last login '+timeAgo(u.last_login)+'</span>':'')+'</div>'+
@@ -4448,7 +4557,7 @@ function renderOwnerUsers(){
    '<select onchange="opAction(\''+u.id+'\',\'badge\',this.value)">'+state.opBadges.map(function(b){return '<option value="'+esc(b)+'"'+(b===(u.badge||'')?' selected':'')+'>'+(b?esc(b):'No badge')+'</option>'}).join('')+'</select>'+
    '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\''+(u.hidden?'unhide':'hide')+'\')">'+(u.hidden?'👁 Show on board':'🙈 Hide from board')+'</button>'+
    '<button class="btn btn-ghost btn-sm" onclick="opAction(\''+u.id+'\',\'reset\')">🧹 Reset stats</button>'+
-   '<button class="btn btn-sm '+(u.banned?'btn-green':'btn-ghost')+'" style="'+(u.banned?'':'color:var(--red)')+'" onclick="opAction(\''+u.id+'\',\''+(u.banned?'unban':'ban')+'\')">'+(u.banned?'✅ Unban':'⛔ Ban')+'</button>'+
+   '<button class="btn btn-sm btn-ghost" style="color:var(--red)" onclick="openModerate(\''+u.id+'\')">🛡 Moderate</button>'+
   '</div>')+'</div></div>';
  }).join(''):'<div class="empty-mini">No users match</div>';
 }
@@ -4506,7 +4615,7 @@ function leadFromPlace(p,ct,city,claims){
  if(p.hours)score+=4;if(p.addr)score+=4;if(p.social)score+=4;
  if(claims)score-=Math.min(20,claims.n*8);
  score=Math.max(20,Math.min(99,score+(hashStr(p.key)%5)));
- return {id:p.key,osm:true,name:p.name,industry:IND[p.ind]?p.ind:'Retail & Shops',type:nos?'no-website':'prospect',city:city,country:ct.name,flag:ct.flag,dial:ct.dial,
+ return {id:p.key,osm:true,name:p.name,kind:p.kind||'',industry:IND[p.ind]?p.ind:'Retail & Shops',type:nos?'no-website':'prospect',city:city,country:ct.name,flag:ct.flag,dial:ct.dial,
   phone:p.phone||'',addr:p.addr||('Near '+city+' centre'),website:p.website||null,social:p.social||'',email:p.email||'',hours:p.hours||'',lat:p.lat,lon:p.lon,
   claims:claims||null,score:score,saved:false,added:false,contacted:false};
 }
@@ -4805,7 +4914,7 @@ function renderGrowthDash(){
  if(!UD||!el('growthDash'))return;
  const pays=(UD.payments||[]).reduce(function(s,p){return s+(p.amount||0)},0);
  const openPipe=PIPE.filter(function(p){return p.s!==5}).reduce(function(s,p){return s+pipeVal(p)},0);
- setH('moneyCard','<div class="money-card"><div><div class="money-l">💰 You\'ve earned with '+esc(siteName())+'</div><div class="money-v" id="moneyVal">'+money0(0)+'</div><div class="money-s">'+money0(openPipe)+' more waiting in your pipeline'+(UD.freezes?' • 🧊 '+UD.freezes+' streak freeze'+(UD.freezes>1?'s':''):'')+'</div></div><button class="btn btn-ghost btn-sm" onclick="sv(\'earnings\')">💵 Log a payment</button></div>');
+ setH('moneyCard','<div class="money-card" onclick="if(!event.target.closest(\'button\'))sv(\'earnings\')" style="cursor:pointer"><div><div class="money-l">💰 Money you\'ve received</div><div class="money-v" id="moneyVal">'+money0(0)+'</div><div class="money-s">'+(pays?'From payments you logged &amp; invoices marked Paid • tap to see them':'Mark an invoice as <b>Paid</b> or log a payment and it shows here')+'<br>'+money0(openPipe)+' more waiting in your pipeline'+(UD.freezes?' • 🧊 '+UD.freezes+' streak freeze'+(UD.freezes>1?'s':''):'')+'</div></div><button class="btn btn-ghost btn-sm" onclick="sv(\'earnings\')">💵 Log a payment</button></div>');
  countUp(el('moneyVal'),pays);
  renderMissions();
  setH('tipBody','💡 '+esc(tipOfDay()));
@@ -5263,7 +5372,8 @@ function applyDevUI(){
  const box=el('ownerAccessBox');
  if(box)box.innerHTML=own?'<h3>👑 Owner Access</h3><div class="dev-ok">✅ <b>Verified owner — '+esc((CUR&&CUR.name)||'Lameero Mendoza')+'</b><br><span>Developer account • Owner Panel, Invoice Builder and Announcements are unlocked for good.</span></div><button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="sv(\'owner\')">👑 Open Owner Panel</button>':
   '<h3>👑 Owner Access</h3><p>Unlock owner tools (Lameero Mendoza only)</p><button class="btn btn-primary btn-sm" onclick="openM(\'ownerUnlockModal\')">👑 Unlock Owner Access</button>';
- const um=el('umUnlock');if(um)um.style.display=own?'none':'';
+ if(box)box.style.display=own?'':'none';
+ const um=el('umUnlock');if(um)um.style.display='none';
  if(own&&UD&&(!UD.role||UD.role.path!=='founder')){UD.role={path:'founder',ind:'',market:'',since:Date.now()};saveUD()}
 }
 const _applyOwnerGatesD=window.applyOwnerGates;
@@ -5362,7 +5472,7 @@ function supportReset(id,name){
 function msgEdits(){if(!UD)return {};UD.msgEdits=UD.msgEdits||{};return UD.msgEdits}
 let _meT=null;function saveEditsSoon(){clearTimeout(_meT);_meT=setTimeout(function(){try{saveUD()}catch(e){}},700)}
 function msgText(holder){const b=holder.querySelector('.msg-body');return (b?b.innerText:holder.innerText.replace(/^copy\s*/i,'')).replace(/ /g,' ').replace(/\n{3,}/g,'\n\n').trim()}
-function leadWAMsg(l){const s=msgEdits()['L'+l.id+'|wa|0'];return s||waTemplate(l.name,l.city,l.industry,l.type)}
+function leadWAMsg(l){const s=msgEdits()['L'+l.id+'|wa|0'];return s||waTemplate(l.name,l.city,bizWord(l),l.type)}
 function addEditPencils(root,scope){
  if(!root)return;
  root.querySelectorAll('.script-text,.wa-bubble').forEach(function(h,i){
@@ -5545,6 +5655,7 @@ function aiAsk(input,fallback){
    if(r&&r.mode)aiSetMode(r.mode);
    if(AI_MODE==='basic')return;
    if(r&&r.ok&&r.text){const p=aiParse(r.text);const chips=aiRunActions(p.acts);aiSayNow(p.text||'Done ✅',chips);return}
+   if(r&&r.error==='restricted'){aiSayNow(r.message||'🔇 The AI is blocked for your account right now.');return}
    if(r&&r.error==='ai_off')AI_LLM=false;
    if(r&&r.error==='limit'){aiSayNow('🧠 You\'ve used all '+r.limit+' smart answers for today — they refill tomorrow. I can still do quick commands like "find plumbers in Windhoek" or "who should I call next".');return}
    fallback();
@@ -5638,6 +5749,7 @@ function guestExit(which){
  setTimeout(function(){const f=el(which==='signup'?'su-name':'li-email');if(f)f.focus()},200);
 }
 let _gpT=0;
+const _openMGuest=window.openM;window.openM=function(id){if(isGuest()&&(id==='roleModal'||id==='freshModal'||id==='ownerUnlockModal'))return;return _openMGuest.apply(this,arguments)};
 function guestPrompt(){
  if(Date.now()-_gpT<600)return;_gpT=Date.now();
  const m=el('guestModal');if(!m)return;openM('guestModal');
@@ -5686,7 +5798,7 @@ function renderLegal(){
  const N=esc(legalName()),C='<a href="mailto:'+OWNER.email+'">'+OWNER.email+'</a>';
  setH('lg-privacy','<div class="legal"><p class="lg-date">Last updated: September 2026</p>'+
  '<h4>1. Who we are</h4><p>'+N+' (Lead Finder Pro) is a free tool that helps freelancers and agencies find local businesses and contact them. Contact: '+C+'.</p>'+
- '<h4>2. What we collect</h4><ul><li><b>Account:</b> your name, business name, email and password. Passwords are <b>scrambled (hashed)</b> — nobody, including the owner, can ever see them.</li><li><b>Your work:</b> leads, notes, pipeline, proposals, invoices, payments and settings you create, so they sync across your devices.</li><li><b>Security logs:</b> time of sign-in, device/browser type, approximate location (country/city) and a <b>shortened IP address</b> (last part hidden) — used only to protect your account.</li><li><b>AI chats:</b> questions you ask the assistant, plus a summary of your own leads/progress so it can answer. These are processed to create the answer and are not used for ads.</li><li><b>Reports & support messages</b> you send us.</li></ul>'+
+ '<h4>2. What we collect</h4><ul><li><b>Account:</b> your name, business name, email and password. Passwords are <b>scrambled (hashed)</b> — nobody, including the owner, can ever see them.</li><li><b>Your work:</b> leads, notes, pipeline, proposals, invoices, payments and settings you create, so they sync across your devices.</li><li><b>Security logs:</b> time of sign-in, device/browser type, approximate location (country/city) and IP address — used only to protect your account and the site. You see a shortened version; the full address is visible only to the site owner for security (for example to block attacks).</li><li><b>AI chats:</b> questions you ask the assistant, plus a summary of your own leads/progress so it can answer. These are processed to create the answer and are not used for ads.</li><li><b>Reports & support messages</b> you send us.</li></ul>'+
  '<h4>3. What we do NOT do</h4><ul><li>No selling or renting of your data — ever.</li><li>No advertising or tracking cookies, no ad networks, no cross-site tracking.</li><li>Other users can never see your leads, invoices or private data.</li></ul>'+
  '<h4>4. Who can see your data</h4><p>Only you. The site owner can open a <b>read-only support view</b> of an account and reset a password when a user asks for help or to keep the platform safe. Public things you choose to post (Win Wall, live feed, leaderboard name/level) are visible to other members.</p>'+
  '<h4>5. Services we use</h4><ul><li><b>Cloudflare</b> — hosting, database and the AI model (Workers AI).</li><li><b>OpenStreetMap</b> — public business listings for search results.</li><li><b>WhatsApp / your email app</b> — only when you tap a button to open them.</li></ul>'+
@@ -5844,8 +5956,8 @@ function checkOwnerReports(){
  if(!isOwner()||!onlineReady())return;
  wdApi('admin/tickets').then(function(r){if(r&&r.ok){ownerBadge(r.unread);if(r.unread)showToast('📥 You have '+r.unread+' new report'+(r.unread===1?'':'s')+' — tap your avatar → Reports inbox','info')}});
 }
-const _startAppSec=window.__startApp;
-window.__startApp=function(u){_repChecked=false;const r=_startAppSec.apply(this,arguments);setTimeout(function(){try{if(isOwner()&&!_repChecked){_repChecked=true;checkOwnerReports()}}catch(e){}},2500);return r};
+const _startAppSec=startApp;
+startApp=function(u){_repChecked=false;const r=_startAppSec.apply(this,arguments);setTimeout(function(){try{if(isOwner()&&!_repChecked){_repChecked=true;checkOwnerReports()}}catch(e){}},2500);return r};
 setInterval(function(){try{if(CUR&&!document.hidden&&isOwner())wdApi('admin/tickets').then(function(r){if(r&&r.ok)ownerBadge(r.unread)})}catch(e){}},3*60*1000);
 /* ---------- Security Center (Owner Panel) ---------- */
 function loadSecCenter(){
@@ -5864,6 +5976,267 @@ let _repChecked=false;
 const _gatesRep=window.applyOwnerGates;
 window.applyOwnerGates=function(){const r=_gatesRep.apply(this,arguments);try{const um=el('umReports');if(um)um.style.display=isOwner()?'flex':'none';if(isOwner()&&!_repChecked){_repChecked=true;setTimeout(checkOwnerReports,800)}}catch(e){}return r};
 function unlockAcc(email){wdApi('admin/security/unlock','POST',{email:email}).then(function(){showToast('🔓 Unlocked '+email,'success');loadSecCenter()})}
+
+/* ═══════════════════════ v10.9 — clearer money, tidy payment details, guided tour ═══════════════════════ */
+/* ---- Payment log: delete all (tap twice) ---- */
+let _delAllT=0;
+function delAllPayments(btn){
+ const n=(UD&&UD.payments||[]).length;
+ if(!n)return showToast('The payment log is already empty','info');
+ if(Date.now()-_delAllT>4000){_delAllT=Date.now();if(btn){btn.textContent='⚠️ Tap again to delete all '+n;btn.classList.add('danger-armed');setTimeout(function(){btn.textContent='🗑 Delete all';btn.classList.remove('danger-armed')},4000)}return}
+ _delAllT=0;UD.payments=[];
+ (state.invoices||[]).forEach(function(iv){if(iv.status==='paid')iv.status='sent'});
+ saveUD();renderEarnings();try{renderInvHistory()}catch(e){}try{renderGrowthDash()}catch(e){}
+ if(btn){btn.textContent='🗑 Delete all';btn.classList.remove('danger-armed')}
+ showToast('🗑 All '+n+' payments deleted — your total is back to '+money0(0),'success');
+}
+/* ---- Invoice payment details: tidy, labelled, links fixed automatically ---- */
+function normLink(u){
+ u=String(u||'').trim();if(!u)return '';
+ if(/^https?:\/\//i.test(u))return u;
+ if(/^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(u))return 'https://'+u;   // "paypal.me/name" → "https://paypal.me/name"
+ return '';
+}
+const PAY_FIELDS=['inv-bank-name','inv-bank-holder','inv-bank-acc','inv-bank-branch','inv-bank-type','inv-bank-swift','inv-mobile','inv-paypal','inv-stripe','inv-other-link','inv-qr-src','inv-qr','inv-payment'];
+function payDetailsText(num){
+ const L=[],g=function(id){return (v(id)||'').trim()};
+ const bank=[['Bank',g('inv-bank-name')],['Account holder',g('inv-bank-holder')],['Account number',g('inv-bank-acc')],['Branch code',g('inv-bank-branch')],['Account type',g('inv-bank-type')],['SWIFT/BIC',g('inv-bank-swift')]].filter(function(x){return x[1]});
+ if(bank.length){L.push('BANK TRANSFER');bank.forEach(function(x){L.push(x[0]+': '+x[1])});if(num)L.push('Reference: '+num)}
+ if(g('inv-mobile')){if(L.length)L.push('');L.push('MOBILE MONEY / eWALLET');L.push(g('inv-mobile'))}
+ const other=normLink(g('inv-other-link'));if(other){if(L.length)L.push('');L.push('Other payment link: '+other)}
+ if(g('inv-payment')){if(L.length)L.push('');L.push(g('inv-payment'))}
+ return L.join('\n');
+}
+function qrTarget(){
+ const s=v('inv-qr-src')||'auto';
+ const P=normLink(v('inv-paypal')),S=normLink(v('inv-stripe')),O=normLink(v('inv-other-link')),C=normLink(v('inv-qr'));
+ if(s==='none')return '';if(s==='paypal')return P;if(s==='stripe')return S;if(s==='other')return O;if(s==='custom')return C;
+ return P||S||O||'';
+}
+const _invDataP=window.invData;
+window.invData=function(){
+ const d=_invDataP.apply(this,arguments);
+ d.payment=payDetailsText(d.num);d.stripe=normLink(v('inv-stripe'));d.paypal=normLink(v('inv-paypal'));d.qr=qrTarget();
+ return d;
+};
+function payLinkCheck(inp){
+ const raw=(inp.value||'').trim(),ok=!raw||!!normLink(raw);
+ inp.classList.toggle('pay-bad',!ok);
+ const h=inp.parentElement.querySelector('.pay-hint');if(h){h.textContent=!raw?'':ok?'✓ Looks good':'⚠️ This doesn’t look like a web link — it should look like paypal.me/yourname';h.className='pay-hint '+(ok?'ok':'bad')}
+ payQrUI();
+}
+function payQrUI(){const c=el('inv-qr-wrap');if(c)c.style.display=v('inv-qr-src')==='custom'?'':'none';const t=el('inv-qr-now');if(t){const q=qrTarget();t.textContent=q?'QR will open: '+q:'No QR code will be shown';}}
+window.loadInvoiceDefaults=function(){
+ const d=invoiceDefaults();
+ PAY_FIELDS.forEach(function(id){const k=id.replace('inv-','');if(el(id))setV(id,d[k]!=null?d[k]:'')});
+ if(el('inv-qr-src')&&!d['qr-src'])setV('inv-qr-src',d.qr?'custom':'auto');
+ payQrUI();
+};
+window.saveInvoiceDefaults=function(){
+ if(!UD)return showToast('Sign in before saving payment details','error');
+ const o={};PAY_FIELDS.forEach(function(id){if(el(id))o[id.replace('inv-','')]=v(id)});
+ UD.invoiceDefaults=o;saveUD();showToast('💾 Payment details saved — they’ll be filled in on every new invoice','success');
+};
+window.clearInvoiceDefaults=function(){
+ if(UD)delete UD.invoiceDefaults;PAY_FIELDS.forEach(function(id){if(el(id))setV(id,id==='inv-qr-src'?'auto':'')});if(UD)saveUD();payQrUI();
+ showToast('↺ Saved payment details cleared','info');
+};
+/* ---- Guided tour for new members ---- */
+const TOUR=[
+ {t:'👋 Welcome to We Deploy!',b:'This quick tour shows you where everything is. It takes about a minute — tap <b>Next</b>, or <b>Skip</b> anytime.'},
+ {sel:'#menuBtn',alt:'.sidebar',t:'☰ The menu',b:'Every page lives here — <b>Find Leads, My Leads, Pipeline, Scripts, WhatsApp, Invoices, Earnings</b> and more.'},
+ {sel:'#view-dashboard .page-head .btn-primary',t:'🔍 Find new leads',b:'Start here. Pick a <b>country</b>, a <b>city</b> and an <b>industry</b> — you’ll get real businesses, and the ones with <b>no website</b> are marked for you.'},
+ {sel:'#dropCard',t:'🎁 Today’s Lead Drop',b:'Every day we hand-pick <b>5 fresh businesses without a website</b> for you. Open it daily.'},
+ {sel:'#missionsBody',up:'.widget',t:'🎯 Daily missions',b:'Small daily goals like “Call 3 leads”. They give you <b>XP</b> so you level up and climb the leaderboard.'},
+ {sel:'#moneyCard',t:'💰 Money received',b:'Shows the money <b>you</b> logged — when you mark an invoice as <b>Paid</b> or tap <b>Log a payment</b>. It starts at zero and only you can see it.'},
+ {sel:'#aiLauncher',t:'🤖 We Deploy AI',b:'Your AI sales partner. Ask things like <i>“find restaurants in Windhoek”</i> or <i>“write a WhatsApp message for this lead”</i>.'},
+ {sel:'[title="Announcement Center"]',t:'🔔 Announcements',b:'News and updates from the We Deploy team show up here.'},
+ {sel:'#avatar',t:'👤 Your account',b:'Profile, settings, <b>Support</b>, <b>Report a problem</b>, privacy — and you can replay this tour from here anytime.'},
+ {t:'🚀 You’re ready!',b:'The fastest way to your first client: <b>Find leads → open one → call or WhatsApp them</b> using the ready-made script.',end:true}
+];
+let tourI=0;
+function tourTarget(s){
+ if(!s.sel)return null;let n=document.querySelector(s.sel);
+ if(n&&s.up)n=n.closest(s.up)||n;
+ if(!n||!n.offsetParent){if(s.alt){const a=document.querySelector(s.alt);if(a&&a.offsetParent)return a}return null}
+ return n;
+}
+function startTour(){
+ if(!CUR||isGuest())return;
+ try{closeM('roleModal')}catch(e){}try{closeAI()}catch(e){}
+ const um=el('userMenu');if(um)um.classList.remove('open');
+ sv('dashboard');tourI=0;
+ if(!el('tourLayer'))document.body.insertAdjacentHTML('beforeend','<div id="tourLayer"><div class="tour-hole" id="tourHole"></div><div class="tour-card" id="tourCard"></div></div>');
+ el('tourLayer').style.display='block';setTimeout(tourShow,250);
+}
+function tourShow(){
+ if(!CUR||isGuest())return tourHide();
+ const s=TOUR[tourI],hole=el('tourHole'),card=el('tourCard');if(!s||!hole)return tourEnd();
+ const n=tourTarget(s);
+ card.innerHTML='<div class="tour-step">'+(tourI+1)+' / '+TOUR.length+'</div><h3>'+s.t+'</h3><p>'+s.b+'</p><div class="tour-dots">'+TOUR.map(function(_,i){return '<i class="'+(i===tourI?'on':'')+'"></i>'}).join('')+'</div><div class="tour-btns">'+
+  (s.end?'<button class="btn btn-ghost btn-sm" onclick="tourEnd()">Close</button><button class="btn btn-primary btn-sm" onclick="tourEnd();sv(\'search\')">🔍 Find my first leads</button>':
+  '<button class="btn btn-ghost btn-sm tour-skip" onclick="tourEnd()">Skip tour</button><span style="flex:1"></span>'+(tourI?'<button class="btn btn-ghost btn-sm" onclick="tourGo(-1)">← Back</button>':'')+'<button class="btn btn-primary btn-sm" onclick="tourGo(1)">Next →</button>')+'</div>';
+ if(!n){hole.style.cssText='left:50%;top:40%;width:0;height:0';card.className='tour-card center';card.style.top='';card.style.left='';return}
+ n.scrollIntoView({block:'center',behavior:'instant'});
+ setTimeout(function(){
+  const r=n.getBoundingClientRect(),pad=6;
+  hole.style.cssText='left:'+(r.left-pad)+'px;top:'+(r.top-pad)+'px;width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px';
+  card.className='tour-card';
+  const cw=Math.min(340,window.innerWidth-24),ch=card.offsetHeight||200;
+  let top=r.bottom+14;if(top+ch>window.innerHeight-10)top=Math.max(10,r.top-ch-14);
+  let left=Math.min(Math.max(12,r.left+r.width/2-cw/2),window.innerWidth-cw-12);
+  card.style.top=top+'px';card.style.left=left+'px';card.style.width=cw+'px';
+ },60);
+}
+function tourGo(d){tourI=Math.max(0,Math.min(TOUR.length-1,tourI+d));tourShow()}
+function tourEnd(){const l=el('tourLayer');if(l)l.style.display='none';if(UD&&!UD.tourDone){UD.tourDone=Date.now();saveUD()}}
+function tourHide(){const l=el('tourLayer');if(l)l.style.display='none'}
+const _logoutTour=window.logout;window.logout=function(){tourHide();return _logoutTour.apply(this,arguments)};
+window.addEventListener('resize',function(){const l=el('tourLayer');if(l&&l.style.display==='block')tourShow()});
+function tourWhenFree(tries){
+ tries=tries||0;if(tries>40||!CUR||isGuest()||(UD&&UD.tourDone))return;
+ const busy=document.querySelector('.modal-overlay.open')||(el('introOverlay')&&el('introOverlay').offsetParent);
+ if(busy)return setTimeout(function(){tourWhenFree(tries+1)},1500);
+ startTour();
+}
+const _startAppTour=startApp;
+startApp=function(u,isNew){const r=_startAppTour.apply(this,arguments);try{const fresh=isNew||(UD&&!(UD.xp>150)&&(UD.activity||[]).length<5);if(fresh&&!(u&&u.guest)&&UD&&!UD.tourDone)setTimeout(function(){tourWhenFree(0)},2500)}catch(e){}return r};
+
+/* ---- Get-started checklist for new members (hides itself once they've done the basics) ---- */
+function renderGetStarted(){
+ const box=el('getStarted');if(!box||!UD||isGuest()){if(box)box.innerHTML='';return}
+ const S=UD.stats||{},L=state.leads||[];
+ const steps=[
+  {d:L.length>0,t:'Find your first leads',s:'Pick a city and industry — save the businesses you like',a:"sv('search')"},
+  {d:L.some(function(l){return l.contacted}),t:'Contact one business',s:'Open a lead → call or WhatsApp with the ready-made script',a:"sv('leads')"},
+  {d:PIPE.length>0||(UD.proposals||[]).length>0,t:'Track the deal',s:'Add it to your Pipeline, then send a Proposal',a:"sv('pipeline')"},
+  {d:(state.invoices||[]).length>0,t:'Get paid',s:'Send an Invoice with your bank or PayPal details',a:"sv('invoice')"}
+ ];
+ const done=steps.filter(function(x){return x.d}).length;
+ if(done===steps.length||UD.gsHidden){box.innerHTML='';return}
+ box.innerHTML='<div class="get-started"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><h3>🚀 Get started — '+done+'/'+steps.length+' done</h3><p>Four steps to your first paying client. Tap a step to go there.</p></div><button class="btn btn-ghost btn-xs" title="Hide" onclick="UD.gsHidden=1;saveUD();renderGetStarted()">✕</button></div><div class="gs-steps">'+
+ steps.map(function(x,i){return '<div class="gs-step'+(x.d?' done':'')+'" onclick="'+x.a+'"><b>'+(x.d?'✓':(i+1))+'</b><span>'+x.t+'<small>'+x.s+'</small></span></div>'}).join('')+'</div></div>';
+}
+const _renderGrowthDashGS=window.renderGrowthDash;
+window.renderGrowthDash=function(){const r=_renderGrowthDashGS.apply(this,arguments);try{renderGetStarted()}catch(e){}return r};
+
+/* ═══════════════════════ v11 — smart business types, lead-aware templates, owner moderation ═══════════════════════ */
+const IND_HINT={'Restaurants & Food':'restaurants, cafés, takeaways, bakeries','Home Services':'plumbers, electricians, handymen, cleaners','Health & Wellness':'clinics, dentists, pharmacies, gyms','Auto Services':'mechanics, panel beaters, tyres, car wash','Retail & Shops':'boutiques, supermarkets, stores','Legal & Finance':'lawyers, accountants, insurance','Beauty & Grooming':'salons, barbers, nails, spas','Real Estate':'estate agents, property managers','Education':'schools, tutors, driving schools','Hotels & Travel':'hotels, lodges, guesthouses, tours','Technology':'IT, computer & phone shops','Construction':'builders, contractors, hardware'};
+const IND_WORD={'Restaurants & Food':'restaurant','Home Services':'home services','Health & Wellness':'health','Auto Services':'auto repair','Retail & Shops':'retail','Legal & Finance':'professional services','Beauty & Grooming':'beauty','Real Estate':'real estate','Education':'education','Hotels & Travel':'hospitality','Technology':'tech','Construction':'construction'};
+const NAME_KIND=[[/mechanic|auto ?(repair|body|clinic|centre|center|works)|motors?\b|garage|panel ?beat/i,'car repair'],[/tyre|tire/i,'tyre'],[/car ?wash/i,'car wash'],[/barber/i,'barbershop'],[/nail/i,'nail salon'],[/salon|hair|beauty|spa\b/i,'beauty salon'],[/dental|dentist/i,'dental'],[/pharma|chemist/i,'pharmacy'],[/clinic|medical|doctor|surgery/i,'medical practice'],[/gym|fitness/i,'gym'],[/pizza|grill|kitchen|restaurant|takeaway|chicken|burger|braai|kapana/i,'restaurant'],[/caf[eé]|coffee/i,'café'],[/bakery|bakes/i,'bakery'],[/hotel|lodge|guest ?house|b&b|inn\b/i,'guesthouse'],[/plumb/i,'plumbing'],[/electric/i,'electrical'],[/build|construct/i,'construction'],[/school|academy|college|tutor/i,'education'],[/attorney|lawyer|legal/i,'law firm'],[/account|tax/i,'accounting'],[/boutique|fashion|cloth/i,'clothing store'],[/hardware/i,'hardware'],[/liquor|bottle ?store/i,'liquor store'],[/church|ministr/i,'church'],[/estate|propert|realt/i,'real estate'],[/computer|phone|tech|cell/i,'tech shop'],[/tour|travel|safari/i,'travel']];
+function bizWord(l){
+ if(!l)return 'business';
+ if(l.kind)return l.kind;
+ const n=String(l.name||'');
+ if(n&&n.indexOf('[')<0)for(const x of NAME_KIND)if(x[0].test(n))return x[1];
+ return IND_WORD[l.industry]||String(l.industry||'business').toLowerCase();
+}
+function fillIndustrySelects(){
+ ['waIndustry','scriptIndustry','emailIndustry'].forEach(function(id){
+  const s=el(id);if(!s||s.dataset.full)return;const cur=s.value;
+  s.innerHTML=IND_NAMES.map(function(n){return '<option value="'+esc(n)+'">'+(IND[n].icon||'')+' '+esc(n)+(IND_HINT[n]?' — '+esc(IND_HINT[n]):'')+'</option>'}).join('');
+  s.value=IND[cur]?cur:IND_NAMES[0];s.dataset.full='1';
+ });
+ ['f-ind','s-ind'].forEach(function(id){const s=el(id);if(!s||s.dataset.full)return;Array.from(s.options).forEach(function(o){if(o.value&&IND_HINT[o.value])o.textContent=(IND[o.value].icon||'')+' '+o.value+' — '+IND_HINT[o.value]});s.dataset.full='1'});
+}
+/* "Write for:" — pick one of your leads and every template fills in its name, city and business type */
+let TPL_LEAD='';
+function tplLeadOptions(){
+ const L=(state.leads||[]).slice().sort(function(a,b){return String(a.name).localeCompare(String(b.name))});
+ return '<option value="">📋 General template (no lead)</option>'+L.map(function(l){return '<option value="'+esc(l.id)+'"'+(l.id===TPL_LEAD?' selected':'')+'>👤 '+esc(l.name)+(l.city?' — '+esc(l.city):'')+'</option>'}).join('');
+}
+function tplLeadBar(){return '<div class="tpl-for"><span>✍️ Write for:</span><select class="filter-input" onchange="pickTplLead(this.value)">'+tplLeadOptions()+'</select></div>'}
+function pickTplLead(id){
+ TPL_LEAD=id||'';const l=TPL_LEAD?findLead(TPL_LEAD):null;
+ if(l&&IND[l.industry])['waIndustry','scriptIndustry','emailIndustry'].forEach(function(s){if(el(s))el(s).value=l.industry});
+ const v=state.view;if(v==='whatsapp')renderWA();else if(v==='scripts')renderScripts();else if(v==='email')renderEmails();
+}
+const _renderWAT=window.renderWA;
+window.renderWA=function(){
+ fillIndustrySelects();const l=TPL_LEAD?findLead(TPL_LEAD):null;
+ if(!l){_renderWAT.apply(this,arguments);const a=el('waArea');if(a)a.insertAdjacentHTML('afterbegin',tplLeadBar());return}
+ setH('waArea',tplLeadBar()+nameBarHTML()+waCardHTML(l)+'<div class="chip chip-green" style="cursor:default">💡 Tip: tap ✏️ to make it personal — personal messages get more replies</div>');
+ addEditPencils(el('waArea'),'L'+l.id);
+};
+const _renderScriptsT=window.renderScripts;
+window.renderScripts=function(){
+ fillIndustrySelects();const l=TPL_LEAD?findLead(TPL_LEAD):null;
+ if(!l){_renderScriptsT.apply(this,arguments);const a=el('scriptsArea');if(a)a.insertAdjacentHTML('afterbegin',tplLeadBar());return}
+ setH('scriptsArea',tplLeadBar()+nameBarHTML()+buildScript(l)+buildFollowup(l)+buildVoicemail(l)+buildVoiceNote(l));
+ addEditPencils(el('scriptsArea'),'L'+l.id);
+};
+const _renderEmailsT=window.renderEmails;
+window.renderEmails=function(){
+ fillIndustrySelects();const l=TPL_LEAD?findLead(TPL_LEAD):null;
+ if(!l){_renderEmailsT.apply(this,arguments);const a=el('emailArea');if(a)a.insertAdjacentHTML('afterbegin',tplLeadBar());return}
+ setH('emailArea',tplLeadBar()+nameBarHTML()+emailCardHTML(l));addEmailPencil(el('emailArea'));
+};
+/* restricted / suspended messages from the server read nicely everywhere */
+const _wdApiM=window.wdApi;
+window.wdApi=function(){return _wdApiM.apply(this,arguments).then(function(r){if(r&&r.error==='restricted'&&r.message)r.error=r.message;return r})};
+/* ---------- Owner: moderate a user ---------- */
+const MOD_DUR=[[10,'10 minutes'],[60,'1 hour'],[360,'6 hours'],[1440,'1 day'],[4320,'3 days'],[10080,'1 week'],[43200,'30 days'],[-1,'Forever']];
+function durSel(id,def){return '<select class="filter-input" id="'+id+'">'+MOD_DUR.map(function(d){return '<option value="'+d[0]+'"'+(d[0]===def?' selected':'')+'>'+d[1]+'</option>'}).join('')+'</select>'}
+function untilTxt(t){if(!t||t<Date.now())return '';if(t>=9e15)return 'forever';return 'until '+fmtWhen(t)}
+function modStatusTags(u){
+ const now=Date.now(),t=[];
+ if(u.banned)t.push('<span class="tag tag-hot">⛔ Banned</span>');
+ if(u.suspended_until>now)t.push('<span class="tag tag-hot">⏸ Suspended '+untilTxt(u.suspended_until)+'</span>');
+ const r=[];if(u.mute_until>now)r.push('posting');if(u.ai_until>now)r.push('AI');if(u.search_until>now)r.push('search');
+ if(r.length)t.push('<span class="tag tag-warm">🔇 No '+r.join(', ')+'</span>');
+ return t.join(' ');
+}
+function openModerate(id){
+ const u=(state.opUsers||[]).find(function(x){return x.id===id});if(!u)return;
+ state.modU=u;const ls=String(u.last_seen||'').split('|');
+ setH('mod-head','<div class="lb-av">'+esc(initials(u.name))+'</div><div style="min-width:0"><div class="lb-name">'+esc(u.name)+'</div><div class="lb-role">'+esc(u.email)+'</div><div style="margin-top:4px">'+(modStatusTags(u)||'<span class="tag tag-new">✅ Good standing</span>')+'</div></div>');
+ setH('mod-last',u.last_seen?'🌐 Last sign-in: <b>'+esc(ls[0]||'?')+'</b> • '+flagOf(ls[1])+' '+esc([ls[2],ls[1]].filter(Boolean).join(', ')||'unknown place')+' • '+esc(ls[3]||'')+(u.last_login?' • '+fmtWhen(u.last_login):''):'🌐 No sign-ins recorded yet');
+ setV('mod-reason',u.reason||'');['mod-r-post','mod-r-ai','mod-r-search'].forEach(function(i){const c=el(i);if(c)c.checked=false});
+ setH('mod-logins','<div class="empty-mini">Loading sign-ins…</div>');
+ openM('modModal');
+ wdApi('admin/user-logins?id='+encodeURIComponent(id)).then(function(r){
+  if(!r||!r.ok)return setH('mod-logins','<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>');
+  const blocked={};(r.blocked||[]).forEach(function(b){blocked[b.ip]=b.until});
+  setH('mod-logins',r.logins.length?r.logins.map(function(l){const bl=blocked[l.ip];return '<div class="sec-row"><div class="sec-ic">'+flagOf(l.country)+'</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(l.ip||'?')+(bl?' <span class="tag tag-hot">🚫 blocked</span>':'')+'</div><div class="sec-meta">'+esc([l.device,[l.city,l.country].filter(Boolean).join(', '),fmtWhen(l.t)].filter(Boolean).join(' • '))+(l.kind==='signup'?' • 🆕 account created':'')+'</div></div>'+(l.ip&&l.ip!=='unknown'?'<button class="btn btn-ghost btn-xs" onclick="modIpBlock(\''+esc(l.ip)+'\','+(bl?1:0)+')">'+(bl?'Unblock':'🚫 Block IP')+'</button>':'')+'</div>'}).join(''):'<div class="empty-mini">No sign-ins recorded yet — they appear from their next sign-in.</div>');
+ });
+}
+let _modArm='';
+function modDo(action){
+ const u=state.modU;if(!u)return;
+ const needs2={ban:1,delete:1,suspend:1};
+ if(needs2[action]&&_modArm!==action){_modArm=action;setTimeout(function(){if(_modArm===action)_modArm=''},4000);return showToast('Tap again to confirm: '+({ban:'ban '+u.name+' forever',delete:'DELETE '+u.name+'’s account and all their data',suspend:'suspend '+u.name}[action]),'info')}
+ _modArm='';
+ const body={id:u.id,action:action,reason:(v('mod-reason')||'').trim()};
+ if(action==='suspend')body.minutes=+v('mod-s-dur');
+ if(action==='restrict'){body.minutes=+v('mod-r-dur');body.what=['post','ai','search'].filter(function(k){return el('mod-r-'+k).checked});if(!body.what.length)return showToast('Tick what they should be blocked from','error')}
+ wdApi('admin/moderate','POST',body).then(function(r){
+  if(!r||!r.ok)return showToast('⚠️ '+((r&&r.error)||'Failed'),'error');
+  showToast({suspend:'⏸ Suspended',unsuspend:'▶️ Suspension lifted',restrict:'🔇 Restrictions applied',unrestrict:'✅ Restrictions lifted',ban:'⛔ Banned',unban:'✅ Unbanned',logout:'🚪 Signed out of all devices',delete:'🗑 Account deleted'}[action]+' — '+u.name,'success');
+  closeM('modModal');loadOwnerUsers();try{loadOwnerStats()}catch(e){}
+ });
+}
+function modIpBlock(ip,unblock){
+ if(!unblock&&_modArm!=='ip'+ip){_modArm='ip'+ip;setTimeout(function(){_modArm=''},4000);return showToast('Tap again to block '+ip+' for '+(el('mod-ip-dur').selectedOptions[0].text),'info')}
+ _modArm='';
+ wdApi('admin/ip-block','POST',{ip:ip,unblock:!!unblock,minutes:+v('mod-ip-dur'),reason:(v('mod-reason')||'').trim()}).then(function(r){
+  if(r&&r.ok){showToast(unblock?'✅ Unblocked '+ip:'🚫 Blocked '+ip+' — no sign-ins or new accounts from it','success');if(state.modU)openModerate(state.modU.id);loadIpBlocks()}else showToast('⚠️ '+((r&&r.error)||'Failed'),'error');
+ });
+}
+function loadIpBlocks(){
+ const box=el('ipBlocks');if(!box||!isOwner())return;
+ wdApi('admin/ip-blocks').then(function(r){
+  if(!r||!r.ok)return;
+  box.innerHTML=r.blocks.length?'<div class="section-title" style="margin-top:12px">🚫 Blocked IP addresses</div>'+r.blocks.map(function(b){return '<div class="sec-row"><div class="sec-ic">🚫</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(b.ip)+'</div><div class="sec-meta">'+(b.until>=9e15?'Forever':'Until '+fmtWhen(b.until))+(b.reason?' • '+esc(b.reason):'')+'</div></div><button class="btn btn-ghost btn-xs" onclick="modIpBlock(\''+esc(b.ip)+'\',1)">Unblock</button></div>'}).join(''):'';
+ });
+}
+const _loadSecCenterM=window.loadSecCenter;
+window.loadSecCenter=function(){const r=_loadSecCenterM.apply(this,arguments);setTimeout(loadIpBlocks,300);return r};
+
+document.addEventListener('DOMContentLoaded',function(){
+ const a=el('mod-r-durwrap');if(a)a.outerHTML=durSel('mod-r-dur',1440);
+ const b=el('mod-s-row');if(b)b.innerHTML=durSel('mod-s-dur',4320)+'<button class="btn btn-primary btn-sm" onclick="modDo(\'suspend\')">⏸ Suspend</button><button class="btn btn-ghost btn-sm" onclick="modDo(\'unsuspend\')">Lift</button>';
+ const c=el('mod-ip-row');if(c)c.innerHTML=durSel('mod-ip-dur',-1);
+});
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
@@ -5911,10 +6284,11 @@ function pipeVal(p){return parseMoney(p.val)}
 function setDelta(id,thisWk,lastWk,unit){
  const b=el(id);if(!b)return;
  if(thisWk===null){b.style.display='none';return}
+ if(!thisWk){b.style.display='none';return}
  b.style.display='';
  const diff=thisWk-lastWk;
  b.className='stat-change '+(diff<0?'down':'up');
- b.textContent=(unit==='share')?thisWk+'%':'+'+thisWk;
+ b.textContent=(unit==='share')?thisWk+'%':'+'+thisWk+' this week';
  b.title=(unit==='share')?'Share of all leads':'This week: '+thisWk+' • Last week: '+lastWk;
 }
 function barRow(label,val,max,color,right){
@@ -6002,8 +6376,8 @@ function renderAnalytics(){
  setH('anFunnel',
   barRow('Leads Found',total,top,'var(--blue)')+
   barRow('Contacted',contacted,top,'var(--a)')+
-  barRow('Meeting Set+',meeting,top,'var(--yellow)')+
-  barRow('Proposal Sent+',proposal,top,'var(--purple)')+
+  barRow('Meeting set',meeting,top,'var(--yellow)')+
+  barRow('Proposal sent',proposal,top,'var(--purple)')+
   barRow('Closed Won',won,top,'var(--green)')+
   (total?'<div style="font-size:11px;color:var(--muted);margin-top:6px">Contact rate '+Math.round(contacted/total*100)+'% • Close rate '+(contacted?Math.round(won/contacted*100):0)+'% of contacted</div>':''));
 
@@ -6123,7 +6497,7 @@ function waLead(id){
  showToast('💬 WhatsApp opening for '+esc(l.name),'success');
 }
 function waCardHTML(l){
- const msg=waTemplate(l.name,l.city,l.industry,l.type);
+ const msg=waTemplate(l.name,l.city,bizWord(l),l.type);
  return '<div class="wa-card"><h3>💬 WhatsApp — '+esc(l.name)+'</h3><div class="wa-bubble">'+esc(msg).replace(/\n/g,'<br>')+'</div><div class="wa-actions"><button class="btn btn-wa" onclick="waLead(\''+l.id+'\')">💬 Send via WhatsApp</button><button class="btn btn-ghost btn-sm" onclick="copyEl(this)">Copy</button></div></div>';
 }
 function renderWA(){
@@ -6136,7 +6510,7 @@ function renderWA(){
  state.waMsgs=msgs.map(function(x){return x.m});
  setH('waArea',nameBarHTML()+msgs.map(function(x,i){
   return '<div class="wa-card"><h3>💬 '+x.t+' — '+ind+'</h3><div class="wa-bubble">'+esc(x.m).replace(/\n/g,'<br>')+'</div><div class="wa-actions"><button class="btn btn-wa" onclick="openWaGeneric('+i+')">💬 Open in WhatsApp</button><button class="btn btn-ghost btn-sm" onclick="copyEl(this)">Copy</button></div></div>';
- }).join('')+'<div class="chip chip-green" style="cursor:default">💡 Messages with the business name get 3× more replies</div>');
+ }).join('')+'<div class="chip chip-green" style="cursor:default">💡 Tip: use the business name — personal messages get more replies</div>');
 }
 function openWaGeneric(i){window.open('https://wa.me/?text='+encodeURIComponent(state.waMsgs[i]),'_blank')}
 function scriptSection(t,html){return '<div class="script-section"><h4>'+t+'</h4><div class="script-text"><button class="script-copy" onclick="event.stopPropagation();copyEl(this)">copy</button>'+html+'</div></div>'}
@@ -6145,7 +6519,7 @@ function buildScript(l){
  const bizName=myBiz();
  const name=l.name||'there';
  const city=l.city||'';
- const ind=l.industry||l.ind||'business';
+ const ind=bizWord(l);
  const nw=l.type==='no-website';
  const gap=nw?"I noticed you don't have a website yet":'I noticed your current website looks a bit outdated';
  return `<div class="script-card">
@@ -6190,7 +6564,7 @@ function buildVoiceNote(l){
  const bizName=myBiz();
  const name=l.name||'there';
  const city=l.city||'';
- const ind=l.industry||l.ind||'business';
+ const ind=bizWord(l);
  const gap=l.type==='no-website'?"doesn't have a proper website yet":'has a website that looks a bit outdated';
  return `<div class="script-card">
 <div class="script-head">
@@ -6213,7 +6587,7 @@ function renderScripts(){
 }
 function emailCardHTML(l){
  const it=INTEL[l.industry];
- const body='Hi there,\n\nI\'m '+me()+' from '+myBiz()+'. I came across '+l.name+' while searching for '+l.industry.toLowerCase()+' in '+l.city+' — but noticed you '+(l.type==='no-website'?"don't seem to have a website":'could use a website refresh')+'.\n\nFor businesses like yours we build '+it.value+'.\n\n• One-time cost from $490 (no monthly fees)\n• Live within 7 days — we handle everything\n\nWould it be OK if I sent over a free mock-up? No cost, no obligation.\n\nBest regards,\n'+meFull()+'\n'+myBiz()+(myEmail()?' · '+myEmail():'');
+ const body='Hi there,\n\nI\'m '+me()+' from '+myBiz()+'. I came across '+l.name+' while searching for '+bizWord(l)+' businesses in '+l.city+' — but noticed you '+(l.type==='no-website'?"don't seem to have a website":'could use a website refresh')+'.\n\nFor businesses like yours we build '+it.value+'.\n\n• One-time cost from $490 (no monthly fees)\n• Live within 7 days — we handle everything\n\nWould it be OK if I sent over a free mock-up? No cost, no obligation.\n\nBest regards,\n'+meFull()+'\n'+myBiz()+(myEmail()?' · '+myEmail():'');
  return '<div class="email-card"><div class="email-head"><h3>📧 Cold Email — '+esc(l.name)+'</h3></div><div class="email-body">'+
  '<div class="email-field"><label>To</label><input value="owner@'+(slug(l.name)||'business')+'.com" readonly></div>'+
  '<div class="email-field"><label>Subject</label><input value="Quick question about '+esc(l.name)+'" readonly></div>'+
@@ -6378,7 +6752,7 @@ function sendInvoiceWA(){
  const d=invData();
  const ph=(el('inv-to-phone').value||'').replace(/\D/g,'');
  if(!ph)return showToast('Add the client phone number first','error');
- const msg='Hello '+(d.to.name||'there')+'! 🧾 Here is your invoice '+d.num+' from '+d.from.name+':\n\nTotal: '+money(d.total)+'\nDue: '+d.due+' ('+d.terms+')'+(d.to.country?'\nDelivery country: '+d.to.country:'')+'\nShipping: '+money(d.shipping)+(d.payment?'\n\n💳 Payment Instructions:\n'+d.payment:'')+(d.stripe?'\n\nStripe payment link:\n'+d.stripe:'')+(d.paypal?'\n\nPayPal payment link:\n'+d.paypal:'')+(d.qr?'\n\nScan/payment QR target:\n'+d.qr:'')+'\n\nThank you for your business 🙏';
+ const msg='Hello '+(d.to.name||'there')+'! 🧾 Here is your invoice '+d.num+' from '+d.from.name+':\n\nTotal: '+money(d.total)+'\nDue: '+d.due+' ('+d.terms+')'+(d.to.country?'\nDelivery country: '+d.to.country:'')+(d.shipping?'\nShipping: '+money(d.shipping):'')+(d.payment?'\n\n💳 Payment Instructions:\n'+d.payment:'')+(d.stripe?'\n\nStripe payment link:\n'+d.stripe:'')+(d.paypal?'\n\nPayPal payment link:\n'+d.paypal:'')+(d.qr?'\n\nScan/payment QR target:\n'+d.qr:'')+'\n\nThank you for your business 🙏';
  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
  recordInvoice(d,'sent');closeM('invoiceModal');
  showToast('💬 Invoice '+d.num+' sent via WhatsApp','success');
@@ -6487,7 +6861,7 @@ function renderPipeline(){
   const cards=PIPE.filter(function(p){return p.s===i});
   return '<div class="p-col" ondragover="event.preventDefault()" ondrop="dropCard(event,'+i+')">'+
   '<div class="p-col-head"><div class="p-col-left"><span class="seg-dot" style="background:'+st.c+'"></span>'+st.n+'</div><span class="p-count">'+cards.length+'</span></div>'+
-  (cards.map(function(p){return '<div class="p-card" draggable="true" ondragstart="dragCard(\''+p.id+'\')"><div class="p-name">'+esc(p.name)+'</div><div class="p-sub">'+esc(p.ind)+' • '+esc(p.sub)+'</div><div class="p-val">'+p.val+'</div></div>'}).join('')||'<div style="font-size:11px;color:var(--muted);padding:6px 2px">Drop cards here</div>')+'</div>';
+  (cards.map(function(p){return '<div class="p-card" draggable="true" ondragstart="dragCard(\''+p.id+'\')"><div class="p-name">'+esc(p.name)+'</div><div class="p-sub">'+esc(p.ind)+' • '+esc(p.sub)+'</div><div class="p-val">'+p.val+'</div></div>'}).join('')||'<div style="font-size:11px;color:var(--muted);padding:6px 2px">No deals here yet — add one with <b>+ Add Lead</b> or from a lead’s 📋 Add to Pipeline</div>')+'</div>';
  }).join(''));
  setT('navPipe',PIPE.length);
 }
@@ -6624,8 +6998,8 @@ function aiRespond(input){
  botSay(r.text,r.chips);
 }
 const AI_INTENTS=[
- {k:['who made','who created','who built','who developed','creator','founder','lameero','credit','mastermind'],re:()=>({text:'I was created by **Lameero Mendoza** — 🏆 Founder, Lead Developer & Architect of We Deploy. One mastermind, every line of code.\n\nHe\'s also the only one with Invoice access. Contact: 📞 081 727 4007 / ✉️ delonmayne@gmail.com',chips:[{t:'⭐ About & Credits',a:"openM('aboutModal')"},{t:'👑 Unlock owner access',a:"openM('ownerUnlockModal')"}]})},
- {k:['unlock','owner access','owner mode','become owner'],re:()=>({text:isOwner()?'👑 You\'re already **verified as the owner** — the Invoice Builder and Announcements are yours.':'👑 **Unlock Owner Access** (avatar menu) — enter the owner email to verify you\'re Lameero Mendoza. Unlocks the 🧾 Invoice Builder and 📢 Announcement posting for your account.',chips:[{t:'👑 Unlock now',a:"openM('ownerUnlockModal')"}]})},
+ {k:['who made','who created','who built','who developed','creator','founder','lameero','credit','mastermind'],re:()=>({text:'I was created by **Lameero Mendoza** — 🏆 Founder, Lead Developer & Architect of We Deploy. One mastermind, every line of code.\n\nNeed help? Use 🎧 Support & Reports in your avatar menu.',chips:[{t:'⭐ About & Credits',a:"openM('aboutModal')"},{t:'🎧 Support',a:'openSupport()'}]})},
+ {k:['unlock','owner access','owner mode','become owner'],re:()=>({text:isOwner()?'👑 You\'re already **verified as the owner** — the Invoice Builder and Announcements are yours.':'Owner tools are only for the site owner. Everything else — including the 🧾 Invoice Builder — is free for every member.',chips:[{t:'🧾 Open Invoice Builder',a:"sv('invoice')"}]})},
  {k:['get paid','paid','receive payment','payment methods'],re:()=>({text:'💵 **Getting paid:**\n\n• Mark an invoice **Paid** in Invoice History → auto-logged in 💰 Earnings\n• Or log manually: Earnings → **+ Log Payment**\n• Set a monthly target — hit 100% for confetti 🎉',chips:[{t:'💰 Open Earnings',a:"sv('earnings')"}]})},
  {k:['support','ticket','bug','report a','feedback','something broke','not working','problem','issue','contact'],re:()=>({text:'🎧 **Help & Support Center**:\n\n• **🎧 Support tickets** • **🐛 Bug reports** • **💡 Feedback** • **❓ FAQ**\n\n**Contact Lameero:** 📞 081 727 4007 / ✉️ delonmayne@gmail.com',chips:[{t:'🎧 Open Support',a:"openSupport()"},{t:'❓ Open FAQ',a:"openFAQ()"}]})},
  {k:['faq','frequently asked','help topics','common questions'],re:()=>({text:'❓ The **FAQ Help Center** has searchable answers to the 14 most common questions. It\'s in the sidebar, the Support Center and right here:',chips:[{t:'❓ Open FAQ',a:"openFAQ()"}]})},
@@ -6652,7 +7026,7 @@ const AI_INTENTS=[
  {k:['pipeline','stage','deal','drag','drop','close deal','won','confetti'],re:()=>({text:'**Pipeline**: New → Contacted → Meeting → Proposal → Negotiating → **Closed Won**. Drag cards — Closed Won = confetti 🎉.',chips:[{t:'📋 Open Pipeline',a:"sv('pipeline')"}]})},
  {k:['crm','note','interaction','remember'],re:()=>({text:'**CRM Notes** — every call, message and meeting per business, tagged Hot/Warm/Follow-up/Won with next actions.',chips:[{t:'🗂 Open CRM',a:"sv('crm')"}]})},
  {k:['export','csv','download','excel','json'],re:()=>({text:'**⬇ Export** (topbar): CSV or JSON — all leads, filtered view, or last search.',chips:[{t:'⬇ Open Export',a:"openM('exportModal')"}]})},
- {k:['account','password','security','login','sign in','privacy','local'],re:()=>({text:'• Accounts stored **only in this browser**\n• Passwords **salted & hashed**\n• 👁️ toggles on every password field\n• 🔐 Invoices locked to Lameero Mendoza',chips:[{t:'🔑 Reset password',q:'how do i reset my password'}]})},
+ {k:['account','password','security','login','sign in','privacy','local'],re:()=>({text:'• Your account syncs securely, so you can sign in on any device\n• Passwords are scrambled (hashed) — nobody can see them\n• 5 wrong passwords locks sign-in for 15 minutes\n• Your invoices and leads are private to you\n• See your sign-in history in Settings → 🛡 Security & Privacy',chips:[{t:'🔑 Reset password',q:'how do i reset my password'}]})},
  {k:['forgot','reset','recover','locked out','cant log in'],re:()=>({text:'**Logged out?** "Forgot password?" → email → 6-digit code → new password.\n\n**Logged in?** Avatar → 🔑 Change Password.',chips:[{t:'🔑 Reset password',a:"openForgot()"}]})},
  {k:['my name','your name','change name','identity','signature'],re:()=>({text:'Scripts/messages are signed with **your name** — currently **'+esc(CUR?CUR.name:'—')+'**. Change it via the 👤 bar on Scripts/WhatsApp/Email pages.',chips:[]})},
  {k:['price','pricing','charge','cost','fee','how much','rate','package','retainer','what should i charge'],re:()=>({text:'Pricing framework:\n\n**🥉 Starter — $490** one-time\n**🥈 Standard — $1,200–$2,500**\n**🥇 Premium — $2,500+**\n**🔁 Maintenance — $150/month**\n\nAlways quote **one-time, no monthly fees**.',chips:[{t:'💰 Open Earnings',a:"sv('earnings')"},{t:'💡 Pitch tips',q:'give me pitch tips'}]})},
