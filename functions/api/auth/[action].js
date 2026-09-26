@@ -35,20 +35,30 @@ export async function onRequest(context) {
         return json({ error: 'New sign-ups are closed right now' }, 403, cors);
       }
 
+      // anti-spam: max 20 new accounts per network per hour (mobile networks share IPs)
+      const ip = clientIp(request);
+      await ensureSec(env);
+      const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM wd_auth_fail WHERE k = ? AND t > ?').bind('su:' + ip, Date.now() - 3600e3).first();
+      if (recent && recent.n >= 20 && email.toLowerCase() !== OWNER_EMAIL) {
+        return json({ error: 'Too many new accounts from this network. Please try again in an hour.' }, 429, cors);
+      }
+
       const existing = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email.toLowerCase()).first();
       if (existing) {
         return json({ error: 'Email already registered' }, 409, cors);
       }
 
-      const id = 'u' + Date.now() + Math.random().toString(36).slice(2, 6);
-      const salt = Math.random().toString(36).slice(2, 10);
+      const id = 'u' + Date.now() + randHex(3);
+      const salt = randHex(16);
       const hash = await hashPassword(password, salt);
 
       await env.DB.prepare(
         'INSERT INTO users (id, email, name, biz, salt, hash, created) VALUES (?, ?, ?, ?, ?, ?, ?)'
       ).bind(id, email.toLowerCase(), name, biz || '', salt, hash, Date.now()).run();
 
+      await env.DB.prepare('INSERT INTO wd_auth_fail (k, t) VALUES (?, ?)').bind('su:' + ip, Date.now()).run();
       const sessionId = await createSession(env, id);
+      await recordLogin(env, request, id, 'signup');
       return json({ ok: true, user: { id, name, email: email.toLowerCase(), biz }, session: sessionId }, 200, cors);
     }
 
@@ -61,21 +71,45 @@ export async function onRequest(context) {
         return json({ error: 'Email and password required' }, 400, cors);
       }
 
-      const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email.toLowerCase()).first();
+      // brute-force protection: 5 wrong passwords on one account = 15 min lock; 100 fails from one network = 15 min lock
+      await ensureSec(env);
+      const em = email.toLowerCase(), ip = clientIp(request), since = Date.now() - LOCK_MS;
+      const fe = await env.DB.prepare('SELECT COUNT(*) AS n, MIN(t) AS first FROM wd_auth_fail WHERE k = ? AND t > ?').bind('e:' + em, since).first();
+      const fi = await env.DB.prepare('SELECT COUNT(*) AS n, MIN(t) AS first FROM wd_auth_fail WHERE k = ? AND t > ?').bind('ip:' + ip, since).first();
+      const locked = (fe && fe.n >= MAX_FAILS_EMAIL) ? fe : (fi && fi.n >= MAX_FAILS_IP) ? fi : null;
+      if (locked) {
+        const mins = Math.max(1, Math.ceil((locked.first + LOCK_MS - Date.now()) / 60000));
+        return json({ error: 'Too many wrong attempts. For your safety this sign-in is locked for ' + mins + ' minute' + (mins === 1 ? '' : 's') + '.', locked: true, minutes: mins }, 429, cors);
+      }
+      const fail = async () => {
+        await env.DB.batch([
+          env.DB.prepare('INSERT INTO wd_auth_fail (k, t) VALUES (?, ?)').bind('e:' + em, Date.now()),
+          env.DB.prepare('INSERT INTO wd_auth_fail (k, t) VALUES (?, ?)').bind('ip:' + ip, Date.now())
+        ]);
+        if (Math.random() < 0.05) await env.DB.prepare('DELETE FROM wd_auth_fail WHERE t < ?').bind(Date.now() - 864e5 * 2).run();
+        const left = MAX_FAILS_EMAIL - ((fe && fe.n) || 0) - 1;
+        return left > 0 && left <= 2 ? ' — ' + left + ' attempt' + (left === 1 ? '' : 's') + ' left before a 15-minute lock' : '';
+      };
+
+      const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(em).first();
       if (!user) {
-        return json({ error: 'Incorrect email or password' }, 401, cors);
+        const w = await fail();
+        return json({ error: 'Incorrect email or password' + w }, 401, cors);
       }
 
       const hash = await hashPassword(password, user.salt);
       if (hash !== user.hash) {
-        return json({ error: 'Incorrect email or password', exists: true }, 401, cors);
+        const w = await fail();
+        return json({ error: 'Incorrect email or password' + w, exists: true }, 401, cors);
       }
+      await env.DB.prepare('DELETE FROM wd_auth_fail WHERE k = ?').bind('e:' + em).run();
 
       if (await isBanned(env, user)) {
         return json({ error: 'This account has been suspended. Contact the owner.' }, 403, cors);
       }
 
       const sessionId = await createSession(env, user.id);
+      await recordLogin(env, request, user.id, 'login');
       return json({
         ok: true,
         user: {
@@ -155,8 +189,46 @@ async function hashPassword(pw, salt) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// ---------- security helpers ----------
+const LOCK_MS = 15 * 60 * 1000, MAX_FAILS_EMAIL = 5, MAX_FAILS_IP = 100;
+function randHex(bytes) {
+  return Array.from(crypto.getRandomValues(new Uint8Array(bytes))).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function clientIp(request) {
+  return request.headers.get('CF-Connecting-IP') || (request.headers.get('X-Forwarded-For') || '').split(',')[0].trim() || 'unknown';
+}
+function maskIp(ip) {
+  if (!ip || ip === 'unknown') return 'unknown';
+  if (ip.includes(':')) return ip.split(':').slice(0, 3).join(':') + ':…';
+  const p = ip.split('.'); return p.length === 4 ? p[0] + '.' + p[1] + '.' + p[2] + '.x' : ip;
+}
+function deviceName(ua) {
+  ua = String(ua || '');
+  const os = /Android/i.test(ua) ? 'Android' : /iPhone|iPad|iOS/i.test(ua) ? 'iPhone/iPad' : /Windows/i.test(ua) ? 'Windows' : /Mac OS X|Macintosh/i.test(ua) ? 'Mac' : /Linux/i.test(ua) ? 'Linux' : 'Unknown device';
+  const br = /Edg\//.test(ua) ? 'Edge' : /OPR\/|Opera/.test(ua) ? 'Opera' : /SamsungBrowser/.test(ua) ? 'Samsung Internet' : /Chrome\//.test(ua) ? 'Chrome' : /Firefox\//.test(ua) ? 'Firefox' : /Safari\//.test(ua) ? 'Safari' : 'Browser';
+  return br + ' on ' + os;
+}
+let _secReady = false;
+async function ensureSec(env) {
+  if (_secReady) return;
+  await env.DB.batch([
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS wd_auth_fail (k TEXT, t INTEGER)'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS wd_auth_fail_k ON wd_auth_fail (k, t)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS wd_logins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, t INTEGER, ip TEXT, country TEXT, city TEXT, device TEXT, kind TEXT)')
+  ]);
+  _secReady = true;
+}
+async function recordLogin(env, request, userId, kind) {
+  try {
+    await ensureSec(env);
+    const cf = request.cf || {};
+    await env.DB.prepare('INSERT INTO wd_logins (user_id, t, ip, country, city, device, kind) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(userId, Date.now(), maskIp(clientIp(request)), cf.country || '', cf.city || '', deviceName(request.headers.get('User-Agent')), kind).run();
+  } catch (e) {}
+}
+
 async function createSession(env, userId) {
-  const id = 's' + Date.now() + Math.random().toString(36).slice(2, 8);
+  const id = 's' + randHex(24);   // 192-bit random session key (unguessable)
   const expires = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
   await env.DB.prepare('INSERT INTO sessions (id, user_id, created, expires) VALUES (?, ?, ?, ?)')
     .bind(id, userId, Date.now(), expires).run();
