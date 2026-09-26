@@ -724,6 +724,14 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 .ai-mode-bar.basic{background:rgba(255,90,90,.1);color:#ff8a8a}
 .ai-input.ai-locked{opacity:.75}
 .ai-input.ai-locked input{cursor:not-allowed}
+.guest-alt{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:16px 0 10px}
+.guest-alt:before,.guest-alt:after{content:'';flex:1;height:1px;background:var(--line)}
+.guest-wrap{padding:0 24px 14px}
+.guest-btn{width:100%;justify-content:center;padding:11px}
+.guest-note{font-size:11px;color:var(--muted);text-align:center;margin-top:7px}
+.guest-bar{position:sticky;top:0;z-index:900;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 14px;background:linear-gradient(90deg,rgba(255,122,26,.18),rgba(255,122,26,.08));border-bottom:1px solid rgba(255,122,26,.35);font-size:12px}
+.guest-bar .gb-btns{display:flex;gap:6px}
+.guest-bar .btn-sm{padding:6px 10px;font-size:11px}
 .ai-tag{font-size:9px;font-weight:800;letter-spacing:.08em;background:var(--a);color:#000;border-radius:5px;padding:2px 5px;vertical-align:middle;margin-left:4px}
 .pwr-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.08em;text-align:center;padding:14px;border-radius:12px;background:var(--panel2);border:1px dashed var(--a);color:var(--a);user-select:all}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
@@ -813,6 +821,11 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
       <div class="auth-alt">Already have an account? <a onclick="switchAuth('login')">Sign in</a></div>
     </form>
 
+<div class="guest-wrap">
+    <div class="guest-alt"><span>or</span></div>
+    <button type="button" class="btn btn-ghost guest-btn" onclick="continueAsGuest()">👀 Continue as Guest</button>
+    <div class="guest-note">Look around first — sign in or create a free account anytime to use everything.</div>
+    </div>
     <div class="auth-foot">🎯 Built by <strong>Lameero Mendoza</strong> — Founder &amp; Lead Developer of We Deploy<br>🔒 Your account &amp; leads are stored only in this browser.</div>
   </div>
 </div>
@@ -1643,6 +1656,18 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 </main>
 </div>
 
+<div class="modal-overlay" id="guestModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-head"><div><h2>🔒 Members only</h2></div><div class="modal-close" onclick="closeM('guestModal')" title="Close">✕</div></div>
+    <div class="modal-body" style="text-align:center">
+      <div style="font-size:44px;margin-bottom:8px">👀</div>
+      <p style="font-size:14px;line-height:1.6;color:var(--text2);margin-bottom:16px">You're in <b>guest mode</b> — you can look around, but to use this (and the AI assistant) you need a free account.</p>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;margin-bottom:8px" onclick="guestExit('signup')">🚀 Create free account</button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px" onclick="guestExit('login')">🔑 Sign in to my account</button>
+      <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="closeM('guestModal')">Keep looking around</button>
+    </div>
+  </div>
+</div>
 <!-- LAMEERO'S ASSISTANT -->
 <div class="ai-launcher" id="aiLauncher" onclick="toggleAI()" title="We Deploy AI">🤖<span class="ai-unread" id="aiUnread" style="display:none">1</span></div>
 <div class="ai-panel" id="aiPanel">
@@ -2446,7 +2471,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='10.6';   // ← Change this number whenever you update the site
+const APP_VERSION='10.7';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -5488,6 +5513,77 @@ window.aiRespond=function(input){
  try{if(aiSmart(input))return}catch(e){console.warn('aiSmart',e)}
  aiAsk(input,function(){window.AI_LLM_ON=false;try{if(aiSmart(input))return}catch(e){}return _aiRespondG.call(window,aiFix(input))});
 };
+
+/* ═══════════════════════ GUEST MODE (look around, read-only) ═══════════════════════
+   Guests can open every page and look, but nothing works until they sign in or
+   create a free account. Nothing a guest does is saved.                              */
+function isGuest(){return !!(CUR&&CUR.guest)}
+function continueAsGuest(){
+ // a guest must never ride on someone else's saved sign-in on this device
+ try{['wd_data_guest','wd_srv_token','wd_session'].forEach(function(k){lsDel(k);ssDel(k)});localStorage.removeItem('wd_srv_token');sessionStorage.removeItem('wd_srv_token')}catch(e){}
+ document.body.classList.add('guest-mode');
+ const auth=el('authScreen');
+ window.__startApp({id:'guest',name:'Guest',email:'',biz:'Guest mode',guest:true,created:Date.now()},false);
+ if(auth)auth.style.display='none';
+ setTimeout(function(){
+  try{closeM('roleModal')}catch(e){}
+  document.querySelectorAll('.toast').forEach(function(t){t.remove()});
+  showToast('👀 Guest mode — look around freely. Create a free account to use everything.','info');
+ },400);
+ guestBar();
+}
+function guestBar(){
+ if(el('guestBar'))return;
+ document.body.insertAdjacentHTML('afterbegin','<div class="guest-bar" id="guestBar"><span>👀 <b>Guest mode</b> — read only</span><span class="gb-btns"><button class="btn btn-primary btn-sm" onclick="guestExit(\'signup\')">🚀 Create free account</button><button class="btn btn-ghost btn-sm" onclick="guestExit(\'login\')">Sign in</button></span></div>');
+}
+function guestExit(which){
+ CUR=null;UD=null;try{aiWelcomed=false;closeAI()}catch(e){}
+ try{lsDel('wd_data_guest');lsDel('wd_session');ssDel('wd_session')}catch(e){}
+ document.body.classList.remove('guest-mode');
+ const gb=el('guestBar');if(gb)gb.remove();closeM('guestModal');
+ const um=el('userMenu');if(um)um.classList.remove('open');
+ const app=el('appShell'),auth=el('authScreen');
+ if(app)app.style.display='none';if(auth)auth.style.display='flex';
+ switchAuth(which==='signup'?'signup':'login');
+ setTimeout(function(){const f=el(which==='signup'?'su-name':'li-email');if(f)f.focus()},200);
+}
+let _gpT=0;
+function guestPrompt(){
+ if(Date.now()-_gpT<600)return;_gpT=Date.now();
+ const m=el('guestModal');if(!m)return;openM('guestModal');
+}
+const GUEST_ALLOW=/^\s*(sv\(|closeSidebar|toggleSidebar|toggleUserMenu|toggleTheme|openAI|closeAI|toggleAI|closeM\(|openAnnouncements|renderAnns|openM\('aboutModal'\)|openFAQ|switchMTab|commTab|lbTab|filterSeg|openBanner|guestExit|continueAsGuest|switchAuth|togglePw|this\.parentElement\.style\.display)/;
+document.addEventListener('click',function(e){
+ if(!isGuest())return;
+ const t=e.target;if(!t||!t.closest)return;
+ if(t.closest('#authScreen,#guestBar,#guestModal'))return;
+ const act=t.closest('[onclick],button,a,input,select,textarea,label,.ai-chip');
+ if(!act)return;
+ const oc=act.getAttribute('onclick')||'';
+ if(/^\s*logout\(\)/.test(oc)){e.preventDefault();e.stopImmediatePropagation();guestExit('login');return}
+ if(oc&&GUEST_ALLOW.test(oc))return;
+ if(act.classList.contains('modal-close')||act.classList.contains('mtab'))return;
+ e.preventDefault();e.stopImmediatePropagation();guestPrompt();
+},true);
+document.addEventListener('focusin',function(e){
+ if(!isGuest())return;const t=e.target;
+ if(!t||!t.matches||!t.matches('input,textarea,select,[contenteditable="true"]'))return;
+ if(t.closest('#authScreen,#guestModal'))return;
+ t.blur();guestPrompt();
+},true);
+document.addEventListener('keydown',function(e){if(isGuest()&&(e.ctrlKey||e.metaKey)&&/^[kK]$/.test(e.key)){e.preventDefault();e.stopImmediatePropagation();guestPrompt()}},true);
+/* nothing a guest does is saved or synced */
+const _saveUDG=window.saveUD;window.saveUD=function(){if(isGuest())return;return _saveUDG.apply(this,arguments)};
+/* the AI needs a real account */
+const _openAIG=window.openAI;
+window.openAI=function(){
+ const r=_openAIG.apply(this,arguments);
+ if(isGuest()){const i=el('aiInput');if(i){i.placeholder='🔒 Sign in to chat with We Deploy AI';}
+  if(!el('aiGuestNote')){const b=el('aiBody');if(b)b.insertAdjacentHTML('beforeend','<div class="ai-msg bot" id="aiGuestNote">🔒 <b>The AI is for members.</b><br>Create a free account (takes 20 seconds) or sign in to chat with me — I can find leads, write your messages and plan your day.<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="guestExit(\'signup\')">🚀 Create free account</button><button class="btn btn-ghost btn-sm" onclick="guestExit(\'login\')">Sign in</button></div></div>')}}
+ return r;
+};
+const _aiRespondGu=window.aiRespond;
+window.aiRespond=function(){if(isGuest()){guestPrompt();return}return _aiRespondGu.apply(this,arguments)};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
