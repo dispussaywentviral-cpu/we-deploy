@@ -1,5 +1,5 @@
 // We Deploy service worker — makes the site installable and lets it open offline.
-const CACHE = 'wedeploy-v11.0';
+const CACHE = 'wedeploy-v11.3';
 const CORE = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -11,7 +11,8 @@ self.addEventListener('activate', e => {
 // Network first (you always get the newest version online), cached copy when offline.
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const u = new URL(req.url);
+  if (req.method !== 'GET' || u.origin !== location.origin || u.pathname.startsWith('/api/')) return;   // never store private account data
   e.respondWith(
     fetch(req).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }

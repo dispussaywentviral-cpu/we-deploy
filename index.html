@@ -807,6 +807,7 @@ input.pay-bad{border-color:var(--red)!important}
  #invItems input{width:100%!important;min-width:0!important}
 }
 #waIndustry,#scriptIndustry,#emailIndustry{max-width:100%!important;min-width:0;flex:1 1 180px;text-overflow:ellipsis}
+.res-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}.res-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .tpl-for{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
 .tpl-for span{font-size:12px;font-weight:700;color:var(--text2)}.tpl-for select{flex:1;min-width:180px}
 .mod-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
@@ -1191,6 +1192,14 @@ input.pay-bad{border-color:var(--red)!important}
         <div class="filter-group" style="min-width:130px">
           <span class="filter-label">Lead Type</span>
           <select class="filter-input" id="s-type" style="height:35px"><option>Both</option><option>No Website</option><option>Outdated Site</option></select>
+        </div>
+        <div class="filter-group" style="min-width:150px">
+          <span class="filter-label">Search area</span>
+          <select class="filter-input" id="s-area" style="height:35px"><option value="5">City centre (5 km)</option><option value="15" selected>Whole city (15 km)</option><option value="40">City + surroundings (40 km)</option><option value="100">Whole region (100 km)</option><option value="country">🌍 Whole country</option></select>
+        </div>
+        <div class="filter-group" style="min-width:130px">
+          <span class="filter-label">How many</span>
+          <select class="filter-input" id="s-max" style="height:35px"><option value="0" selected>♾ No limit — everything</option><option value="500">Up to 500</option><option value="1000">Up to 1,000</option><option value="3000">Up to 3,000</option><option value="10000">Up to 10,000</option></select>
         </div>
         <div style="align-self:flex-end">
           <button class="btn btn-primary" onclick="runSearch()" style="height:35px;padding:0 22px">🔍 Search</button>
@@ -2671,7 +2680,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.0';   // ← Change this number whenever you update the site
+const APP_VERSION='11.3';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4252,10 +4261,10 @@ function renderOutcomeStats(){
 /* ═════════════ SERVER HELPERS ═════════════ */
 function srvToken(){try{const raw=localStorage.getItem('wd_srv_token')||sessionStorage.getItem('wd_srv_token');const t=raw?JSON.parse(raw):null;return t&&t.session?t.session:null}catch(e){return null}}
 function onlineSite(){return /^https?:$/.test(location.protocol)}
-function wdApi(path,method,body){
+function wdApi(path,method,body,ms){
  const h={'Content-Type':'application/json'};const t=srvToken();if(t)h.Authorization='Bearer '+t;
  const ctrl=typeof AbortController!=='undefined'?new AbortController():null;
- const kill=setTimeout(function(){if(ctrl)ctrl.abort()},9000);
+ const kill=setTimeout(function(){if(ctrl)ctrl.abort()},ms||9000);
  return fetch('/api/wd/'+path,{method:method||'GET',headers:h,body:body?JSON.stringify(body):undefined,signal:ctrl?ctrl.signal:undefined})
   .then(function(r){clearTimeout(kill);return r.json().catch(function(){return {error:'Bad response'}}).then(function(j){j.__status=r.status;return j})})
   .catch(function(e){clearTimeout(kill);return {error:'Server unreachable',offline:true}});
@@ -4615,7 +4624,7 @@ function leadFromPlace(p,ct,city,claims){
  if(p.hours)score+=4;if(p.addr)score+=4;if(p.social)score+=4;
  if(claims)score-=Math.min(20,claims.n*8);
  score=Math.max(20,Math.min(99,score+(hashStr(p.key)%5)));
- return {id:p.key,osm:true,name:p.name,kind:p.kind||'',industry:IND[p.ind]?p.ind:'Retail & Shops',type:nos?'no-website':'prospect',city:city,country:ct.name,flag:ct.flag,dial:ct.dial,
+ return {id:p.key,osm:true,name:p.name,kind:p.kind||'',industry:IND[p.ind]?p.ind:'Retail & Shops',type:nos?'no-website':'prospect',city:p.city||city,country:ct.name,flag:ct.flag,dial:ct.dial,
   phone:p.phone||'',addr:p.addr||('Near '+city+' centre'),website:p.website||null,social:p.social||'',email:p.email||'',hours:p.hours||'',lat:p.lat,lon:p.lon,
   claims:claims||null,score:score,saved:false,added:false,contacted:false};
 }
@@ -4630,10 +4639,10 @@ window.runSearch=function(){
  const ld=el('locDisplay');if(ld)ld.style.display='block';
  const lt=el('locText');if(lt)lt.textContent=ct.flag+' '+city+', '+ct.name;
  const box=el('searchResults');
- if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Checking the live map for '+(ind?esc(ind.toLowerCase()):'every kind of business')+' and who has no website</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
- wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||'')).then(function(r){
+ if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max')):'EVERY')+' '+(ind?esc(ind.toLowerCase()):'businesses of every kind')+' from the live map'+(v('s-area')==='country'?' across the whole country':'')+' — big searches can take a few minutes, keep this page open</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
+ RES_SHOWN=60;searchPlaces(city,ct,ind||'').then(function(r){
   if(!r||!r.ok){
-   if(r&&r.offline){showToast('📶 Offline — showing demo leads instead','info');return _demoSearch()}
+   if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';return}
    if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>Try another city or try again in a minute.</p></div>';
    return;
   }
@@ -4641,7 +4650,7 @@ window.runSearch=function(){
   if(tsel==='No Website')list=list.filter(function(l){return l.type==='no-website'});
   if(tsel==='Outdated Site')list=list.filter(function(l){return l.type!=='no-website'});
   list.sort(function(a,b){return b.score-a.score});
-  state.results=list.slice(0,200);
+  state.results=list;
   state.lastSearch={ct:ct,city:city,real:true,cached:r.cached,total:r.places.length,nosite:r.places.filter(function(p){return !p.website}).length};
   renderResults();
   logAct('search',state.results.length+' real businesses in '+city+', '+ct.name);
@@ -4942,16 +4951,16 @@ function renderDropCard(){
 function openDrop(){
  const p=dropPlace(),ind=dropIndustry(),city=p.city||p.ct.cities[0];
  setH('drop-head','🎁 Today\'s Lead Drop — '+esc(city));
- setH('drop-body','<div class="empty-mini">Opening your drop…</div>');openM('dropModal');
+ setH('drop-body','<div class="empty-mini">🗺 Scanning the map for businesses without a website… this can take up to 30 seconds</div>');openM('dropModal');
  const show=function(list){
   state.dropList=list;
   const first=!(UD.drop&&UD.drop.d===todayKey());
   if(first){UD.drop={d:todayKey()};UD.xp=(UD.xp||0)+20;addWeekXp(20);saveUD();showToast('🎁 Drop opened! +20 XP','success')}
-  setH('drop-body',list.length?list.map(function(l,i){return '<div class="drop-row"><div class="lb-rank">'+(i+1)+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(l.name)+'</div><div class="lb-role">'+esc(l.industry)+' • '+(l.phone?esc(l.phone):'no phone listed')+(l.osm?' • ✅ real':'')+'</div></div><button class="btn btn-green btn-sm" onclick="addDropLead('+i+',this)">'+(state.leads.find(function(x){return x.id===l.id})?'✓':'➕')+'</button></div>'}).join('')+'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px;justify-content:center" onclick="addAllDrop()">➕ Add all 5 to my leads</button>':'<div class="empty-mini">No fresh businesses found for today\'s drop — try the Radar for other cities.</div>');
+  setH('drop-body',list.length?list.map(function(l,i){return '<div class="drop-row"><div class="lb-rank">'+(i+1)+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(l.name)+'</div><div class="lb-role">'+esc(l.industry)+' • '+(l.phone?esc(l.phone):'no phone listed')+(l.osm?' • ✅ real':'')+'</div></div><button class="btn btn-green btn-sm" onclick="addDropLead('+i+',this)">'+(state.leads.find(function(x){return x.id===l.id})?'✓':'➕')+'</button></div>'}).join('')+'<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px;justify-content:center" onclick="addAllDrop()">➕ Add all '+list.length+' to my leads</button>':'<div class="empty-mini">No fresh businesses found for today\'s drop — try the Radar for other cities.</div>');
  };
  if(!onlineReady()){const ct=p.ct;show(genLeads(ct,city,ind,'no-website',5,'drop:'+todayKey()+(CUR&&CUR.id)));return}
- wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(p.ct.name)+'&ind='+encodeURIComponent(ind)).then(function(r){
-  if(!r||!r.ok){setH('drop-body','<div class="empty-mini">'+esc((r&&r.error)||'Could not load today\'s drop')+'</div>');return}
+ wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(p.ct.name)+'&ind='+encodeURIComponent(ind),'GET',null,45000).then(function(r){
+  if(!r||!r.ok){setH('drop-body','<div class="empty-mini">'+(r&&r.offline?'📶 Couldn\'t reach the map right now — check your internet or try again in a moment.':esc((r&&r.error)||'Could not load today\'s drop'))+'<br><br><button class="btn btn-primary btn-sm" onclick="openDrop()">🔄 Try again</button></div>');return}
   const list=r.places.map(function(x){return leadFromPlace(x,p.ct,city,r.claims[x.key])}).filter(function(l){return l.type==='no-website'&&!(l.claims&&l.claims.n)}).sort(function(a,b){return b.score-a.score}).slice(0,5);
   show(list);
  });
@@ -6237,6 +6246,128 @@ document.addEventListener('DOMContentLoaded',function(){
  const b=el('mod-s-row');if(b)b.innerHTML=durSel('mod-s-dur',4320)+'<button class="btn btn-primary btn-sm" onclick="modDo(\'suspend\')">⏸ Suspend</button><button class="btn btn-ghost btn-sm" onclick="modDo(\'unsuspend\')">Lift</button>';
  const c=el('mod-ip-row');if(c)c.innerHTML=durSel('mod-ip-dur',-1);
 });
+const OSM_SEL = {
+  'Restaurants & Food': ['["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"]', '["shop"~"^(bakery|butcher|deli|confectionery|beverages|pastry)$"]'],
+  'Home Services': ['["craft"~"^(plumber|electrician|carpenter|painter|hvac|roofer|locksmith|gardener|tiler|glaziery|window_construction)$"]', '["shop"~"^(hardware|doityourself|paint|curtain|flooring)$"]'],
+  'Health & Wellness': ['["amenity"~"^(clinic|doctors|dentist|pharmacy|veterinary)$"]', '["leisure"~"^(fitness_centre|sports_centre)$"]', '["shop"~"^(chemist|optician|herbalist|medical_supply)$"]'],
+  'Auto Services': ['["shop"~"^(car|car_repair|car_parts|tyres|motorcycle)$"]', '["amenity"~"^(car_wash|car_rental)$"]', '["craft"="car_repair"]'],
+  'Retail & Shops': ['["shop"~"^(clothes|shoes|supermarket|convenience|furniture|jewelry|gift|books|variety_store|department_store|boutique|sports|toys|bag|fabric|florist|stationery)$"]'],
+  'Legal & Finance': ['["office"~"^(lawyer|accountant|financial|insurance|tax_advisor|notary|financial_advisor)$"]', '["amenity"="bureau_de_change"]'],
+  'Beauty & Grooming': ['["shop"~"^(hairdresser|beauty|cosmetics|massage|tattoo|nail_salon|barber)$"]'],
+  'Real Estate': ['["office"~"^(estate_agent|property_management)$"]', '["shop"="estate_agent"]'],
+  'Education': ['["amenity"~"^(school|college|kindergarten|language_school|driving_school|music_school|training|prep_school)$"]'],
+  'Hotels & Travel': ['["tourism"~"^(hotel|guest_house|hostel|motel|apartment|chalet|camp_site)$"]', '["shop"="travel_agency"]', '["office"="travel_agent"]'],
+  'Technology': ['["shop"~"^(computer|electronics|mobile_phone|telecommunication)$"]', '["office"~"^(it|telecommunication)$"]'],
+  'Construction': ['["craft"~"^(builder|roofer|stonemason|plasterer|scaffolder|metal_construction)$"]', '["office"="construction_company"]', '["shop"~"^(trade|building_materials)$"]'],
+};
+const TAG_IND = [
+  [/^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream|bakery|butcher|deli|confectionery|beverages|pastry)$/, 'Restaurants & Food'],
+  [/^(plumber|electrician|carpenter|painter|hvac|locksmith|gardener|tiler|glaziery|hardware|doityourself|paint|curtain|flooring|window_construction)$/, 'Home Services'],
+  [/^(clinic|doctors|dentist|pharmacy|veterinary|fitness_centre|sports_centre|chemist|optician|herbalist|medical_supply)$/, 'Health & Wellness'],
+  [/^(car|car_repair|car_parts|tyres|motorcycle|car_wash|car_rental)$/, 'Auto Services'],
+  [/^(lawyer|accountant|financial|insurance|tax_advisor|notary|financial_advisor|bureau_de_change)$/, 'Legal & Finance'],
+  [/^(hairdresser|beauty|cosmetics|massage|tattoo|nail_salon|barber)$/, 'Beauty & Grooming'],
+  [/^(estate_agent|property_management)$/, 'Real Estate'],
+  [/^(school|college|kindergarten|language_school|driving_school|music_school|training|prep_school)$/, 'Education'],
+  [/^(hotel|guest_house|hostel|motel|apartment|chalet|camp_site|travel_agency|travel_agent)$/, 'Hotels & Travel'],
+  [/^(computer|electronics|mobile_phone|telecommunication|it)$/, 'Technology'],
+  [/^(builder|roofer|stonemason|plasterer|scaffolder|metal_construction|construction_company|trade|building_materials)$/, 'Construction'],
+];
+// friendly business type, e.g. car_repair → "car repair" (used in scripts: "your car repair business")
+const KIND_WORDS = { car_repair: 'car repair', car: 'car dealership', car_parts: 'car parts', tyres: 'tyre', car_wash: 'car wash', car_rental: 'car rental', motorcycle: 'motorcycle',
+  fast_food: 'takeaway', restaurant: 'restaurant', cafe: 'café', bar: 'bar', pub: 'pub', bakery: 'bakery', butcher: 'butchery', ice_cream: 'ice cream',
+  hairdresser: 'hair salon', barber: 'barbershop', beauty: 'beauty salon', nail_salon: 'nail salon', massage: 'massage', tattoo: 'tattoo', cosmetics: 'cosmetics',
+  plumber: 'plumbing', electrician: 'electrical', carpenter: 'carpentry', painter: 'painting', roofer: 'roofing', locksmith: 'locksmith', gardener: 'gardening', hvac: 'air-conditioning', hardware: 'hardware',
+  clinic: 'clinic', doctors: 'medical practice', dentist: 'dental', pharmacy: 'pharmacy', chemist: 'pharmacy', veterinary: 'vet', optician: 'optometry', fitness_centre: 'gym', sports_centre: 'sports centre',
+  lawyer: 'law firm', accountant: 'accounting', insurance: 'insurance', estate_agent: 'real estate', school: 'school', kindergarten: 'kindergarten', driving_school: 'driving school', college: 'college',
+  hotel: 'hotel', guest_house: 'guesthouse', hostel: 'hostel', motel: 'motel', travel_agency: 'travel agency', computer: 'computer shop', mobile_phone: 'phone shop', electronics: 'electronics',
+  clothes: 'clothing store', shoes: 'shoe store', supermarket: 'supermarket', convenience: 'shop', furniture: 'furniture store', jewelry: 'jewellery store', florist: 'florist', builder: 'construction', building_materials: 'building supplies' };
+function kindOf(t) {
+  for (const k of ['craft', 'shop', 'amenity', 'office', 'tourism', 'leisure', 'healthcare']) {
+    const v = t[k]; if (!v) continue;
+    return KIND_WORDS[v] || String(v).replace(/_/g, ' ');
+  }
+  return '';
+}
+function guessInd(t) {
+  for (const k of ['amenity', 'shop', 'craft', 'office', 'tourism', 'leisure', 'healthcare']) {
+    const v = t[k]; if (!v) continue;
+    for (const [re, ind] of TAG_IND) if (re.test(v)) return ind;
+  }
+  return t.shop ? 'Retail & Shops' : 'Retail & Shops';
+}
+
+/* ═══════════════════════ BIG SEARCHES — pull thousands of real businesses ═══════════════════════
+   The browser asks the free world map (OpenStreetMap) directly, so there is no 300 limit.
+   The server still checks permission, logs the scan for the radar and returns "contacted by" info. */
+const BIG_OVERPASS=['https://overpass-api.de/api/interpreter','https://overpass.private.coffee/api/interpreter','https://maps.mail.ru/osm/tools/overpass/api/interpreter','https://overpass.kumi.systems/api/interpreter'];
+function fetchJSONTimed(url,opts,ms){
+ const ctrl=typeof AbortController!=='undefined'?new AbortController():null;const t=setTimeout(function(){if(ctrl)ctrl.abort()},ms);
+ return fetch(url,Object.assign({},opts||{},{signal:ctrl?ctrl.signal:undefined})).then(function(r){clearTimeout(t);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(function(j){if(j&&j.remark&&/runtime error|timed out|rate_limited|out of memory/i.test(j.remark)&&!(j.elements||[]).length)throw new Error(j.remark.slice(0,80));return j},function(e){clearTimeout(t);throw e});
+}
+function anyOf(ps){return new Promise(function(res,rej){let n=ps.length,errs=[];ps.forEach(function(p){p.then(res,function(e){errs.push(e);if(--n===0)rej(errs[0])})})})}
+function bigFetchPlaces(city,ct,ind,km,max){
+ const sels0=ind&&OSM_SEL[ind]?OSM_SEL[ind]:Object.keys(OSM_SEL).reduce(function(a,k){return a.concat(OSM_SEL[k])},[]);
+ const outN=max>0?' '+max:'';
+ const ask=function(q){return anyOf(BIG_OVERPASS.map(function(u){return fetchJSONTimed(u,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}},300000)}))};
+ let first;
+ if(km==='country'){
+  const nm=String(ct.name).replace(/"/g,'');
+  first=ask('[out:json][timeout:290][maxsize:2000000000];area["name:en"="'+nm+'"]["admin_level"="2"]->.c;('+sels0.map(function(sel){return 'nwr'+sel+'["name"](area.c);'}).join('')+');out center tags'+outN+';');
+ }else first=fetchJSONTimed('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(city+', '+ct.name),{headers:{'Accept':'application/json'}},15000).then(function(geo){
+  if(!geo||!geo[0])throw new Error('City not found on the map');
+  const lat=+geo[0].lat,lon=+geo[0].lon,dLat=km/111,dLon=km/(111*Math.max(0.2,Math.cos(lat*Math.PI/180)));
+  const bbox=[lat-dLat,lon-dLon,lat+dLat,lon+dLon].map(function(x){return x.toFixed(5)}).join(',');
+  const sels=ind&&OSM_SEL[ind]?OSM_SEL[ind]:Object.keys(OSM_SEL).reduce(function(a,k){return a.concat(OSM_SEL[k])},[]);
+  const q='[out:json][timeout:290][maxsize:2000000000];('+sels.map(function(sel){return 'nwr'+sel+'["name"]('+bbox+');'}).join('')+');out center tags'+outN+';';
+  return ask(q);
+ });
+ return first.then(function(data){
+  const seen={},out=[];
+  (data.elements||[]).forEach(function(e){
+   const t=e.tags||{};if(!t.name)return;
+   const key='osm-'+e.type+'-'+e.id,dd=(t.name+'|'+(t['addr:street']||'')).toLowerCase();
+   if(seen[key]||seen[dd])return;seen[key]=seen[dd]=1;
+   out.push({key:key,name:String(t.name).slice(0,80),ind:ind||guessInd(t),kind:kindOf(t).slice(0,40),
+    phone:String(t.phone||t['contact:phone']||t['contact:mobile']||t.mobile||'').split(';')[0].trim().slice(0,30),
+    website:String(t.website||t['contact:website']||t.url||'').slice(0,120),social:String(t['contact:facebook']||t.facebook||t['contact:instagram']||t.instagram||'').slice(0,120),
+    email:String(t.email||t['contact:email']||'').slice(0,80),addr:[t['addr:housenumber'],t['addr:street'],t['addr:suburb']||t['addr:city']].filter(Boolean).join(' ').slice(0,120),
+    hours:String(t.opening_hours||'').slice(0,80),city:String(t['addr:city']||t['addr:town']||'').slice(0,40),lat:e.lat!=null?e.lat:(e.center&&e.center.lat),lon:e.lon!=null?e.lon:(e.center&&e.center.lon)});
+  });
+  return out;
+ });
+}
+function searchPlaces(city,ct,ind){
+ const a=v('s-area')||'15',km=a==='country'?'country':+a,max=+(v('s-max')||0);
+ return wdApi('search/allow','POST',{}).then(function(a){
+  if(!a||!a.ok)return a||{error:'Could not start the search'};
+  return bigFetchPlaces(city,ct,ind,km,max).then(function(places){
+   const nosite=places.filter(function(p){return !p.website}).length;
+   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},big:true}});
+  },function(err){
+   console.warn('map direct failed, using server',err);
+   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,45000);
+  });
+ });
+}
+/* results: show 60 at a time so phones stay fast, even with thousands */
+let RES_SHOWN=60;
+window.renderResults=function(){
+ const box=el('searchResults');const ls=state.lastSearch;if(!box)return;
+ if(!ls||!state.results.length){box.innerHTML='<div class="empty-state"><div class="empty-icon">🌍</div><h3>Pick a country and city to begin</h3><p>Choose a country, city and industry above, then tap 🔍 Search</p></div>';return}
+ const all=state.results,shown=all.slice(0,RES_SHOWN),nos=all.filter(function(l){return l.type==='no-website'}).length;
+ box.innerHTML='<div class="res-head"><div><div class="section-title" style="margin:0">🎯 '+fmtNum(all.length)+' businesses found — '+ls.ct.flag+' '+(ls.city&&v('s-area')!=='country'?esc(ls.city)+', ':'all of ')+esc(ls.ct.name)+'</div><div class="res-sub">'+fmtNum(nos)+' without a website • showing '+fmtNum(shown.length)+' of '+fmtNum(all.length)+'</div></div><button class="btn btn-green btn-sm" onclick="addAllResults()">➕ Add all '+fmtNum(all.length)+' to My Leads</button></div><div class="results-grid">'+shown.map(resCard).join('')+'</div>'+
+ (all.length>RES_SHOWN?'<div style="text-align:center;margin:16px 0"><button class="btn btn-primary" onclick="RES_SHOWN+=120;renderResults()">⬇ Show more ('+fmtNum(all.length-RES_SHOWN)+' left)</button></div>':'');
+};
+const LEAD_CAP=15000;   // what a phone can safely keep offline
+window.addAllResults=function(){
+ let n=0,room=LEAD_CAP-state.leads.length;
+ state.results.forEach(function(l){if(!l.added&&room>0){l.added=true;state.leads.push(l);n++;room--}});
+ if(n)logAct('lead',n+' businesses',null,n);
+ updateCounts();renderResults();renderLeads();saveUD();
+ if(room<=0)showToast('➕ '+fmtNum(n)+' added — My Leads is full ('+fmtNum(LEAD_CAP)+'). Delete old leads to add more.','info');
+ else showToast(n?'➕ '+fmtNum(n)+' businesses added to My Leads':'All results already added',n?'success':'info');
+};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
