@@ -732,6 +732,32 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 .guest-bar{position:sticky;top:0;z-index:900;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 14px;background:linear-gradient(90deg,rgba(255,122,26,.18),rgba(255,122,26,.08));border-bottom:1px solid rgba(255,122,26,.35);font-size:12px}
 .guest-bar .gb-btns{display:flex;gap:6px}
 .guest-bar .btn-sm{padding:6px 10px;font-size:11px}
+.consent-bar{position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;background:var(--panel2);border:1px solid var(--line2);border-radius:14px;padding:12px 14px;box-shadow:0 12px 40px rgba(0,0,0,.45);font-size:12px;line-height:1.5;color:var(--text2);max-width:720px;margin:0 auto}
+.consent-bar a,.auth-foot a,.su-terms a,.legal a{color:var(--a);cursor:pointer;text-decoration:underline}
+.consent-bar .cb-txt{flex:1;min-width:220px}
+.su-terms{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--text2);margin:-4px 0 14px;cursor:pointer;line-height:1.5}
+.su-terms input{accent-color:var(--a);margin-top:3px}
+.su-terms.shake{animation:shk .5s}
+@keyframes shk{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.legal{font-size:13px;line-height:1.65;color:var(--text2);max-height:58vh;overflow:auto;padding-right:4px}
+.legal h4{color:var(--text);font-size:13px;margin:14px 0 4px}
+.legal ul{padding-left:18px;margin:4px 0}.legal li{margin-bottom:4px}
+.lg-date{font-size:11px;color:var(--muted)}
+.sec-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.sec-sum{font-size:12px;color:var(--text2);margin-bottom:8px}
+.sec-list{display:flex;flex-direction:column;gap:6px}
+.sec-row{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.sec-ic{font-size:20px;width:26px;text-align:center}
+.sec-dev{font-size:12.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis}
+.sec-meta{font-size:11px;color:var(--muted);font-weight:400}
+.sec-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+.sc-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.sc-kpi{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.sc-kpi b{font-size:20px}.sc-kpi span{font-size:11px;color:var(--muted)}
+.owner-rep-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:800;margin-left:4px}
+.tk-new{border-color:rgba(255,122,26,.5)!important}
+.tk-reply{margin-top:6px;font-size:12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:7px 9px;color:var(--text2)}
+.tk-replybox{margin-top:8px}
 .ai-tag{font-size:9px;font-weight:800;letter-spacing:.08em;background:var(--a);color:#000;border-radius:5px;padding:2px 5px;vertical-align:middle;margin-left:4px}
 .pwr-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.08em;text-align:center;padding:14px;border-radius:12px;background:var(--panel2);border:1px dashed var(--a);color:var(--a);user-select:all}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
@@ -817,6 +843,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
         </div>
         <div class="caps-hint" id="su-pw2-caps">⚠️ Caps Lock is on</div>
       </div>
+      <label class="su-terms"><input type="checkbox" id="su-terms"> <span>I agree to the <a onclick="event.preventDefault();openLegal('terms')">Terms of Use</a> and <a onclick="event.preventDefault();openLegal('privacy')">Privacy Policy</a></span></label>
       <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" type="submit">🚀 Create Account</button>
       <div class="auth-alt">Already have an account? <a onclick="switchAuth('login')">Sign in</a></div>
     </form>
@@ -826,7 +853,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <button type="button" class="btn btn-ghost guest-btn" onclick="continueAsGuest()">👀 Continue as Guest</button>
     <div class="guest-note">Look around first — sign in or create a free account anytime to use everything.</div>
     </div>
-    <div class="auth-foot">🎯 Built by <strong>Lameero Mendoza</strong> — Founder &amp; Lead Developer of We Deploy<br>🔒 Your account &amp; leads are stored only in this browser.</div>
+    <div class="auth-foot">🎯 Built by <strong>Lameero Mendoza</strong> — Founder &amp; Lead Developer of We Deploy<br>🔒 Encrypted connection • passwords are never visible to anyone<br><a onclick="openLegal('privacy')">Privacy</a> · <a onclick="openLegal('terms')">Terms</a> · <a onclick="openLegal('cookies')">Cookies</a></div>
   </div>
 </div>
 
@@ -1510,6 +1537,10 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
   <div class="scroll-area">
     <div class="invoice-notes" id="op-warn" style="display:none;margin-bottom:14px"></div>
     <div class="op-grid" id="op-stats"></div>
+    <div class="inv-section" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap"><h3 style="margin:0">🛡 Security Center</h3><div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="openReportsInbox()">📥 Reports inbox <span class="owner-rep-badge" style="display:none">0</span></button><button class="btn btn-ghost btn-sm" onclick="loadSecCenter()">🔄</button></div></div>
+      <div id="secCenter" style="margin-top:10px"></div>
+    </div>
     <div class="prop-grid">
       <div style="display:flex;flex-direction:column;gap:14px">
         <div class="inv-section">
@@ -1606,6 +1637,19 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
           <h3>🧹 Start Fresh</h3><p>Reset your leads, invoices, pipeline, payments, stats and XP back to zero</p>
           <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openM('freshModal')">🧹 Reset everything to zero</button>
         </div>
+        <div class="settings-section" id="secSettings">
+          <h3>🛡 Security &amp; Privacy</h3><p>See where your account is signed in, protect it, and control your data</p>
+          <div id="secBox"></div>
+          <div class="sec-btns">
+            <button class="btn btn-ghost btn-sm" onclick="logoutOthers()">🔒 Log out all other devices</button>
+            <button class="btn btn-ghost btn-sm" onclick="openM('changePwModal')">🔑 Change password</button>
+            <button class="btn btn-ghost btn-sm" onclick="openM('exportModal')">⬇️ Download my data</button>
+            <button class="btn btn-ghost btn-sm" onclick="reportIssue()">🚩 Report a problem</button>
+            <button class="btn btn-ghost btn-sm" onclick="openLegal('privacy')">📄 Privacy Policy</button>
+            <button class="btn btn-ghost btn-sm" onclick="openLegal('terms')">📜 Terms</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="setV('del-pw','');setV('del-confirm','');setH('del-err','');openM('deleteAccModal')">🗑 Delete my account</button>
+          </div>
+        </div>
         <div class="settings-section" id="ownerAccessBox">
           <h3>👑 Owner Access</h3><p>Unlock owner tools (Lameero Mendoza only)</p>
           <button class="btn btn-primary btn-sm" onclick="openM('ownerUnlockModal')">👑 Unlock Owner Access</button>
@@ -1666,6 +1710,48 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
       <button class="btn btn-ghost" style="width:100%;justify-content:center;padding:11px;margin-bottom:8px" onclick="guestExit('login')">🔑 Sign in to my account</button>
       <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="closeM('guestModal')">Keep looking around</button>
     </div>
+  </div>
+</div>
+<div class="modal-overlay" id="legalModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-head"><h2>🔐 Privacy &amp; Terms</h2><div class="modal-close" onclick="closeM('legalModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="mtabs">
+        <div class="mtab active" data-lt="privacy" onclick="switchMTab(this,'lg-privacy')">🔐 Privacy</div>
+        <div class="mtab" data-lt="terms" onclick="switchMTab(this,'lg-terms')">📜 Terms</div>
+        <div class="mtab" data-lt="cookies" onclick="switchMTab(this,'lg-cookies')">🍪 Cookies</div>
+      </div>
+      <div class="mtab-content active" id="lg-privacy"></div>
+      <div class="mtab-content" id="lg-terms"></div>
+      <div class="mtab-content" id="lg-cookies"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="consentAccept();closeM('legalModal')">✅ Got it</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="reportModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-head"><h2>🚩 Report</h2><div class="modal-close" onclick="closeM('reportModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <input type="hidden" id="rp-ref">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Reporting: <span id="rp-what"></span></p>
+      <div class="form-group" style="margin-bottom:10px"><label>What's wrong?</label>
+        <select class="filter-input" id="rp-reason"><option value="spam">Spam</option><option value="abuse">Abuse / harassment</option><option value="scam">Scam / fraud</option><option value="fake">Fake or misleading</option><option value="security">Security issue / someone in my account</option><option value="other">Other</option></select></div>
+      <div class="form-group"><label>Details</label><textarea class="filter-input" id="rp-detail" rows="4" placeholder="Tell the developer what happened…" style="resize:vertical"></textarea></div>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px">🔒 Reports go privately to the developer. The person you report is never told who reported them.</p>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeM('reportModal')">Cancel</button><button class="btn btn-primary" onclick="submitReport()">🚩 Send report</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="deleteAccModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h2>🗑 Delete my account</h2><div class="modal-close" onclick="closeM('deleteAccModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px">This <b style="color:var(--red)">permanently deletes</b> your account and all your data — leads, pipeline, invoices, proposals, XP and posts. It cannot be undone. Tip: tap <b>Download my data</b> first if you want a copy.</p>
+      <div class="form-group" style="margin-bottom:10px"><label>Your password</label><input class="filter-input" id="del-pw" type="password" autocomplete="current-password"></div>
+      <div class="form-group"><label>Type DELETE to confirm</label><input class="filter-input" id="del-confirm" autocapitalize="characters" placeholder="DELETE"></div>
+      <div class="auth-err" id="del-err" style="margin-top:10px;display:block"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeM('deleteAccModal')">Keep my account</button><button class="btn btn-red" onclick="doDeleteAccount()">🗑 Delete forever</button></div>
   </div>
 </div>
 <!-- LAMEERO'S ASSISTANT -->
@@ -1997,6 +2083,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
         <div id="sup-mine"></div>
       </div>
       <div class="mtab-content" id="st-report">
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-bottom:12px" onclick="closeM('supportModal');reportIssue()">🚩 Report a user, a post or a security problem instead</button>
         <div class="section-title">Report a problem</div>
         <div class="form-group" style="margin-bottom:10px"><label>Severity</label><select class="filter-input" id="bug-sev"><option>🟡 Minor — annoying but usable</option><option>🟠 Major — blocks my work</option><option>🔴 Critical — everything broken</option></select></div>
         <div class="form-group" style="margin-bottom:10px"><label>What were you doing?</label><textarea class="filter-input" id="bug-what" rows="3" placeholder="e.g. Searching for leads in Windhoek…" style="resize:vertical"></textarea></div>
@@ -2261,7 +2348,10 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
   </div>
   <div class="um-item gold" id="umUnlock" onclick="toggleUserMenu();openM('ownerUnlockModal')">👑 Unlock Owner Access</div>
   <div class="um-item" onclick="openAnnouncements();toggleUserMenu()">📢 Announcements</div>
+  <div class="um-item gold" id="umReports" style="display:none" onclick="toggleUserMenu();openReportsInbox()">📥 Reports inbox <span class="owner-rep-badge" style="display:none">0</span></div>
   <div class="um-item" onclick="openSupport();toggleUserMenu()">🎧 Support & Feedback</div>
+  <div class="um-item" onclick="toggleUserMenu();reportIssue()">🚩 Report a problem</div>
+  <div class="um-item" onclick="toggleUserMenu();sv('settings');setTimeout(function(){var s=el('secSettings');if(s)s.scrollIntoView({behavior:'smooth'})},300)">🛡 Privacy &amp; Security</div>
   <div class="um-item" onclick="toggleUserMenu();openFAQ()">❓ FAQ</div>
   <div class="um-item" onclick="toggleUserMenu();openM('donateModal')">☕ Donate</div>
   <div class="um-item" onclick="openM('aboutModal');toggleUserMenu()">⭐ About & Credits</div>
@@ -2471,7 +2561,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='10.7';   // ← Change this number whenever you update the site
+const APP_VERSION='10.8';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4793,7 +4883,7 @@ function loadWins(){
  wdApi('wins').then(function(r){
   if(!r||!r.ok){setH('winList','<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>');return}
   setH('winList',r.wins.length?r.wins.map(function(w){
-   return '<div class="win-card"><div class="win-top"><div class="lb-av">'+esc(initials(w.name))+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(w.name)+(w.city?' <span class="lb-role">· '+esc(w.city)+'</span>':'')+'</div><div class="lb-role">'+timeAgo(w.created)+'</div></div>'+(w.amount?'<div class="win-amt">'+esc(w.currency||'$')+' '+fmtNum(w.amount)+'</div>':'')+'</div><div class="win-text">'+esc(w.text)+'</div><div class="win-react">'+['🔥','👏','💰','🚀'].map(function(e){const n=w.reacts[e]||0,mine=w.myReacts.indexOf(e)>-1;return '<span class="rx'+(mine?' on':'')+'" onclick="reactWin('+w.id+',\''+e+'\')">'+e+(n?' '+n:'')+'</span>'}).join('')+((w.mine||isOwner())?'<span class="rx del" onclick="delWin('+w.id+')">🗑</span>':'')+'</div></div>';
+   return '<div class="win-card"><div class="win-top"><div class="lb-av">'+esc(initials(w.name))+'</div><div style="flex:1;min-width:0"><div class="lb-name">'+esc(w.name)+(w.city?' <span class="lb-role">· '+esc(w.city)+'</span>':'')+'</div><div class="lb-role">'+timeAgo(w.created)+'</div></div>'+(w.amount?'<div class="win-amt">'+esc(w.currency||'$')+' '+fmtNum(w.amount)+'</div>':'')+'</div><div class="win-text">'+esc(w.text)+'</div><div class="win-react">'+['🔥','👏','💰','🚀'].map(function(e){const n=w.reacts[e]||0,mine=w.myReacts.indexOf(e)>-1;return '<span class="rx'+(mine?' on':'')+'" onclick="reactWin('+w.id+',\''+e+'\')">'+e+(n?' '+n:'')+'</span>'}).join('')+((w.mine||isOwner())?'<span class="rx del" onclick="delWin('+w.id+')">🗑</span>':'')+(!w.mine?'<span class="rx del" title="Report this post" onclick="reportWin('+w.id+',\''+esc(w.name).replace(/'/g,'')+'\')">🚩</span>':'')+'</div></div>';
   }).join(''):'<div class="empty-mini">No wins posted yet. Closed a deal or got a great reply? Be the first! 🏆</div>');
  });
 }
@@ -5552,11 +5642,11 @@ function guestPrompt(){
  if(Date.now()-_gpT<600)return;_gpT=Date.now();
  const m=el('guestModal');if(!m)return;openM('guestModal');
 }
-const GUEST_ALLOW=/^\s*(sv\(|closeSidebar|toggleSidebar|toggleUserMenu|toggleTheme|openAI|closeAI|toggleAI|closeM\(|openAnnouncements|renderAnns|openM\('aboutModal'\)|openFAQ|switchMTab|commTab|lbTab|filterSeg|openBanner|guestExit|continueAsGuest|switchAuth|togglePw|this\.parentElement\.style\.display)/;
+const GUEST_ALLOW=/^\s*(sv\(|closeSidebar|toggleSidebar|toggleUserMenu|toggleTheme|openAI|closeAI|toggleAI|closeM\(|openAnnouncements|renderAnns|openM\('aboutModal'\)|openFAQ|switchMTab|commTab|lbTab|filterSeg|openBanner|guestExit|continueAsGuest|switchAuth|togglePw|consentAccept|openLegal|this\.parentElement\.style\.display)/;
 document.addEventListener('click',function(e){
  if(!isGuest())return;
  const t=e.target;if(!t||!t.closest)return;
- if(t.closest('#authScreen,#guestBar,#guestModal'))return;
+ if(t.closest('#authScreen,#guestBar,#guestModal,#consentBar,#legalModal'))return;
  const act=t.closest('[onclick],button,a,input,select,textarea,label,.ai-chip');
  if(!act)return;
  const oc=act.getAttribute('onclick')||'';
@@ -5584,6 +5674,196 @@ window.openAI=function(){
 };
 const _aiRespondGu=window.aiRespond;
 window.aiRespond=function(){if(isGuest()){guestPrompt();return}return _aiRespondGu.apply(this,arguments)};
+
+/* ═══════════════════════ PRIVACY, SECURITY & REPORTS ═══════════════════════ */
+const LEGAL_VER='2026-09';
+function legalName(){try{return siteName()}catch(e){return 'We Deploy'}}
+function openLegal(tab){
+ renderLegal();openM('legalModal');
+ const t=document.querySelector('#legalModal .mtab[data-lt="'+(tab||'privacy')+'"]');if(t)switchMTab(t,'lg-'+(tab||'privacy'));
+}
+function renderLegal(){
+ const N=esc(legalName()),C='<a href="mailto:'+OWNER.email+'">'+OWNER.email+'</a>';
+ setH('lg-privacy','<div class="legal"><p class="lg-date">Last updated: September 2026</p>'+
+ '<h4>1. Who we are</h4><p>'+N+' (Lead Finder Pro) is a free tool that helps freelancers and agencies find local businesses and contact them. Contact: '+C+'.</p>'+
+ '<h4>2. What we collect</h4><ul><li><b>Account:</b> your name, business name, email and password. Passwords are <b>scrambled (hashed)</b> — nobody, including the owner, can ever see them.</li><li><b>Your work:</b> leads, notes, pipeline, proposals, invoices, payments and settings you create, so they sync across your devices.</li><li><b>Security logs:</b> time of sign-in, device/browser type, approximate location (country/city) and a <b>shortened IP address</b> (last part hidden) — used only to protect your account.</li><li><b>AI chats:</b> questions you ask the assistant, plus a summary of your own leads/progress so it can answer. These are processed to create the answer and are not used for ads.</li><li><b>Reports & support messages</b> you send us.</li></ul>'+
+ '<h4>3. What we do NOT do</h4><ul><li>No selling or renting of your data — ever.</li><li>No advertising or tracking cookies, no ad networks, no cross-site tracking.</li><li>Other users can never see your leads, invoices or private data.</li></ul>'+
+ '<h4>4. Who can see your data</h4><p>Only you. The site owner can open a <b>read-only support view</b> of an account and reset a password when a user asks for help or to keep the platform safe. Public things you choose to post (Win Wall, live feed, leaderboard name/level) are visible to other members.</p>'+
+ '<h4>5. Services we use</h4><ul><li><b>Cloudflare</b> — hosting, database and the AI model (Workers AI).</li><li><b>OpenStreetMap</b> — public business listings for search results.</li><li><b>WhatsApp / your email app</b> — only when you tap a button to open them.</li></ul>'+
+ '<h4>6. How long we keep it</h4><p>As long as your account exists. Security logs are kept for a limited time. When you delete your account, your data is removed.</p>'+
+ '<h4>7. Your rights</h4><ul><li><b>See & download</b> your data — Settings → Security & Privacy → Download my data.</li><li><b>Correct</b> it — edit your profile anytime.</li><li><b>Delete</b> your account and data — Settings → Security & Privacy → Delete my account.</li><li>Ask us anything about your data: '+C+'.</li></ul>'+
+ '<h4>8. Security</h4><p>HTTPS encryption, hashed passwords, random unguessable session keys, automatic lock after repeated wrong passwords, sign-in history, and protection against clickjacking. No system is 100% secure, so please use a strong password you don’t use elsewhere.</p>'+
+ '<h4>9. Children</h4><p>'+N+' is for people aged 16 and over.</p>'+
+ '<h4>10. Changes</h4><p>If this policy changes we’ll post it in Announcements.</p></div>');
+ setH('lg-terms','<div class="legal"><p class="lg-date">Last updated: September 2026</p>'+
+ '<h4>1. Using '+N+'</h4><p>'+N+' is free. By creating an account you agree to these terms and our Privacy Policy.</p>'+
+ '<h4>2. Be a good member</h4><ul><li>Contact businesses respectfully and follow the laws on marketing messages, calls and spam in your country (e.g. POPIA, GDPR). Stop contacting anyone who asks you to.</li><li>No spam, scams, harassment, hate, impersonation or illegal content — in messages you send or things you post.</li><li>Don’t try to hack, overload, scrape or break the site or other people’s accounts.</li><li>Keep your password private. You’re responsible for activity on your account.</li></ul>'+
+ '<h4>3. Business data</h4><p>Business listings come from public sources like OpenStreetMap and may be wrong or out of date. Always double-check before relying on them.</p>'+
+ '<h4>4. The AI assistant</h4><p>AI answers can be wrong. Use your own judgment — especially for prices, legal or money decisions.</p>'+
+ '<h4>5. Your content</h4><p>You own what you create (leads, invoices, messages). You give us permission to store and show it to you so the service works. Public posts can be removed if they break these rules.</p>'+
+ '<h4>6. Accounts</h4><p>We may suspend accounts that break these terms or put others at risk. You can delete your account anytime.</p>'+
+ '<h4>7. No guarantees</h4><p>The service is provided “as is”, without warranties. We don’t guarantee sales, results or uninterrupted service, and to the extent the law allows we are not liable for indirect losses from using it.</p>'+
+ '<h4>8. Contact</h4><p>Questions or reports: '+C+' or 🎧 Support & Reports inside the app.</p></div>');
+ setH('lg-cookies','<div class="legal"><p class="lg-date">Last updated: September 2026</p>'+
+ '<h4>Only essential storage — no tracking</h4><p>'+N+' does <b>not</b> use advertising, analytics or tracking cookies. We only use your browser’s storage (similar to cookies) for things the site needs to work:</p>'+
+ '<table class="data-table"><tr><th>What</th><th>Why</th></tr><tr><td>Sign-in key</td><td>Keeps you signed in (you can log out anytime)</td></tr><tr><td>Your saved work</td><td>Leads, pipeline, invoices etc. — works offline and syncs</td></tr><tr><td>Preferences</td><td>Theme, name, intro on/off, this cookie choice</td></tr><tr><td>Security</td><td>Cloudflare may set a security cookie to block bots and attacks</td></tr></table>'+
+ '<p style="margin-top:10px">Because these are strictly necessary, they can’t be switched off inside the site — but you can clear them anytime in your browser settings (you’ll be signed out).</p></div>');
+}
+/* cookie / privacy notice */
+function consentShow(){
+ let ok=null;try{ok=localStorage.getItem('wd_consent')}catch(e){}
+ if(ok&&ok.indexOf(LEGAL_VER)===0)return;
+ if(el('consentBar'))return;
+ document.body.insertAdjacentHTML('beforeend','<div class="consent-bar" id="consentBar"><div class="cb-txt">🍪 <b>Your privacy matters.</b> We only use essential storage to keep you signed in and save your work — <b>no ads, no tracking cookies</b>. <a onclick="openLegal(\'cookies\')">Cookie Policy</a> · <a onclick="openLegal(\'privacy\')">Privacy Policy</a></div><div class="cb-btns"><button class="btn btn-primary btn-sm" onclick="consentAccept()">✅ Got it</button></div></div>');
+}
+function consentAccept(){try{localStorage.setItem('wd_consent',LEGAL_VER+'|'+Date.now())}catch(e){}const b=el('consentBar');if(b)b.remove()}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(consentShow,1200)});
+if(document.readyState!=='loading')setTimeout(consentShow,1200);
+/* sign-up requires accepting the terms */
+window.addEventListener('load',function(){
+ const o=window.doSignup;if(typeof o!=='function')return;
+ window.doSignup=function(){
+  const c=el('su-terms');
+  if(c&&!c.checked){authErr('su','Please tick the box to accept the Terms and Privacy Policy');const r=c.closest('.su-terms');if(r){r.classList.add('shake');setTimeout(function(){r.classList.remove('shake')},600)}return}
+  try{localStorage.setItem('wd_terms',LEGAL_VER+'|'+Date.now())}catch(e){}
+  return o.apply(this,arguments);
+ };
+});
+/* ---------- Security & Privacy (Settings) ---------- */
+function fmtWhen(t){try{return new Date(t).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+function flagOf(cc){cc=String(cc||'').toUpperCase();if(!/^[A-Z]{2}$/.test(cc))return '🌐';return String.fromCodePoint(127397+cc.charCodeAt(0),127397+cc.charCodeAt(1))}
+function loadSecurity(){
+ const box=el('secBox');if(!box)return;
+ if(!onlineReady()){box.innerHTML='<div class="empty-mini">Sign-in history needs an internet connection.</div>';return}
+ box.innerHTML='<div class="empty-mini">Loading…</div>';
+ wdApi('security').then(function(r){
+  if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>';return}
+  box.innerHTML='<div class="sec-sum">🟢 <b>'+r.sessions+'</b> device'+(r.sessions===1?'':'s')+' signed in to your account</div>'+
+  (r.logins.length?'<div class="sec-list">'+r.logins.map(function(l,i){return '<div class="sec-row"><div class="sec-ic">'+flagOf(l.country)+'</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(l.device||'Unknown device')+(i===0?' <span class="chip chip-green" style="cursor:default;padding:1px 6px;font-size:9px">latest</span>':'')+'</div><div class="sec-meta">'+esc([l.city,l.country].filter(Boolean).join(', ')||'Unknown place')+' • '+esc(l.ip||'')+' • '+fmtWhen(l.t)+(l.kind==='signup'?' • account created':'')+'</div></div></div>'}).join('')+'</div>':'<div class="empty-mini">No sign-ins recorded yet — they appear from your next sign-in.</div>')+
+  '<div class="sec-hint">Don’t recognise a sign-in? Tap <b>Log out all other devices</b> and change your password right away.</div>';
+ });
+}
+function logoutOthers(){
+ if(!onlineReady())return showToast('You need to be online for this','error');
+ wdApi('security/logout-others','POST',{}).then(function(r){if(r&&r.ok){showToast('🔒 All other devices are signed out','success');loadSecurity()}else showToast('⚠️ '+((r&&r.error)||'Could not do that'),'error')});
+}
+function doDeleteAccount(){
+ const pw=el('del-pw').value,conf=el('del-confirm').value.trim().toUpperCase();
+ if(conf!=='DELETE')return setH('del-err','Type DELETE in capital letters to confirm');
+ if(!pw)return setH('del-err','Enter your password');
+ setH('del-err','');
+ wdApi('delete-account','POST',{password:pw}).then(function(r){
+  if(!r||!r.ok)return setH('del-err',esc((r&&r.error)||'Could not delete — try again'));
+  try{const id=CUR&&CUR.id,em=CUR&&CUR.email;lsDel('wd_data_'+id);const us=getUsers();if(us&&em&&us[em]){delete us[em];saveUsers(us)}}catch(e){}
+  try{localStorage.removeItem('wd_srv_token');sessionStorage.removeItem('wd_srv_token')}catch(e){}
+  closeM('deleteAccModal');logout();
+  setTimeout(function(){showToast('🗑 Your account and data have been deleted. Sorry to see you go 💛','info')},400);
+ });
+}
+const _svSec=window.sv;
+window.sv=function(v){const r=_svSec.apply(this,arguments);try{if(v==='settings')loadSecurity();if(v==='owner')loadSecCenter()}catch(e){}return r};
+/* ---------- Reports & support → straight to the owner ---------- */
+const _submitTicketS=window.submitTicket;
+window.submitTicket=function(type){
+ if(!CUR)return;
+ if(!onlineReady())return _submitTicketS.apply(this,arguments);
+ let subject='',message='',meta={page:state.view||'',app:APP_VERSION,ua:navigator.userAgent.slice(0,160)};
+ if(type==='support'){subject=el('sup-subject').value.trim();message=el('sup-message').value.trim();if(!subject||!message)return showToast('Fill in the subject and message','error')}
+ else if(type==='report'){const sev=el('bug-sev').value,what=el('bug-what').value.trim(),det=el('bug-detail').value.trim();if(!what)return showToast('Describe what you were doing','error');subject='🐛 '+sev;message='What I was doing: '+what+(det?'\n\nWhat went wrong: '+det:'')}
+ else{message=el('fb-message').value.trim();if(!message)return showToast('Write your feedback first','error');subject='💡 Feedback — '+fbRating+'/5 ⭐'+(el('fb-feature').value?' • '+el('fb-feature').value:'')}
+ wdApi('tickets','POST',{type:type,subject:subject,message:message,meta:meta}).then(function(r){
+  if(!r||!r.ok)return showToast('⚠️ '+((r&&r.error)||'Could not send — check your connection'),'error');
+  if(type==='support'){el('sup-subject').value='';el('sup-message').value=''}
+  if(type==='report'){el('bug-what').value='';el('bug-detail').value=''}
+  if(type==='feedback')el('fb-message').value='';
+  showToast('📨 Sent to the developer — you’ll see the reply here','success');renderMyTickets();
+ });
+};
+function sendReport(type,subject,message,meta){
+ return wdApi('tickets','POST',{type:type,subject:subject,message:message,meta:meta||{}});
+}
+function reportWin(id,name){
+ openM('reportModal');el('rp-ref').value=JSON.stringify({kind:'win',id:id,name:name});
+ setH('rp-what','Win Wall post by <b>'+esc(name)+'</b>');setV('rp-reason','spam');setV('rp-detail','');
+}
+function reportIssue(){openM('reportModal');el('rp-ref').value=JSON.stringify({kind:'general'});setH('rp-what','Something on the site (a user, a post, a security issue or anything unsafe)');setV('rp-reason','abuse');setV('rp-detail','')}
+function submitReport(){
+ const ref=JSON.parse(el('rp-ref').value||'{}'),reason=el('rp-reason').value,det=el('rp-detail').value.trim();
+ if(ref.kind==='general'&&!det)return showToast('Tell us what happened','error');
+ const type=reason==='security'?'security':'abuse';
+ sendReport(type,'🚩 '+({spam:'Spam',abuse:'Abuse / harassment',scam:'Scam / fraud',fake:'Fake or misleading',security:'Security issue',other:'Other'}[reason]||reason)+(ref.kind==='win'?' — Win Wall post by '+ref.name:''),(det||'(no details)')+(ref.kind==='win'?'\n\nReported Win Wall post #'+ref.id:''),{ref:ref,page:state.view||''}).then(function(r){
+  if(r&&r.ok){closeM('reportModal');showToast('🚩 Report sent to the developer. Thank you for keeping the community safe.','success')}
+  else showToast('⚠️ '+((r&&r.error)||'Could not send'),'error');
+ });
+}
+window.renderMyTickets=function(){
+ const box=el('sup-mine');if(!box||!CUR||isGuest())return;
+ if(!onlineReady())return;
+ wdApi('tickets/mine').then(function(r){
+  if(!r||!r.ok||!r.tickets.length){box.innerHTML='';return}
+  box.innerHTML='<div class="section-title" style="margin-top:16px">Your reports & requests</div>'+r.tickets.map(function(t){
+   const st=t.status==='resolved'?'<span class="tag tag-new">✅ Resolved</span>':t.status==='open'?'<span class="tag tag-warm">👀 Seen</span>':'<span class="tag tag-warm">⏳ Sent</span>';
+   return '<div class="mine-row">'+st+' '+esc(t.subject)+(t.reply?'<div class="tk-reply"><b>💬 Developer replied:</b> '+esc(t.reply)+'</div>':'')+'</div>';
+  }).join('');
+ });
+};
+let TK=[];
+window.renderInbox=function(){
+ const box=el('inboxList');if(!box||!isOwner())return;
+ box.innerHTML='<div class="empty-mini">Loading reports…</div>';
+ wdApi('admin/tickets').then(function(r){
+  if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>';return}
+  TK=r.tickets;ownerBadge(r.unread);
+  box.innerHTML=TK.length?TK.map(function(t,i){
+   const icon={support:'🎧',report:'🐛',feedback:'💡',abuse:'🚩',security:'🛡'}[t.type]||'📨',tc={support:'chip-blue',report:'chip-red',feedback:'chip-green',abuse:'chip-red',security:'chip-red'}[t.type]||'chip-blue';
+   let meta={};try{meta=JSON.parse(t.meta||'{}')}catch(e){}
+   return '<div class="ticket'+(t.status==='new'?' tk-new':'')+'"><div class="ticket-top"><div><span class="chip '+tc+'" style="cursor:default">'+icon+' '+esc(t.type)+'</span> <strong style="margin-left:6px">'+esc(t.subject)+'</strong></div><span class="tag '+(t.status==='new'?'tag-hot':t.status==='open'?'tag-warm':'tag-new')+'">'+(t.status==='new'?'NEW':t.status==='open'?'SEEN':'RESOLVED')+'</span></div>'+
+   '<div class="ticket-from">From: '+esc(t.name||'?')+' &lt;'+esc(t.email||'')+'&gt; • '+fmtWhen(t.created)+(meta.page?' • page: '+esc(meta.page):'')+(meta.app?' • v'+esc(meta.app):'')+'</div>'+
+   '<div class="ticket-msg">'+esc(t.message)+'</div>'+
+   (t.reply?'<div class="tk-reply"><b>Your reply:</b> '+esc(t.reply)+'</div>':'')+
+   '<div class="tk-replybox"><textarea class="filter-input" id="tkr-'+t.id+'" rows="2" placeholder="Write a reply the user will see…"></textarea></div>'+
+   '<div class="ticket-actions"><button class="btn btn-primary btn-xs" onclick="tkReply('+t.id+')">💬 Reply</button>'+
+   (t.status!=='resolved'?'<button class="btn btn-green btn-xs" onclick="tkStatus('+t.id+',\'resolved\')">✅ Resolve</button>':'<button class="btn btn-ghost btn-xs" onclick="tkStatus('+t.id+',\'open\')">↩ Reopen</button>')+
+   (t.email?'<button class="btn btn-ghost btn-xs" onclick="location.href=\'mailto:'+esc(t.email)+'?subject='+encodeURIComponent('Re: '+t.subject)+'\'">✉️ Email</button>':'')+
+   '<button class="btn btn-red btn-xs" onclick="tkDelete('+t.id+')">🗑</button></div></div>';
+  }).join(''):'<div class="empty-state" style="padding:26px"><div class="empty-icon">📭</div><h3>Inbox zero</h3><p>No reports yet</p></div>';
+  // opening the inbox marks new ones as seen
+  TK.filter(function(t){return t.status==='new'}).forEach(function(t){wdApi('admin/tickets/update','POST',{id:t.id,status:'open'})});
+  if(r.unread)setTimeout(function(){ownerBadge(0)},800);
+ });
+};
+function tkReply(id){const v=(el('tkr-'+id)||{}).value||'';if(!v.trim())return showToast('Write a reply first','error');wdApi('admin/tickets/update','POST',{id:id,reply:v.trim(),status:'resolved'}).then(function(r){if(r&&r.ok){showToast('💬 Reply sent — the user sees it in Support','success');renderInbox()}})}
+function tkStatus(id,s){wdApi('admin/tickets/update','POST',{id:id,status:s}).then(renderInbox)}
+function tkDelete(id){wdApi('admin/tickets/delete','POST',{id:id}).then(renderInbox)}
+function ownerBadge(n){
+ document.querySelectorAll('.owner-rep-badge').forEach(function(b){b.textContent=n>99?'99+':n;b.style.display=n?'inline-flex':'none'});
+ const um=el('umReports');if(um)um.style.display=isOwner()?'flex':'none';
+}
+function openReportsInbox(){openSupport();setTimeout(function(){const t=el('st-inbox-tab');if(t){t.style.display='';switchSTab(t,'st-inbox')}renderInbox()},150)}
+function checkOwnerReports(){
+ if(!isOwner()||!onlineReady())return;
+ wdApi('admin/tickets').then(function(r){if(r&&r.ok){ownerBadge(r.unread);if(r.unread)showToast('📥 You have '+r.unread+' new report'+(r.unread===1?'':'s')+' — tap your avatar → Reports inbox','info')}});
+}
+const _startAppSec=window.__startApp;
+window.__startApp=function(u){_repChecked=false;const r=_startAppSec.apply(this,arguments);setTimeout(function(){try{if(isOwner()&&!_repChecked){_repChecked=true;checkOwnerReports()}}catch(e){}},2500);return r};
+setInterval(function(){try{if(CUR&&!document.hidden&&isOwner())wdApi('admin/tickets').then(function(r){if(r&&r.ok)ownerBadge(r.unread)})}catch(e){}},3*60*1000);
+/* ---------- Security Center (Owner Panel) ---------- */
+function loadSecCenter(){
+ const box=el('secCenter');if(!box||!isOwner())return;
+ box.innerHTML='<div class="empty-mini">Loading…</div>';
+ wdApi('admin/security').then(function(r){
+  if(!r||!r.ok){box.innerHTML='<div class="empty-mini">'+esc((r&&r.error)||'Could not load')+'</div>';return}
+  const kpi=function(n,l,c){return '<div class="sc-kpi"><b style="color:'+c+'">'+fmtNum(n)+'</b><span>'+l+'</span></div>'};
+  box.innerHTML='<div class="sc-kpis">'+kpi(r.failed24h,'Wrong passwords (24h)',r.failed24h>20?'var(--red)':'var(--text)')+kpi(r.locked.length+r.lockedIps,'Locked right now',r.locked.length?'var(--yellow)':'var(--text)')+kpi(r.logins24h,'Sign-ins (24h)','var(--green)')+kpi(r.activeSessions,'Active sessions','var(--a)')+'</div>'+
+  (r.locked.length?'<div class="section-title" style="margin-top:12px">🔒 Locked accounts (15-min lock)</div>'+r.locked.map(function(x){return '<div class="sec-row"><div class="sec-ic">🔒</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(x.email)+'</div><div class="sec-meta">'+x.n+' wrong passwords</div></div><button class="btn btn-ghost btn-xs" onclick="unlockAcc(\''+esc(x.email).replace(/'/g,'')+'\')">Unlock</button></div>'}).join(''):'')+
+  (r.targeted.length?'<div class="section-title" style="margin-top:12px">🎯 Most wrong-password attempts (24h)</div>'+r.targeted.map(function(x){return '<div class="sec-row"><div class="sec-ic">⚠️</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(x.email)+'</div><div class="sec-meta">'+x.n+' attempts • last '+fmtWhen(x.last)+'</div></div></div>'}).join(''):'<div class="sec-hint" style="margin-top:10px">✅ No suspicious sign-in attempts in the last 24 hours.</div>')+
+  '<div class="section-title" style="margin-top:12px">🕒 Latest sign-ins</div>'+(r.logins.length?r.logins.map(function(l){return '<div class="sec-row"><div class="sec-ic">'+flagOf(l.country)+'</div><div style="flex:1;min-width:0"><div class="sec-dev">'+esc(l.name||'Deleted user')+' <span class="sec-meta">'+esc(l.email||'')+'</span></div><div class="sec-meta">'+esc([l.device,[l.city,l.country].filter(Boolean).join(', '),l.ip&&l.ip!=='unknown'?l.ip:'',fmtWhen(l.t)].filter(Boolean).join(' • '))+(l.kind==='signup'?' • 🆕 new account':'')+'</div></div></div>'}).join(''):'<div class="empty-mini">No sign-ins recorded yet.</div>');
+ });
+}
+let _repChecked=false;
+const _gatesRep=window.applyOwnerGates;
+window.applyOwnerGates=function(){const r=_gatesRep.apply(this,arguments);try{const um=el('umReports');if(um)um.style.display=isOwner()?'flex':'none';if(isOwner()&&!_repChecked){_repChecked=true;setTimeout(checkOwnerReports,800)}}catch(e){}return r};
+function unlockAcc(email){wdApi('admin/security/unlock','POST',{email:email}).then(function(){showToast('🔓 Unlocked '+email,'success');loadSecCenter()})}
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
