@@ -137,7 +137,7 @@ function restricted(flags, what, me) {
   return null;
 }
 async function deleteUserEverywhere(DB, id) {
-  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data'];
+  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts'];
   for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(id).run(); } catch (e) {} }
   try { await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(id).run(); } catch (e) {}
   await DB.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
@@ -293,7 +293,7 @@ async function handleWd(context, segs) {
       const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
       if (!u || (await wdHash(String(b.password || ''), u.salt)) !== u.hash) return json({ error: 'Your password is not correct' }, 401);
       await ensureSupport(DB);
-      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data'];
+      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts'];
       for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(me.id).run(); } catch (e) {} }
       await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(me.id).run();
       await DB.prepare('DELETE FROM users WHERE id = ?').bind(me.id).run();
@@ -538,8 +538,8 @@ async function handleWd(context, segs) {
         const id = str(new URL(request.url).searchParams.get('id'), 80);
         const u = await DB.prepare('SELECT id, name, email, biz, created FROM users WHERE id = ?').bind(id).first();
         if (!u) return json({ error: 'User not found' }, 404);
-        await DB.prepare('CREATE TABLE IF NOT EXISTS user_data (user_id TEXT PRIMARY KEY, data TEXT, updated INTEGER)').run();
-        const row = await DB.prepare('SELECT data, updated FROM user_data WHERE user_id = ?').bind(id).first();
+        const row0 = await readBlob(DB, id);
+        const row = row0 ? { data: row0.text, updated: row0.updated } : null;
         let data = null; try { data = row ? JSON.parse(row.data) : null; } catch (e) { data = null; }
         const prof = await DB.prepare('SELECT * FROM wd_profiles WHERE user_id = ?').bind(id).first();
         const last = await DB.prepare('SELECT MAX(created) AS t FROM sessions WHERE user_id = ?').bind(id).first();
@@ -592,7 +592,7 @@ async function handleWd(context, segs) {
 
 // ───────────── GROWTH: real business search, radar, claims, seasons, challenges, feed, wins, referrals ─────────────
 const OSM_UA = 'WeDeploy-LeadFinder/1.0 (+https://we-deploy.pages.dev)';
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
 const OSM_SEL = {
   'Restaurants & Food': ['["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream)$"]', '["shop"~"^(bakery|butcher|deli|confectionery|beverages|pastry)$"]'],
   'Home Services': ['["craft"~"^(plumber|electrician|carpenter|painter|hvac|roofer|locksmith|gardener|tiler|glaziery|window_construction)$"]', '["shop"~"^(hardware|doityourself|paint|curtain|flooring)$"]'],
@@ -665,13 +665,18 @@ async function ensureGrowth(DB) {
   GROWTH_READY = true;
 }
 
-async function osmFetchJSON(url, opts) {
-  const r = await fetch(url, { ...opts, headers: { 'User-Agent': OSM_UA, 'Accept': 'application/json', ...(opts && opts.headers || {}) } });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
+async function osmFetchJSON(url, opts, ms) {
+  const ctrl = new AbortController(), kill = setTimeout(() => ctrl.abort(), ms || 20000);   // never hang on a slow map server
+  try {
+    const r = await fetch(url, { ...opts, signal: ctrl.signal, headers: { 'User-Agent': OSM_UA, 'Accept': 'application/json', ...(opts && opts.headers || {}) } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    if (j && j.remark && /runtime error|timed out|rate_limited/i.test(j.remark) && !(j.elements || []).length) throw new Error(j.remark.slice(0, 80));
+    return j;
+  } finally { clearTimeout(kill); }
 }
 async function findPlaces(city, country, ind) {
-  const geo = await osmFetchJSON('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' + encodeURIComponent(city + ', ' + country), {});
+  const geo = await osmFetchJSON('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' + encodeURIComponent(city + ', ' + country), {}, 10000);
   if (!geo || !geo[0]) return { error: 'City not found on the map' };
   const g = geo[0], lat = Number(g.lat), lon = Number(g.lon);
   let [s, n, w, e] = (g.boundingbox || []).map(Number);
@@ -681,11 +686,11 @@ async function findPlaces(city, country, ind) {
   const bbox = [s, w, n, e].map(x => x.toFixed(5)).join(',');
   const sels = ind && OSM_SEL[ind] ? OSM_SEL[ind] : Object.values(OSM_SEL).flat();
   const q = '[out:json][timeout:25];(' + sels.map(sel => 'nwr' + sel + '["name"](' + bbox + ');').join('') + ');out center tags 300;';
+  // ask all map servers at once and use whichever answers first (much faster + keeps working if one is down)
   let data = null, lastErr = null;
-  for (const url of OVERPASS) {
-    try { data = await osmFetchJSON(url, { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }); break; }
-    catch (err) { lastErr = err; }
-  }
+  try {
+    data = await Promise.any(OVERPASS.map(url => osmFetchJSON(url, { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, 25000)));
+  } catch (err) { lastErr = (err && err.errors && err.errors[0]) || err; }
   if (!data) return { error: 'Map service busy — try again in a minute (' + (lastErr && lastErr.message) + ')' };
   const seen = new Set(), out = [];
   for (const el of data.elements || []) {
@@ -744,6 +749,22 @@ async function handleGrowth(ctx) {
       rows.forEach(r => { claims[r.lead_key] = { n: r.n, last: r.last }; });
     }
     return json({ ok: true, cached: fromCache, ...result, claims });
+  }
+
+  // ---------- big searches: the browser asks the map directly; the server checks permission, logs the scan, returns claims ----------
+  if (path === 'search/allow' && m === 'POST') {
+    { const no = restricted(me.flags, 'search', me); if (no) return no; }
+    const recent = await q('SELECT COUNT(*) AS n FROM wd_scans WHERE user_id = ? AND created > ?', me.id, Date.now() - 3600e3);
+    if ((recent.n || 0) >= 300 && !me.isOwner) return json({ error: 'You have searched a lot this hour — take a short break and try again soon.' }, 429);
+    return json({ ok: true });
+  }
+  if (path === 'search/log' && m === 'POST') {
+    const b = await request.json().catch(() => ({}));
+    const city = str(b.city, 60), country = str(b.country, 60), ind = OSM_SEL[b.ind] ? b.ind : 'All';
+    if (city && country) await DB.prepare('INSERT INTO wd_scans (city, country, industry, total, nosite, user_id, created) VALUES (?,?,?,?,?,?,?)').bind(city, country, ind, int(b.total, 1e6), int(b.nosite, 1e6), me.id, Date.now()).run();
+    const rows = await all('SELECT lead_key, COUNT(*) AS n, MAX(created) AS last FROM wd_claims WHERE user_id <> ? GROUP BY lead_key LIMIT 50000', me.id);
+    const claims = {}; rows.forEach(r => { claims[r.lead_key] = { n: r.n, last: r.last }; });
+    return json({ ok: true, claims });
   }
 
   // ---------- community lead claims ----------
@@ -919,7 +940,36 @@ async function handlePulse(DB) {
 }
 
 // ───────────── user data sync ─────────────
-const MAX_BYTES = 900000; // D1 rows must stay under ~1 MB
+const MAX_BYTES = 20000000; // 20 MB per user — stored in ~800 KB pieces because one D1 row must stay under ~1 MB
+const PART = 800000;
+async function ensureBlobTables(DB) {
+  await DB.batch([
+    DB.prepare('CREATE TABLE IF NOT EXISTS user_data (user_id TEXT PRIMARY KEY, data TEXT, updated INTEGER)'),
+    DB.prepare('CREATE TABLE IF NOT EXISTS user_data_parts (user_id TEXT, idx INTEGER, data TEXT, PRIMARY KEY (user_id, idx))')
+  ]);
+}
+// returns the user's saved data as JSON text (joins the pieces back together), or null
+async function readBlob(DB, uid) {
+  await ensureBlobTables(DB);
+  const row = await DB.prepare('SELECT data, updated FROM user_data WHERE user_id = ?').bind(uid).first();
+  if (!row) return null;
+  const m = /^__parts__:(\d+)$/.exec(row.data || '');
+  if (!m) return { text: row.data, updated: row.updated };
+  const parts = (await DB.prepare('SELECT data FROM user_data_parts WHERE user_id = ? ORDER BY idx').bind(uid).all()).results || [];
+  return { text: parts.map(p => p.data).join(''), updated: row.updated };
+}
+async function writeBlob(DB, uid, text, now) {
+  await ensureBlobTables(DB);
+  const stmts = [DB.prepare('DELETE FROM user_data_parts WHERE user_id = ?').bind(uid)];
+  if (text.length <= PART) {
+    stmts.push(DB.prepare('INSERT INTO user_data (user_id, data, updated) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated = excluded.updated').bind(uid, text, now));
+  } else {
+    const n = Math.ceil(text.length / PART);
+    for (let i = 0; i < n; i++) stmts.push(DB.prepare('INSERT INTO user_data_parts (user_id, idx, data) VALUES (?, ?, ?)').bind(uid, i, text.slice(i * PART, (i + 1) * PART)));
+    stmts.push(DB.prepare('INSERT INTO user_data (user_id, data, updated) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated = excluded.updated').bind(uid, '__parts__:' + n, now));
+  }
+  await DB.batch(stmts);
+}
 
 
 async function handleData(context, segs) {
@@ -940,21 +990,19 @@ async function handleData(context, segs) {
     const uid = s.user_id;
 
     if (request.method === 'GET') {
-      const row = await DB.prepare('SELECT data, updated FROM user_data WHERE user_id = ?').bind(uid).first();
-      if (!row) return json({ ok: true, data: null, updated: null });
-      let data = null;
-      try { data = JSON.parse(row.data); } catch (e) { data = null; }
-      return json({ ok: true, data, updated: row.updated });
+      const b = await readBlob(DB, uid);
+      if (!b || !b.text || b.text[0] !== '{') return json({ ok: true, data: null, updated: null });
+      // pass the saved text straight through (no re-parsing big data = fast)
+      return new Response('{"ok":true,"updated":' + Number(b.updated || 0) + ',"data":' + b.text + '}', { headers: { 'Content-Type': 'application/json', ...CORS } });
     }
 
     if (request.method === 'PUT') {
-      const body = await request.json();
-      if (!body || typeof body.data !== 'object' || body.data === null) return json({ error: 'Missing data' }, 400);
-      const text = JSON.stringify(body.data);
+      const raw = await request.text();
+      if (!raw.startsWith('{"data":{') || !raw.endsWith('}}')) return json({ error: 'Missing data' }, 400);
+      const text = raw.slice(8, -1);
       if (text.length > MAX_BYTES) return json({ error: 'Data too large to sync — delete old leads or notes' }, 413);
       const now = Date.now();
-      await DB.prepare('INSERT INTO user_data (user_id, data, updated) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated = excluded.updated')
-        .bind(uid, text, now).run();
+      await writeBlob(DB, uid, text, now);
       return json({ ok: true, updated: now });
     }
 
