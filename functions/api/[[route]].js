@@ -35,6 +35,17 @@ function json(data, status = 200) {
 const int = (v, max = 1e9) => Math.max(0, Math.min(max, Math.floor(Number(v) || 0)));
 const str = (v, max = 120) => String(v == null ? '' : v).slice(0, max);
 
+function randHex(bytes) {
+  return Array.from(crypto.getRandomValues(new Uint8Array(bytes))).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function ensureSupport(DB) {
+  await DB.batch([
+    DB.prepare('CREATE TABLE IF NOT EXISTS wd_tickets (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, name TEXT, email TEXT, type TEXT, subject TEXT, message TEXT, meta TEXT, status TEXT DEFAULT \'new\', reply TEXT DEFAULT \'\', created INTEGER, updated INTEGER)'),
+    DB.prepare('CREATE TABLE IF NOT EXISTS wd_auth_fail (k TEXT, t INTEGER)'),
+    DB.prepare('CREATE TABLE IF NOT EXISTS wd_logins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, t INTEGER, ip TEXT, country TEXT, city TEXT, device TEXT, kind TEXT)')
+  ]);
+}
+
 // same password scrambling as functions/api/auth/[action].js (passwords are never stored in plain text)
 async function wdHash(pw, salt) {
   const data = new TextEncoder().encode('wd·' + salt + '·' + pw + '·' + salt);
@@ -174,7 +185,7 @@ async function handleWd(context, segs) {
       if (next.length < 6) return json({ error: 'New password must be at least 6 characters' }, 400);
       const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
       if (!u || (await wdHash(cur, u.salt)) !== u.hash) return json({ error: 'Your current password is not correct' }, 401);
-      const salt = Math.random().toString(36).slice(2, 10);
+      const salt = randHex(16);
       await DB.prepare('UPDATE users SET salt = ?, hash = ? WHERE id = ?').bind(salt, await wdHash(next, salt), me.id).run();
       const sid = request.headers.get('Authorization')?.replace('Bearer ', '');
       await DB.prepare('DELETE FROM sessions WHERE user_id = ? AND id <> ?').bind(me.id, sid || '').run();   // log out other devices
@@ -221,6 +232,50 @@ async function handleWd(context, segs) {
       if (!text) return json({ ok: false, error: 'ai_busy', mode: shown, detail: lastErr.slice(0, 200) });
       await DB.prepare('INSERT INTO wd_ai_usage (user_id, day, n) VALUES (?, ?, 1) ON CONFLICT(user_id, day) DO UPDATE SET n = n + 1').bind(me.id, day).run();
       return json({ ok: true, text: text.slice(0, 6000), mode: shown });
+    }
+
+    // ---------- security: my recent sign-ins + log out other devices ----------
+    if (path === 'security' && m === 'GET') {
+      await ensureSupport(DB);
+      const logins = (await DB.prepare('SELECT t, ip, country, city, device, kind FROM wd_logins WHERE user_id = ? ORDER BY id DESC LIMIT 12').bind(me.id).all()).results || [];
+      const s = await DB.prepare('SELECT COUNT(*) AS n FROM sessions WHERE user_id = ? AND expires > ?').bind(me.id, Date.now()).first();
+      return json({ ok: true, logins, sessions: (s && s.n) || 0 });
+    }
+    if (path === 'security/logout-others' && m === 'POST') {
+      const sid = request.headers.get('Authorization')?.replace('Bearer ', '');
+      await DB.prepare('DELETE FROM sessions WHERE user_id = ? AND id <> ?').bind(me.id, sid || '').run();
+      return json({ ok: true });
+    }
+    // ---------- privacy: delete my account and all my data ----------
+    if (path === 'delete-account' && m === 'POST') {
+      if (me.isOwner) return json({ error: 'The owner account cannot be deleted from here' }, 400);
+      const b = await request.json().catch(() => ({}));
+      const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
+      if (!u || (await wdHash(String(b.password || ''), u.salt)) !== u.hash) return json({ error: 'Your password is not correct' }, 401);
+      await ensureSupport(DB);
+      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data'];
+      for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(me.id).run(); } catch (e) {} }
+      await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(me.id).run();
+      await DB.prepare('DELETE FROM users WHERE id = ?').bind(me.id).run();
+      return json({ ok: true });
+    }
+    // ---------- reports & support: go straight to the owner ----------
+    if (path === 'tickets' && m === 'POST') {
+      await ensureSupport(DB);
+      const b = await request.json().catch(() => ({}));
+      const type = ['support', 'report', 'feedback', 'abuse', 'security'].includes(b.type) ? b.type : 'support';
+      const subject = str(b.subject, 160).trim(), message = str(b.message, 4000).trim();
+      if (!message) return json({ error: 'Please write a message' }, 400);
+      const n = await DB.prepare('SELECT COUNT(*) AS n FROM wd_tickets WHERE user_id = ? AND created > ?').bind(me.id, Date.now() - 3600e3).first();
+      if (n && n.n >= 10 && !me.isOwner) return json({ error: 'You have sent a lot of reports this hour — please wait a little.' }, 429);
+      const r = await DB.prepare('INSERT INTO wd_tickets (user_id, name, email, type, subject, message, meta, status, reply, created, updated) VALUES (?, ?, ?, ?, ?, ?, ?, \'new\', \'\', ?, ?)')
+        .bind(me.id, me.name || '', me.email || '', type, subject || type, message, str(JSON.stringify(b.meta || {}), 1500), Date.now(), Date.now()).run();
+      return json({ ok: true });
+    }
+    if (path === 'tickets/mine' && m === 'GET') {
+      await ensureSupport(DB);
+      const rows = (await DB.prepare('SELECT id, type, subject, status, reply, created, updated FROM wd_tickets WHERE user_id = ? ORDER BY id DESC LIMIT 10').bind(me.id).all()).results || [];
+      return json({ ok: true, tickets: rows });
     }
 
     if (path === 'me' && m === 'GET') {
@@ -313,6 +368,47 @@ async function handleWd(context, segs) {
     if (path.startsWith('admin/')) {
       if (!me.isOwner) return json({ error: 'Owner only' }, 403);
 
+      // ---- reports inbox ----
+      if (path === 'admin/tickets' && m === 'GET') {
+        await ensureSupport(DB);
+        const rows = (await DB.prepare('SELECT * FROM wd_tickets ORDER BY (status = \'new\') DESC, id DESC LIMIT 300').all()).results || [];
+        const c = await DB.prepare("SELECT COUNT(*) AS n FROM wd_tickets WHERE status = 'new'").first();
+        return json({ ok: true, tickets: rows, unread: (c && c.n) || 0 });
+      }
+      if (path === 'admin/tickets/update' && m === 'POST') {
+        await ensureSupport(DB);
+        const b = await request.json().catch(() => ({}));
+        const id = int(b.id);
+        if (b.reply != null) await DB.prepare('UPDATE wd_tickets SET reply = ?, updated = ? WHERE id = ?').bind(str(b.reply, 3000), Date.now(), id).run();
+        if (['new', 'open', 'resolved'].includes(b.status)) await DB.prepare('UPDATE wd_tickets SET status = ?, updated = ? WHERE id = ?').bind(b.status, Date.now(), id).run();
+        return json({ ok: true });
+      }
+      if (path === 'admin/tickets/delete' && m === 'POST') {
+        await ensureSupport(DB);
+        const b = await request.json().catch(() => ({}));
+        await DB.prepare('DELETE FROM wd_tickets WHERE id = ?').bind(int(b.id)).run();
+        return json({ ok: true });
+      }
+      // ---- security center ----
+      if (path === 'admin/security' && m === 'GET') {
+        await ensureSupport(DB);
+        const day = Date.now() - 864e5, lockSince = Date.now() - 15 * 60e3;
+        const f = await DB.prepare("SELECT COUNT(*) AS n FROM wd_auth_fail WHERE k LIKE 'e:%' AND t > ?").bind(day).first();
+        const targeted = (await DB.prepare("SELECT SUBSTR(k, 3) AS email, COUNT(*) AS n, MAX(t) AS last FROM wd_auth_fail WHERE k LIKE 'e:%' AND t > ? GROUP BY k ORDER BY n DESC LIMIT 8").bind(day).all()).results || [];
+        const locked = (await DB.prepare("SELECT SUBSTR(k, 3) AS email, COUNT(*) AS n FROM wd_auth_fail WHERE k LIKE 'e:%' AND t > ? GROUP BY k HAVING COUNT(*) >= 5").bind(lockSince).all()).results || [];
+        const lockedIps = (await DB.prepare("SELECT COUNT(*) AS n FROM (SELECT k FROM wd_auth_fail WHERE k LIKE 'ip:%' AND t > ? GROUP BY k HAVING COUNT(*) >= 100)").bind(lockSince).first()) || {};
+        const logins = (await DB.prepare('SELECT l.t, l.ip, l.country, l.city, l.device, l.kind, u.name, u.email FROM wd_logins l LEFT JOIN users u ON u.id = l.user_id ORDER BY l.id DESC LIMIT 25').all()).results || [];
+        const s24 = await DB.prepare('SELECT COUNT(*) AS n FROM wd_logins WHERE t > ?').bind(day).first();
+        const sess = await DB.prepare('SELECT COUNT(*) AS n FROM sessions WHERE expires > ?').bind(Date.now()).first();
+        return json({ ok: true, failed24h: (f && f.n) || 0, logins24h: (s24 && s24.n) || 0, activeSessions: (sess && sess.n) || 0, targeted, locked, lockedIps: lockedIps.n || 0, logins });
+      }
+      if (path === 'admin/security/unlock' && m === 'POST') {
+        await ensureSupport(DB);
+        const b = await request.json().catch(() => ({}));
+        await DB.prepare('DELETE FROM wd_auth_fail WHERE k = ?').bind('e:' + str(b.email, 120).toLowerCase()).run();
+        return json({ ok: true });
+      }
+
       if (path === 'admin/users' && m === 'GET') {
         const res = await DB.prepare(
           'SELECT u.id, u.name, u.email, u.biz, u.created, p.role, p.level, p.xp, p.leads, p.contacts, p.deals, p.sales, p.proposals, p.updated, ' +
@@ -356,7 +452,7 @@ async function handleWd(context, segs) {
         const abc = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
         const rnd = crypto.getRandomValues(new Uint8Array(10));
         const temp = Array.from(rnd).map(x => abc[x % abc.length]).join('');
-        const salt = Math.random().toString(36).slice(2, 10);
+        const salt = randHex(16);
         const hash = await wdHash(temp, salt);
         await DB.prepare('UPDATE users SET salt = ?, hash = ? WHERE id = ?').bind(salt, hash, u.id).run();
         await DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(u.id).run();
