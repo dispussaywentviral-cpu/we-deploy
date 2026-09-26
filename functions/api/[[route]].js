@@ -107,6 +107,42 @@ async function aiDegrade(DB, day, mode) {
   await DB.prepare('INSERT INTO wd_anns (type, title, body, created) VALUES (?, ?, ?, ?)').bind('notice', n.title, n.body, Date.now()).run();
 }
 
+// ---------- moderation (owner) ----------
+const FOREVER = 9e15;
+let _modReady = false;
+async function ensureMod(DB) {
+  if (_modReady) return;
+  await DB.prepare('CREATE TABLE IF NOT EXISTS wd_flags (user_id TEXT PRIMARY KEY, hidden INTEGER DEFAULT 0, banned INTEGER DEFAULT 0, badge TEXT DEFAULT \'\')').run();
+  for (const col of ['suspended_until INTEGER DEFAULT 0', 'mute_until INTEGER DEFAULT 0', 'ai_until INTEGER DEFAULT 0', 'search_until INTEGER DEFAULT 0', 'reason TEXT DEFAULT \'\'']) {
+    try { await DB.prepare('ALTER TABLE wd_flags ADD COLUMN ' + col).run(); } catch (e) {}
+  }
+  await DB.prepare('CREATE TABLE IF NOT EXISTS wd_ip_blocks (ip TEXT PRIMARY KEY, until INTEGER, reason TEXT, created INTEGER)').run();
+  await DB.prepare('CREATE TABLE IF NOT EXISTS wd_logins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, t INTEGER, ip TEXT, country TEXT, city TEXT, device TEXT, kind TEXT)').run();
+  try { await DB.prepare('ALTER TABLE wd_logins ADD COLUMN ip_full TEXT').run(); } catch (e) {}
+  _modReady = true;
+}
+function timeLeft(until) {
+  if (until >= FOREVER) return 'permanently';
+  const ms = Math.max(0, until - Date.now()), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.ceil(ms % 36e5 / 6e4);
+  return 'for another ' + (d ? d + ' day' + (d > 1 ? 's' : '') + ' ' : '') + (h ? h + ' hour' + (h > 1 ? 's' : '') + ' ' : '') + (!d && m ? m + ' minute' + (m > 1 ? 's' : '') : '').trim();
+}
+function restricted(flags, what, me) {
+  if (me.isOwner || !flags) return null;
+  const col = { post: 'mute_until', ai: 'ai_until', search: 'search_until' }[what];
+  const until = Number(flags[col] || 0);
+  if (until > Date.now()) {
+    const label = { post: 'posting in the community', ai: 'using the AI assistant', search: 'searching for businesses' }[what];
+    return json({ ok: false, error: 'restricted', restricted: what, until, message: '🔇 The owner has blocked you from ' + label + ' ' + timeLeft(until).replace(/^for another/, 'for another') + '.' + (flags.reason ? ' Reason: ' + flags.reason : '') }, 403);
+  }
+  return null;
+}
+async function deleteUserEverywhere(DB, id) {
+  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data'];
+  for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(id).run(); } catch (e) {} }
+  try { await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(id).run(); } catch (e) {}
+  await DB.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
+}
+
 // ---------- We Deploy AI: what the assistant knows ----------
 function aiSystemPrompt(siteName, me) {
   const first = String(me.name || '').split(' ')[0] || 'there';
@@ -175,8 +211,11 @@ async function handleWd(context, segs) {
 
     const me = await authUser(request, DB);
     if (!me) return json({ error: 'Please sign in again' }, 401);
-    const flags = (await DB.prepare('SELECT hidden, banned, badge FROM wd_flags WHERE user_id = ?').bind(me.id).first()) || { hidden: 0, banned: 0, badge: '' };
-    if (flags.banned && !me.isOwner) return json({ error: 'This account has been suspended' }, 403);
+    await ensureMod(DB);
+    const flags = (await DB.prepare('SELECT * FROM wd_flags WHERE user_id = ?').bind(me.id).first()) || { hidden: 0, banned: 0, badge: '' };
+    if (flags.banned && !me.isOwner) return json({ error: '⛔ This account has been banned.' + (flags.reason ? ' Reason: ' + flags.reason : ''), banned: true }, 403);
+    if (Number(flags.suspended_until || 0) > Date.now() && !me.isOwner) return json({ error: '⏸ This account is suspended ' + timeLeft(flags.suspended_until) + '.' + (flags.reason ? ' Reason: ' + flags.reason : ''), suspended: true, until: flags.suspended_until }, 403);
+    me.flags = flags;
 
     // ---------- change my password ----------
     if (path === 'change-password' && m === 'POST') {
@@ -194,6 +233,7 @@ async function handleWd(context, segs) {
 
     // ---------- We Deploy AI (Cloudflare Workers AI, binding name: AI) — unlimited for everyone ----------
     if (path === 'ai' && m === 'POST') {
+      { const no = restricted(flags, 'ai', me); if (no) return no; }
       if (!env.AI) return json({ ok: false, error: 'ai_off' });
       await DB.prepare('CREATE TABLE IF NOT EXISTS wd_ai_usage (user_id TEXT, day TEXT, n INTEGER, PRIMARY KEY (user_id, day))').run();
       const day = new Date().toISOString().slice(0, 10);
@@ -367,6 +407,7 @@ async function handleWd(context, segs) {
     // ---------- owner admin ----------
     if (path.startsWith('admin/')) {
       if (!me.isOwner) return json({ error: 'Owner only' }, 403);
+      await ensureMod(DB);
 
       // ---- reports inbox ----
       if (path === 'admin/tickets' && m === 'GET') {
@@ -397,7 +438,7 @@ async function handleWd(context, segs) {
         const targeted = (await DB.prepare("SELECT SUBSTR(k, 3) AS email, COUNT(*) AS n, MAX(t) AS last FROM wd_auth_fail WHERE k LIKE 'e:%' AND t > ? GROUP BY k ORDER BY n DESC LIMIT 8").bind(day).all()).results || [];
         const locked = (await DB.prepare("SELECT SUBSTR(k, 3) AS email, COUNT(*) AS n FROM wd_auth_fail WHERE k LIKE 'e:%' AND t > ? GROUP BY k HAVING COUNT(*) >= 5").bind(lockSince).all()).results || [];
         const lockedIps = (await DB.prepare("SELECT COUNT(*) AS n FROM (SELECT k FROM wd_auth_fail WHERE k LIKE 'ip:%' AND t > ? GROUP BY k HAVING COUNT(*) >= 100)").bind(lockSince).first()) || {};
-        const logins = (await DB.prepare('SELECT l.t, l.ip, l.country, l.city, l.device, l.kind, u.name, u.email FROM wd_logins l LEFT JOIN users u ON u.id = l.user_id ORDER BY l.id DESC LIMIT 25').all()).results || [];
+        const logins = (await DB.prepare('SELECT l.t, COALESCE(l.ip_full, l.ip) AS ip, l.country, l.city, l.device, l.kind, u.name, u.email FROM wd_logins l LEFT JOIN users u ON u.id = l.user_id ORDER BY l.id DESC LIMIT 25').all()).results || [];
         const s24 = await DB.prepare('SELECT COUNT(*) AS n FROM wd_logins WHERE t > ?').bind(day).first();
         const sess = await DB.prepare('SELECT COUNT(*) AS n FROM sessions WHERE expires > ?').bind(Date.now()).first();
         return json({ ok: true, failed24h: (f && f.n) || 0, logins24h: (s24 && s24.n) || 0, activeSessions: (sess && sess.n) || 0, targeted, locked, lockedIps: lockedIps.n || 0, logins });
@@ -409,10 +450,72 @@ async function handleWd(context, segs) {
         return json({ ok: true });
       }
 
+      // ---- moderation: suspend / restrict / delete / IP blocks / sign-in history ----
+      if (path === 'admin/moderate' && m === 'POST') {
+        await ensureMod(DB);
+        const b = await request.json().catch(() => ({}));
+        const id = str(b.id, 80);
+        const target = await DB.prepare('SELECT id, email, name FROM users WHERE id = ?').bind(id).first();
+        if (!target) return json({ error: 'User not found' }, 404);
+        if (String(target.email).toLowerCase() === OWNER_EMAIL) return json({ error: "You can't do that to the owner account" }, 400);
+        const mins = Number(b.minutes);
+        const until = mins < 0 ? FOREVER : Date.now() + Math.max(1, Math.min(525600 * 5, mins || 60)) * 60000;
+        const reason = str(b.reason, 200);
+        await DB.prepare('INSERT OR IGNORE INTO wd_flags (user_id) VALUES (?)').bind(id).run();
+        if (b.action === 'suspend') {
+          await DB.prepare('UPDATE wd_flags SET suspended_until = ?, reason = ? WHERE user_id = ?').bind(until, reason, id).run();
+          await DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'unsuspend') {
+          await DB.prepare('UPDATE wd_flags SET suspended_until = 0 WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'restrict') {
+          const w = Array.isArray(b.what) ? b.what : [];
+          if (!w.length) return json({ error: 'Pick at least one thing to block' }, 400);
+          for (const k of w) { const col = { post: 'mute_until', ai: 'ai_until', search: 'search_until' }[k]; if (col) await DB.prepare('UPDATE wd_flags SET ' + col + ' = ?, reason = ? WHERE user_id = ?').bind(until, reason, id).run(); }
+        } else if (b.action === 'unrestrict') {
+          await DB.prepare('UPDATE wd_flags SET mute_until = 0, ai_until = 0, search_until = 0 WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'ban') {
+          await DB.prepare('UPDATE wd_flags SET banned = 1, reason = ? WHERE user_id = ?').bind(reason, id).run();
+          await DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'unban') {
+          await DB.prepare('UPDATE wd_flags SET banned = 0, suspended_until = 0 WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'logout') {
+          await DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(id).run();
+        } else if (b.action === 'delete') {
+          await deleteUserEverywhere(DB, id);
+        } else return json({ error: 'Unknown action' }, 400);
+        return json({ ok: true });
+      }
+      if (path === 'admin/user-logins' && m === 'GET') {
+        await ensureMod(DB);
+        const id = str(new URL(request.url).searchParams.get('id'), 80);
+        const rows = (await DB.prepare('SELECT t, COALESCE(ip_full, ip) AS ip, country, city, device, kind FROM wd_logins WHERE user_id = ? ORDER BY id DESC LIMIT 40').bind(id).all()).results || [];
+        const blocked = (await DB.prepare('SELECT ip, until FROM wd_ip_blocks WHERE until > ?').bind(Date.now()).all()).results || [];
+        return json({ ok: true, logins: rows, blocked });
+      }
+      if (path === 'admin/ip-block' && m === 'POST') {
+        await ensureMod(DB);
+        const b = await request.json().catch(() => ({}));
+        const ip = str(b.ip, 64).trim();
+        if (!ip || ip === 'unknown') return json({ error: 'No IP address to block' }, 400);
+        if (b.unblock) { await DB.prepare('DELETE FROM wd_ip_blocks WHERE ip = ?').bind(ip).run(); return json({ ok: true }); }
+        const mins = Number(b.minutes);
+        const until = mins < 0 ? FOREVER : Date.now() + Math.max(1, mins || 60) * 60000;
+        await DB.prepare('INSERT INTO wd_ip_blocks (ip, until, reason, created) VALUES (?, ?, ?, ?) ON CONFLICT(ip) DO UPDATE SET until = excluded.until, reason = excluded.reason').bind(ip, until, str(b.reason, 200), Date.now()).run();
+        return json({ ok: true });
+      }
+      if (path === 'admin/ip-blocks' && m === 'GET') {
+        await ensureMod(DB);
+        const rows = (await DB.prepare('SELECT ip, until, reason, created FROM wd_ip_blocks WHERE until > ? ORDER BY created DESC').bind(Date.now()).all()).results || [];
+        return json({ ok: true, blocks: rows });
+      }
+
       if (path === 'admin/users' && m === 'GET') {
+        await ensureMod(DB);
         const res = await DB.prepare(
           'SELECT u.id, u.name, u.email, u.biz, u.created, p.role, p.level, p.xp, p.leads, p.contacts, p.deals, p.sales, p.proposals, p.updated, ' +
           'COALESCE(f.hidden,0) AS hidden, COALESCE(f.banned,0) AS banned, COALESCE(f.badge,\'\') AS badge, ' +
+          'COALESCE(f.suspended_until,0) AS suspended_until, COALESCE(f.mute_until,0) AS mute_until, COALESCE(f.ai_until,0) AS ai_until, COALESCE(f.search_until,0) AS search_until, COALESCE(f.reason,\'\') AS reason, ' +
+          '(SELECT COALESCE(l.ip_full, l.ip) || \'|\' || COALESCE(l.country,\'\') || \'|\' || COALESCE(l.city,\'\') || \'|\' || COALESCE(l.device,\'\') FROM wd_logins l WHERE l.user_id = u.id ORDER BY l.id DESC LIMIT 1) AS last_seen, ' +
           '(SELECT MAX(created) FROM sessions s WHERE s.user_id = u.id) AS last_login ' +
           'FROM users u LEFT JOIN wd_profiles p ON p.user_id = u.id LEFT JOIN wd_flags f ON f.user_id = u.id ORDER BY u.created DESC LIMIT 1000'
         ).all();
@@ -517,6 +620,22 @@ const TAG_IND = [
   [/^(computer|electronics|mobile_phone|telecommunication|it)$/, 'Technology'],
   [/^(builder|roofer|stonemason|plasterer|scaffolder|metal_construction|construction_company|trade|building_materials)$/, 'Construction'],
 ];
+// friendly business type, e.g. car_repair → "car repair" (used in scripts: "your car repair business")
+const KIND_WORDS = { car_repair: 'car repair', car: 'car dealership', car_parts: 'car parts', tyres: 'tyre', car_wash: 'car wash', car_rental: 'car rental', motorcycle: 'motorcycle',
+  fast_food: 'takeaway', restaurant: 'restaurant', cafe: 'café', bar: 'bar', pub: 'pub', bakery: 'bakery', butcher: 'butchery', ice_cream: 'ice cream',
+  hairdresser: 'hair salon', barber: 'barbershop', beauty: 'beauty salon', nail_salon: 'nail salon', massage: 'massage', tattoo: 'tattoo', cosmetics: 'cosmetics',
+  plumber: 'plumbing', electrician: 'electrical', carpenter: 'carpentry', painter: 'painting', roofer: 'roofing', locksmith: 'locksmith', gardener: 'gardening', hvac: 'air-conditioning', hardware: 'hardware',
+  clinic: 'clinic', doctors: 'medical practice', dentist: 'dental', pharmacy: 'pharmacy', chemist: 'pharmacy', veterinary: 'vet', optician: 'optometry', fitness_centre: 'gym', sports_centre: 'sports centre',
+  lawyer: 'law firm', accountant: 'accounting', insurance: 'insurance', estate_agent: 'real estate', school: 'school', kindergarten: 'kindergarten', driving_school: 'driving school', college: 'college',
+  hotel: 'hotel', guest_house: 'guesthouse', hostel: 'hostel', motel: 'motel', travel_agency: 'travel agency', computer: 'computer shop', mobile_phone: 'phone shop', electronics: 'electronics',
+  clothes: 'clothing store', shoes: 'shoe store', supermarket: 'supermarket', convenience: 'shop', furniture: 'furniture store', jewelry: 'jewellery store', florist: 'florist', builder: 'construction', building_materials: 'building supplies' };
+function kindOf(t) {
+  for (const k of ['craft', 'shop', 'amenity', 'office', 'tourism', 'leisure', 'healthcare']) {
+    const v = t[k]; if (!v) continue;
+    return KIND_WORDS[v] || String(v).replace(/_/g, ' ');
+  }
+  return '';
+}
 function guessInd(t) {
   for (const k of ['amenity', 'shop', 'craft', 'office', 'tourism', 'leisure', 'healthcare']) {
     const v = t[k]; if (!v) continue;
@@ -579,7 +698,7 @@ async function findPlaces(city, country, ind) {
     const web = t.website || t['contact:website'] || t.url || '';
     const social = t['contact:facebook'] || t.facebook || t['contact:instagram'] || t.instagram || '';
     out.push({
-      key, name: String(t.name).slice(0, 80), ind: ind || guessInd(t),
+      key, name: String(t.name).slice(0, 80), ind: ind || guessInd(t), kind: kindOf(t).slice(0, 40),
       phone: String(t.phone || t['contact:phone'] || t['contact:mobile'] || t.mobile || '').split(';')[0].trim().slice(0, 30),
       website: String(web).slice(0, 120), social: String(social).slice(0, 120), email: String(t.email || t['contact:email'] || '').slice(0, 80),
       addr: [t['addr:housenumber'], t['addr:street'], t['addr:suburb'] || t['addr:city']].filter(Boolean).join(' ').slice(0, 120),
@@ -599,6 +718,7 @@ async function handleGrowth(ctx) {
 
   // ---------- real business search ----------
   if (path === 'places' && m === 'GET') {
+    { const no = restricted(me.flags, 'search', me); if (no) return no; }
     const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
     const ind = OSM_SEL[url.searchParams.get('ind')] ? url.searchParams.get('ind') : '';
     if (!city || !country) return json({ error: 'Pick a country and a city' }, 400);
@@ -656,6 +776,7 @@ async function handleGrowth(ctx) {
     return json({ ok: true, items: rows });
   }
   if (path === 'feed' && m === 'POST') {
+    { const no = restricted(me.flags, 'post', me); if (no) return no; }
     const b = await request.json().catch(() => ({}));
     const kinds = ['deal', 'level', 'rank', 'badge', 'streak', 'challenge', 'mission', 'win', 'join', 'search'];
     if (!kinds.includes(b.kind)) return json({ error: 'Bad kind' }, 400);
@@ -675,6 +796,7 @@ async function handleGrowth(ctx) {
     return json({ ok: true, wins: rows });
   }
   if (path === 'wins' && m === 'POST') {
+    { const no = restricted(me.flags, 'post', me); if (no) return no; }
     const b = await request.json().catch(() => ({}));
     const text = str(b.text, 280).trim();
     if (text.length < 3) return json({ error: 'Write a few words about your win' }, 400);
@@ -684,6 +806,7 @@ async function handleGrowth(ctx) {
     return json({ ok: true });
   }
   if (path === 'wins/react' && m === 'POST') {
+    { const no = restricted(me.flags, 'post', me); if (no) return no; }
     const b = await request.json().catch(() => ({}));
     const emoji = ['🔥', '👏', '💰', '🚀'].includes(b.emoji) ? b.emoji : null;
     const id = int(b.id);
@@ -731,6 +854,7 @@ async function handleGrowth(ctx) {
     return json({ ok: true, challenges: rows });
   }
   if (path === 'challenges' && m === 'POST') {
+    { const no = restricted(me.flags, 'post', me); if (no) return no; }
     const b = await request.json().catch(() => ({}));
     const to = str(b.to, 80), metric = METRIC[b.metric] ? b.metric : 'contacts', hours = [24, 72, 168].includes(Number(b.hours)) ? Number(b.hours) : 24;
     if (!to || to === me.id) return json({ error: "You can't challenge yourself" }, 400);
@@ -743,6 +867,7 @@ async function handleGrowth(ctx) {
     return json({ ok: true, id });
   }
   if (path === 'challenges/respond' && m === 'POST') {
+    { const no = restricted(me.flags, 'post', me); if (no) return no; }
     const b = await request.json().catch(() => ({}));
     const c = await DB.prepare("SELECT * FROM wd_challenges WHERE id = ? AND to_id = ? AND status = 'pending'").bind(str(b.id, 60), me.id).first();
     if (!c) return json({ error: 'Challenge not found' }, 404);
