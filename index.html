@@ -807,6 +807,7 @@ input.pay-bad{border-color:var(--red)!important}
  #invItems input{width:100%!important;min-width:0!important}
 }
 #waIndustry,#scriptIndustry,#emailIndustry{max-width:100%!important;min-width:0;flex:1 1 180px;text-overflow:ellipsis}
+.live-strip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid rgba(255,122,26,.35);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
 .res-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}.res-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .tpl-for{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
 .tpl-for span{font-size:12px;font-weight:700;color:var(--text2)}.tpl-for select{flex:1;min-width:180px}
@@ -2680,7 +2681,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.4';   // ← Change this number whenever you update the site
+const APP_VERSION='11.5';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4643,7 +4644,7 @@ window.runSearch=function(){
  RES_SHOWN=60;searchPlaces(city,ct,ind||'').then(function(r){
   if(!r||!r.ok){
    if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';return}
-   if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>Try another city or try again in a minute.</p></div>';
+   if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>This happens when lots of people use the free world map at the same time. Wait a few seconds and try again — a smaller <b>Search area</b> also helps.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';
    return;
   }
   let list=r.places.map(function(p){return leadFromPlace(p,ct,city,r.claims[p.key])});
@@ -6383,53 +6384,92 @@ function placeFromEl(e,ind){
   hours:String(t.opening_hours||'').slice(0,80),city:String(t['addr:city']||t['addr:town']||'').slice(0,40),
   lat:e.lat!=null?e.lat:(e.center&&e.center.lat),lon:e.lon!=null?e.lon:(e.center&&e.center.lon),_dd:(t.name+'|'+(t['addr:street']||'')).toLowerCase()};
 }
-function askPart(q,start){
- // try the map servers one after another, starting at a different one for each part (spreads the load)
- let i=0;const order=BIG_OVERPASS.map(function(_,k){return BIG_OVERPASS[(start+k)%BIG_OVERPASS.length]});
- const next=function(){
-  if(i>=order.length)return Promise.reject(new Error('All map servers busy'));
-  const u=order[i++];
-  return fetchJSONTimed(u,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}},i===1?40000:60000).catch(next);
- };
- return next();
-}
-window.bigFetchPlaces=function(city,ct,ind,km,max,onProgress){
- const parts=ind&&OSM_SEL[ind]?OSM_SEL[ind].map(function(sel){return sel+'["name"]'}):ALL_PARTS;
- const outN=max>0?' '+Math.ceil(max/parts.length*1.3):'';
- const scope=km==='country'?Promise.resolve('area.c'):geoLookup(city,ct).then(function(g){
-  const dLat=km/111,dLon=km/(111*Math.max(0.2,Math.cos(g.lat*Math.PI/180)));
-  return [g.lat-dLat,g.lon-dLon,g.lat+dLat,g.lon+dLon].map(function(x){return x.toFixed(5)}).join(',');
+/* ── Map request pool ──
+   Free map servers only allow ~2 requests at a time per person. Sending too many at once makes them refuse
+   (HTTP 429/504). So: small map tiles, a queue, max 2 at a time per server, automatic retry with a short pause,
+   and results shown on screen as soon as the first tiles arrive.                                              */
+const MIRRORS=[{u:'https://overpass-api.de/api/interpreter',slots:2},{u:'https://overpass.private.coffee/api/interpreter',slots:2},{u:'https://maps.mail.ru/osm/tools/overpass/api/interpreter',slots:2},{u:'https://overpass.kumi.systems/api/interpreter',slots:1}];
+function runPool(queries,onDone){
+ const st=MIRRORS.map(function(m){return {u:m.u,slots:m.slots,busy:0,until:0,dead:false,fails:0}});
+ return new Promise(function(resolve){
+  const q=queries.map(function(x,i){return {q:x,i:i,tries:0}});let running=0,ok=0,bad=0;
+  const finish=function(){if(!q.length&&!running)resolve({ok:ok,bad:bad})};
+  const pump=function(){
+   while(q.length){
+    const now=Date.now();
+    const m=st.filter(function(s){return !s.dead&&s.busy<s.slots&&s.until<=now}).sort(function(a,b){return a.busy-b.busy||a.fails-b.fails})[0];
+    if(!m){if(st.every(function(s){return s.dead})){bad+=q.length;q.length=0;break}setTimeout(pump,700);return}
+    const job=q.shift();m.busy++;running++;
+    fetchJSONTimed(m.u,{method:'POST',body:'data='+encodeURIComponent(job.q),headers:{'Content-Type':'application/x-www-form-urlencoded'}},45000).then(function(data){
+     m.busy--;running--;m.fails=0;ok++;onDone(data,job.i);pump();finish();
+    },function(err){
+     m.busy--;running--;m.fails++;
+     const msg=String(err&&err.message||err);
+     if(/Failed to fetch|NetworkError|Load failed|CORS/i.test(msg)&&m.fails>=2)m.dead=true;      // server unreachable from this phone
+     m.until=Date.now()+(/429/.test(msg)?2500:/50[234]|timed out|abort/i.test(msg)?2000:1000)*Math.min(3,m.fails);
+     if(++job.tries<5)q.push(job);else bad++;
+     pump();finish();
+    });
+   }
+   finish();
+  };
+  pump();
  });
- return scope.then(function(sc){
-  const head='[out:json][timeout:'+(km==='country'?170:55)+'];'+(km==='country'?'area["name:en"="'+String(ct.name).replace(/"/g,'')+'"]["admin_level"="2"]->.c;':'');
-  const seen={},out=[];let ok=0,fail=0;
-  const jobs=parts.map(function(sel,i){
-   return askPart(head+'nwr'+sel+'('+sc+');out center tags qt'+outN+';',i).then(function(data){
-    ok++;
-    (data.elements||[]).forEach(function(e){const p=placeFromEl(e,ind);if(!p||seen[p.key]||seen[p._dd])return;seen[p.key]=seen[p._dd]=1;delete p._dd;out.push(p)});
-    if(onProgress)onProgress(out.length,ok,parts.length);
-   },function(){fail++;if(onProgress)onProgress(out.length,ok,parts.length)});
-  });
-  return Promise.all(jobs).then(function(){
-   if(!ok)throw new Error('All map servers busy');
+}
+function tilesFor(bb,n){const out=[];const dLa=(bb[2]-bb[0])/n,dLo=(bb[3]-bb[1])/n;for(let a=0;a<n;a++)for(let b=0;b<n;b++)out.push([bb[0]+a*dLa,bb[1]+b*dLo,bb[0]+(a+1)*dLa,bb[1]+(b+1)*dLo].map(function(x){return x.toFixed(5)}).join(','));return out}
+window.bigFetchPlaces=function(city,ct,ind,km,max,onProgress){
+ const parts=ind&&OSM_SEL[ind]?[OSM_SEL[ind].map(function(sel){return sel+'["name"]'})]:[[ALL_PARTS[0]],[ALL_PARTS[1]],[ALL_PARTS[2],ALL_PARTS[3]],[ALL_PARTS[4],ALL_PARTS[5],ALL_PARTS[6]]];
+ const scope=km==='country'?Promise.resolve(null):geoLookup(city,ct).then(function(g){
+  const dLat=km/111,dLon=km/(111*Math.max(0.2,Math.cos(g.lat*Math.PI/180)));
+  return tilesFor([g.lat-dLat,g.lon-dLon,g.lat+dLat,g.lon+dLon],km<=5?1:km<=15?2:km<=40?3:5);
+ });
+ return scope.then(function(tiles){
+  const queries=[];
+  if(!tiles){
+   const head='[out:json][timeout:170];area["name:en"="'+String(ct.name).replace(/"/g,'')+'"]["admin_level"="2"]->.c;';
+   (ind&&OSM_SEL[ind]?OSM_SEL[ind].map(function(s){return s+'["name"]'}):ALL_PARTS).forEach(function(sel){queries.push(head+'nwr'+sel+'(area.c);out center tags qt;')});
+  }else tiles.forEach(function(t){parts.forEach(function(group){queries.push('[out:json][timeout:25];('+group.map(function(sel){return 'nwr'+sel+'('+t+');'}).join('')+');out center tags qt;')})});
+  const seen={},out=[];let done=0;
+  return runPool(queries,function(data){
+   done++;
+   (data.elements||[]).forEach(function(e){const p=placeFromEl(e,ind);if(!p||seen[p.key]||seen[p._dd])return;seen[p.key]=seen[p._dd]=1;delete p._dd;out.push(p)});
+   if(onProgress)onProgress(out,done,queries.length);
+  }).then(function(res){
+   if(!res.ok)throw new Error('All map servers busy');
    if(max>0&&out.length>max)out.length=max;
-   out.partial=fail>0;return out;
+   out.partial=res.bad>0;return out;
   });
  });
 };
 window.searchPlaces=function(city,ct,ind){
- const a=v('s-area')||'15',km=a==='country'?'country':+a,max=+(v('s-max')||0);
- const t0=Date.now();
- const prog=function(n,done,total){const s=el('searchLiveCount');if(s)s.innerHTML='⚡ <b>'+fmtNum(n)+'</b> businesses found so far… ('+done+'/'+total+' map sections done, '+Math.round((Date.now()-t0)/1000)+'s)'};
- return wdApi('search/allow','POST',{}).then(function(a){
-  if(!a||!a.ok)return a||{error:'Could not start the search'};
+ const a=v('s-area')||'15',km=a==='country'?'country':+a,max=+(v('s-max')||0),tsel=v('s-type');
+ const t0=Date.now();let lastDraw=0;
+ const prog=function(places,done,total){
+  const msg='⚡ <b>'+fmtNum(places.length)+'</b> businesses found so far… ('+done+'/'+total+' map areas done, '+Math.round((Date.now()-t0)/1000)+'s)';
+  if(places.length&&Date.now()-lastDraw>2500&&done<total){
+   lastDraw=Date.now();
+   let list=places.map(function(p){return leadFromPlace(p,ct,city,null)});
+   if(tsel==='No Website')list=list.filter(function(l){return l.type==='no-website'});
+   if(tsel==='Outdated Site')list=list.filter(function(l){return l.type!=='no-website'});
+   list.sort(function(x,y){return y.score-x.score});
+   state.results=list;state.lastSearch={ct:ct,city:city,real:true,total:places.length,nosite:places.filter(function(p){return !p.website}).length};
+   renderResults();
+   const box=el('searchResults');if(box)box.insertAdjacentHTML('afterbegin','<div class="live-strip"><div class="spinner" style="width:16px;height:16px"></div><span id="searchLiveCount"></span></div>');
+  }
+  const s=el('searchLiveCount');if(s)s.innerHTML=msg;
+ };
+ return wdApi('search/allow','POST',{}).then(function(al){
+  if(!al||!al.ok)return al||{error:'Could not start the search'};
   return window.bigFetchPlaces(city,ct,ind,km,max,prog).then(function(places){
    const nosite=places.filter(function(p){return !p.website}).length;
-   if(places.partial)setTimeout(function(){showToast('ℹ️ Some map servers were busy — search again later to find even more','info')},1500);
+   if(places.partial)setTimeout(function(){showToast('ℹ️ Some parts of the map were busy — search again in a minute to find even more','info')},1500);
    return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
   },function(err){
    console.warn('map direct failed, using server',err);
-   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,45000);
+   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,45000).then(function(r){
+    if(r&&!r.ok&&/busy|50\d/i.test(r.error||''))r.error='The free map servers are overloaded right now';
+    return r;
+   });
   });
  });
 };
