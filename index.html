@@ -807,6 +807,7 @@ input.pay-bad{border-color:var(--red)!important}
  #invItems input{width:100%!important;min-width:0!important}
 }
 #waIndustry,#scriptIndustry,#emailIndustry{max-width:100%!important;min-width:0;flex:1 1 180px;text-overflow:ellipsis}
+.diag{margin-top:14px;font-size:11px;color:var(--muted);text-align:left;word-break:break-word}.diag summary{cursor:pointer}
 .live-strip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid rgba(255,122,26,.35);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
 .res-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}.res-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .tpl-for{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
@@ -2681,7 +2682,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.5';   // ← Change this number whenever you update the site
+const APP_VERSION='11.6';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4643,8 +4644,8 @@ window.runSearch=function(){
  if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max'))+' ':'every ')+(ind?esc(ind.toLowerCase()):'business')+' from the live map'+(v('s-area')==='country'?' across the whole country':'')+'</div><div id="searchLiveCount" style="font-size:13px;color:var(--a);margin-top:6px">⚡ Asking the map servers…</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
  RES_SHOWN=60;searchPlaces(city,ct,ind||'').then(function(r){
   if(!r||!r.ok){
-   if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';return}
-   if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>This happens when lots of people use the free world map at the same time. Wait a few seconds and try again — a smaller <b>Search area</b> also helps.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';
+   if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button>'+(SEARCH_DIAG.length?'<details class="diag"><summary>Technical details (screenshot this for support)</summary>'+esc(SEARCH_DIAG.slice(-10).join(' • '))+'</details>':'')+'</div>';return}
+   if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>This happens when lots of people use the free world map at the same time. Wait a few seconds and try again — a smaller <b>Search area</b> also helps.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button>'+(SEARCH_DIAG.length?'<details class="diag"><summary>Technical details (screenshot this for support)</summary>'+esc(SEARCH_DIAG.slice(-10).join(' • '))+'</details>':'')+'</div>';
    return;
   }
   let list=r.places.map(function(p){return leadFromPlace(p,ct,city,r.claims[p.key])});
@@ -6357,13 +6358,18 @@ function searchPlaces(city,ct,ind){
 /* FAST search: the area is split into several small questions that go to different map servers AT THE SAME TIME.
    Results arrive in seconds and the count updates live. "All industries" asks for every named shop, office,
    workshop, restaurant, clinic, school, hotel… so it finds far more businesses than before.                */
-const GEO_CACHE_KEY='wd_geo_cache';
+const GEO_CACHE_KEY='wd_geo_cache';let SEARCH_DIAG=[];
 function geoLookup(city,ct){
  const k=(city+'|'+ct.name).toLowerCase();let cache={};try{cache=JSON.parse(localStorage.getItem(GEO_CACHE_KEY)||'{}')}catch(e){}
  if(cache[k])return Promise.resolve(cache[k]);
- return fetchJSONTimed('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(city+', '+ct.name),{headers:{'Accept':'application/json'}},12000).then(function(geo){
-  if(!geo||!geo[0])throw new Error('City not found on the map');
-  const g={lat:+geo[0].lat,lon:+geo[0].lon};cache[k]=g;try{localStorage.setItem(GEO_CACHE_KEY,JSON.stringify(cache))}catch(e){}return g;
+ const save=function(g){cache[k]=g;try{localStorage.setItem(GEO_CACHE_KEY,JSON.stringify(cache))}catch(e){}return g};
+ return wdApi('geo?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name),'GET',null,15000).then(function(r){
+  if(r&&r.ok)return save({lat:+r.lat,lon:+r.lon});
+  SEARCH_DIAG.push('city lookup (server): '+((r&&r.error)||'failed'));
+  return fetchJSONTimed('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(city+', '+ct.name),{headers:{'Accept':'application/json'}},12000).then(function(geo){
+   if(!geo||!geo[0])throw new Error('City not found on the map');
+   return save({lat:+geo[0].lat,lon:+geo[0].lon});
+  },function(e){SEARCH_DIAG.push('city lookup (direct): '+(e&&e.message||e));throw e});
  });
 }
 const ALL_PARTS=[
@@ -6405,6 +6411,7 @@ function runPool(queries,onDone){
     },function(err){
      m.busy--;running--;m.fails++;
      const msg=String(err&&err.message||err);
+     SEARCH_DIAG.push(m.u.split('/')[2]+': '+msg.slice(0,60));
      if(/Failed to fetch|NetworkError|Load failed|CORS/i.test(msg)&&m.fails>=2)m.dead=true;      // server unreachable from this phone
      m.until=Date.now()+(/429/.test(msg)?2500:/50[234]|timed out|abort/i.test(msg)?2000:1000)*Math.min(3,m.fails);
      if(++job.tries<5)q.push(job);else bad++;
@@ -6443,7 +6450,7 @@ window.bigFetchPlaces=function(city,ct,ind,km,max,onProgress){
 };
 window.searchPlaces=function(city,ct,ind){
  const a=v('s-area')||'15',km=a==='country'?'country':+a,max=+(v('s-max')||0),tsel=v('s-type');
- const t0=Date.now();let lastDraw=0;
+ const t0=Date.now();let lastDraw=0;SEARCH_DIAG=[];
  const prog=function(places,done,total){
   const msg='⚡ <b>'+fmtNum(places.length)+'</b> businesses found so far… ('+done+'/'+total+' map areas done, '+Math.round((Date.now()-t0)/1000)+'s)';
   if(places.length&&Date.now()-lastDraw>2500&&done<total){
@@ -6466,8 +6473,10 @@ window.searchPlaces=function(city,ct,ind){
    return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
   },function(err){
    console.warn('map direct failed, using server',err);
-   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,45000).then(function(r){
-    if(r&&!r.ok&&/busy|50\d/i.test(r.error||''))r.error='The free map servers are overloaded right now';
+   SEARCH_DIAG.push('direct: '+(err&&err.message||err));
+   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,60000).then(function(r){
+    if(r&&!r.ok)SEARCH_DIAG.push('backup: '+(r.offline?'no answer in 60s':r.error));
+    if(r&&!r.ok){r.offline=false;r.error='The free map servers are overloaded right now'}
     return r;
    });
   });
