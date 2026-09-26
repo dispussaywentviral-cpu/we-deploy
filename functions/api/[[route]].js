@@ -68,6 +68,71 @@ async function authUser(request, DB) {
   return u;
 }
 
+
+// ---------- AI status: full → lite → basic (paused), resets every day at 00:00 UTC (each user sees it in their own time) ----------
+async function aiStatus(DB, day) {
+  await DB.prepare('CREATE TABLE IF NOT EXISTS wd_ai_status (day TEXT PRIMARY KEY, mode TEXT, since INTEGER, announced TEXT)').run();
+  const r = await DB.prepare('SELECT mode, since FROM wd_ai_status WHERE day = ?').bind(day).first();
+  return r ? { mode: r.mode, since: r.since } : { mode: 'full', since: 0 };
+}
+const AI_NOTICES = {
+  lite: {
+    title: '🧠 AI is in Light Mode for the rest of today',
+    body: "Heads up, everyone — so many of you used the We Deploy AI today that we've used up today's full-power AI allowance. 🙌\n\nThe assistant still works and is still free, but until the daily reset it runs on a lighter, faster brain, so some answers may be simpler or shorter than usual.\n\n⏰ Full power comes back automatically at {{AI_RESET}} — no action needed.\n\nThanks for being here. 💛"
+  },
+  basic: {
+    title: '⏸ AI assistant paused until {{AI_RESET}}',
+    body: "Heads up — today's AI allowance for the whole site is fully used up, so the assistant is paused until the daily reset.\n\n⏰ It comes back automatically at {{AI_RESET}}. Open the 🤖 assistant to see the live countdown.\n\nEverything else — search, leads, scripts, WhatsApp, invoices — keeps working normally. Thanks for your patience. 💛"
+  }
+};
+async function aiDegrade(DB, day, mode) {
+  await DB.prepare('INSERT OR IGNORE INTO wd_ai_status (day, mode, since, announced) VALUES (?, ?, ?, ?)').bind(day, 'full', Date.now(), '').run();
+  const row = await DB.prepare('SELECT mode, announced FROM wd_ai_status WHERE day = ?').bind(day).first();
+  if (!row || row.mode === mode || row.mode === 'basic') return;
+  const res = await DB.prepare('UPDATE wd_ai_status SET mode = ?, since = ?, announced = ? WHERE day = ? AND mode = ?').bind(mode, Date.now(), mode, day, row.mode).run();
+  if (!res || !res.meta || !res.meta.changes) return;   // someone else already switched it — only one announcement
+  const n = AI_NOTICES[mode];
+  await DB.prepare('CREATE TABLE IF NOT EXISTS wd_anns (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, title TEXT, body TEXT, created INTEGER)').run();
+  await DB.prepare('INSERT INTO wd_anns (type, title, body, created) VALUES (?, ?, ?, ?)').bind('notice', n.title, n.body, Date.now()).run();
+}
+
+// ---------- We Deploy AI: what the assistant knows ----------
+function aiSystemPrompt(siteName, me) {
+  const first = String(me.name || '').split(' ')[0] || 'there';
+  return `You are "${siteName}" — the built-in AI assistant of ${siteName} (Lead Finder Pro). You are talking to ${first}${me.isOwner ? ' (the OWNER and developer of the site)' : ''}.
+${siteName} is a FREE web app that helps freelancers and agencies find local businesses that have NO website (or an outdated one), contact them, and sell them a website. Selling point used in the scripts: every website comes with a free custom mobile app (Play Store + App Store) and is delivered the same day.
+
+YOUR PERSONALITY: a sharp, warm, confident sales coach and product expert. Short, practical, specific. Use the user's real data (given as LIVE DATA) — name real leads, real numbers. Never invent leads, numbers or features that are not in the data or list below. Use **bold** for key words, short lines, a few emojis max. Plain text only — no markdown headings, no tables, no code blocks. Keep most answers under 120 words unless the user asks for something long (like a full script, message, email or plan). Reply in the user's language.
+
+WHAT THE SITE CAN DO (pages in brackets = page id):
+- Search (search): real businesses from OpenStreetMap in 65 countries, filter by city, industry and "No Website". Results show "Contacted by N users" or "Nobody has contacted yet" (go for those first). Check online button to verify.
+- My Leads (leads): saved leads, Hot/Warm/Cold tags, notes, follow-up dates, lead score /100.
+- Lead window: Info, Script (cold call + voice note script), WhatsApp, Email, Mockup (free website preview to show on the call), Notes. Every script/message has a pencil ✏️ to edit it; edits are saved per lead; "Reset to default" restores it.
+- Call Scripts (scripts), WhatsApp Messages (whatsapp), Email Templates (email) pages by industry.
+- WhatsApp Queue: send messages to many leads one after another.
+- Pipeline (pipeline): stages New → Contacted → Meeting Set → Proposal Sent → Negotiating → Closed Won, with deal values.
+- Proposals (proposal) with PDF; Invoice Builder (invoice) with PDF, WhatsApp and Gmail sending — invoices are private to each account.
+- Earnings (earnings): payments logged, monthly target. Analytics (analytics). CRM notes (crm).
+- Goals, reminders, call outcomes ("Log call result"), follow-ups with calendar.
+- Growth: daily missions (3 per day, +100 bonus XP), streaks with streak freezes, Today's Lead Drop (5 fresh no-website businesses daily), XP & levels, ranks Rookie→Scout→Hunter→Closer→Pro→Expert→Elite→Master→Legend→Mogul, thousands of roles (Settings), 35 badges, themes unlocked by level, weekly leaderboard season (leaderboard) with 1v1 challenges, Community (community): live feed, Win Wall, Opportunity Radar (cities with most no-website businesses), invite friends (+300 XP).
+- Settings (settings): name, business, role, theme, change password. Announcements (bell icon). Support/feedback/donations.
+- XP: search +5, each lead +2, call/WhatsApp/email +10, call result +5, follow-up +3, pipeline move +4, proposal +40, invoice +30, deal +150, payment +100.
+- Everything is free. Accounts sync across devices. Passwords are never visible to anyone (the owner can only reset them).
+${me.isOwner ? '- OWNER ONLY: Owner Panel (owner): site name/version, banner, switches (signups, leaderboard, maintenance), user management, view account (read-only support), reset password, announcements.\n' : ''}
+SALES KNOWLEDGE you can coach on: cold calling (open with name + 30-second ask, hook = what they lose without a website, handle objections: "no need", "too expensive", "send me info", "I have Facebook"), WhatsApp outreach (short, personal, one question, follow up day 3 and day 7), pricing websites for small businesses in the user's country, closing, follow-up cadence, voice notes, showing the mockup live on the call, getting referrals, turning one client into many.
+
+ACTIONS — you can make the app DO things. Put each action on its own line at the very END of your reply, exactly in this form: [[{"do":"...", ...}]]
+- [[{"do":"search","city":"Windhoek","country":"Namibia","industry":"Restaurants & Food","nosite":true}]]  → runs a real search (industry must be one from LIVE DATA industries, or omit it)
+- [[{"do":"go","page":"pipeline"}]]  → opens a page (use the page ids above)
+- [[{"do":"lead","act":"call|whatsapp|open|script|email|pipeline|proposal","name":"exact lead name"}]]  → shows a button for that lead
+- [[{"do":"followup","name":"exact lead name","days":3}]]
+- [[{"do":"status","name":"exact lead name","tag":"hot|warm|cold"}]]
+- [[{"do":"wa","name":"exact lead name","text":"the full WhatsApp message you wrote"}]]  → gives a button that sends YOUR custom message to that lead
+- [[{"do":"drop"}]]  → opens today's lead drop
+- [[{"do":"suggest","q":["short follow-up question 1","short follow-up question 2"]}]]  → quick reply buttons
+Only use actions when they clearly help or the user asked for it. Only use lead names that appear in LIVE DATA. When you use an action, still write a short normal reply above it. Almost always end with a "suggest" action with 2–3 useful next questions.`;
+}
+
 async function handleWd(context, segs) {
   const { request, env } = context;
   const params = { path: segs };
@@ -92,6 +157,11 @@ async function handleWd(context, segs) {
       return json({ ok: true, anns: res.results || [] });
     }
 
+    if (path === 'ai/status' && m === 'GET') {
+      const day = new Date().toISOString().slice(0, 10);
+      return json({ ok: true, on: !!env.AI, ...(await aiStatus(DB, day)) });
+    }
+
     const me = await authUser(request, DB);
     if (!me) return json({ error: 'Please sign in again' }, 401);
     const flags = (await DB.prepare('SELECT hidden, banned, badge FROM wd_flags WHERE user_id = ?').bind(me.id).first()) || { hidden: 0, banned: 0, badge: '' };
@@ -109,6 +179,48 @@ async function handleWd(context, segs) {
       const sid = request.headers.get('Authorization')?.replace('Bearer ', '');
       await DB.prepare('DELETE FROM sessions WHERE user_id = ? AND id <> ?').bind(me.id, sid || '').run();   // log out other devices
       return json({ ok: true });
+    }
+
+    // ---------- We Deploy AI (Cloudflare Workers AI, binding name: AI) — unlimited for everyone ----------
+    if (path === 'ai' && m === 'POST') {
+      if (!env.AI) return json({ ok: false, error: 'ai_off' });
+      await DB.prepare('CREATE TABLE IF NOT EXISTS wd_ai_usage (user_id TEXT, day TEXT, n INTEGER, PRIMARY KEY (user_id, day))').run();
+      const day = new Date().toISOString().slice(0, 10);
+      const b = await request.json().catch(() => ({}));
+      const hist = (Array.isArray(b.messages) ? b.messages : []).slice(-14)
+        .filter(x => x && (x.role === 'user' || x.role === 'assistant') && typeof x.content === 'string')
+        .map(x => ({ role: x.role, content: x.content.slice(0, 2500) }));
+      if (!hist.length || hist[hist.length - 1].role !== 'user') return json({ ok: false, error: 'No question' }, 400);
+      const site = await getSite(DB).catch(() => ({}));
+      const ctx = JSON.stringify(b.ctx || {}).slice(0, 9000);
+      const messages = [
+        { role: 'system', content: aiSystemPrompt(site && site.name ? site.name : 'We Deploy', me) },
+        { role: 'system', content: 'LIVE DATA about this user right now (JSON, private to them — use it to give specific answers):\n' + ctx },
+        ...hist
+      ];
+      // Full brain first; once today's free AI allowance is used up, drop to the light brain.
+      const status = await aiStatus(DB, day);
+      const MODELS = [
+        { id: '@cf/meta/llama-3.3-70b-instruct-fp8-fast', mode: 'full' },
+        { id: '@cf/meta/llama-3.1-8b-instruct-fast', mode: 'lite' },
+        { id: '@cf/meta/llama-3.1-8b-instruct', mode: 'lite' }
+      ].filter(x => status.mode === 'full' || x.mode !== 'full');   // don't keep hitting the big model once it's out for the day
+      let text = '', mode = '', lastErr = '', outOfAllowance = false;
+      const QUOTA = /4006|allocation|quota|limit|exceed|429|neuron|capacity/i;   // "daily allowance used up" style errors
+      for (const mdl of MODELS) {
+        try {
+          const r = await env.AI.run(mdl.id, { messages, max_tokens: 900, temperature: 0.5 });
+          text = String((r && (r.response ?? r.result?.response)) || '').trim();
+          if (text) { mode = mdl.mode; break; }
+        } catch (e) { lastErr = String(e && e.message || e); if (QUOTA.test(lastErr)) outOfAllowance = true; }
+      }
+      const newMode = text ? mode : 'basic';
+      // Only tell everyone when it's really the daily allowance — not a one-off hiccup.
+      if (outOfAllowance && newMode !== status.mode && (newMode === 'basic' || status.mode === 'full')) await aiDegrade(DB, day, newMode);
+      const shown = (await aiStatus(DB, day)).mode;   // what everyone is told — only changes when the allowance is really used up
+      if (!text) return json({ ok: false, error: 'ai_busy', mode: shown, detail: lastErr.slice(0, 200) });
+      await DB.prepare('INSERT INTO wd_ai_usage (user_id, day, n) VALUES (?, ?, 1) ON CONFLICT(user_id, day) DO UPDATE SET n = n + 1').bind(me.id, day).run();
+      return json({ ok: true, text: text.slice(0, 6000), mode: shown });
     }
 
     if (path === 'me' && m === 'GET') {
