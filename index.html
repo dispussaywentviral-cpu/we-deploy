@@ -704,6 +704,27 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle}
 .sb-more{flex-shrink:0;border:1px solid rgba(255,140,66,.5);background:rgba(255,140,66,.12);color:var(--a);font-weight:700;font-size:11px;padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit}
 .banner-full{white-space:pre-wrap;font-size:14px;line-height:1.7;color:var(--text)}
 table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.data-table td{padding:7px 5px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;text-align:left}
+.msg-editable{position:relative}
+.wa-bubble.msg-editable{padding-right:44px}
+.script-text.msg-editable{padding-top:34px}
+.msg-pen{position:absolute;top:6px;right:58px;background:var(--panel3);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;line-height:1.3}
+.wa-bubble .msg-pen{right:6px}
+.msg-pen:hover{border-color:var(--a)}
+.msg-body{outline:none;border-radius:8px;transition:box-shadow var(--tr)}
+.msg-editable.editing .msg-body{box-shadow:0 0 0 2px var(--a);background:rgba(255,255,255,.03);padding:6px 8px;min-height:60px;cursor:text}
+.msg-editable.editing .msg-pen{background:var(--green);color:#000;border-color:var(--green)}
+.msg-editable.is-edited .msg-body{white-space:pre-wrap}
+.msg-editbar{display:none;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:11px}
+.msg-editable.is-edited .msg-editbar{display:flex}
+.msg-edited-tag{color:var(--yellow);font-weight:600}
+.msg-reset{background:none;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted);cursor:pointer}
+.email-editing{border-color:var(--a)!important}
+.ai-mode-bar{font-size:11px;padding:7px 12px;border-bottom:1px solid var(--line);line-height:1.4}
+.ai-mode-bar.lite{background:rgba(255,196,0,.1);color:var(--yellow)}
+.ai-mode-bar.basic{background:rgba(255,90,90,.1);color:#ff8a8a}
+.ai-input.ai-locked{opacity:.75}
+.ai-input.ai-locked input{cursor:not-allowed}
+.ai-tag{font-size:9px;font-weight:800;letter-spacing:.08em;background:var(--a);color:#000;border-radius:5px;padding:2px 5px;vertical-align:middle;margin-left:4px}
 .pwr-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.08em;text-align:center;padding:14px;border-radius:12px;background:var(--panel2);border:1px dashed var(--a);color:var(--a);user-select:all}
 .btn-gmail{background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700}
 .btn-gmail:hover{background:#f6f8fc;border-color:#ea4335}
@@ -726,7 +747,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="intro-flare"></div>
   </div>
   <div class="intro-tag"><i></i>GLOBAL LEAD INTELLIGENCE<i></i></div>
-  <div class="intro-credit">ENGINEERED BY <b>LAMEERO</b></div>
+  <div class="intro-credit">ENGINEERED BY <b>WE DEPLOY</b></div>
   <div class="intro-progress"><i></i></div>
   <div class="intro-skip" onclick="skipIntro()">SKIP ✕</div>
 </div>
@@ -825,7 +846,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <button class="btn btn-ghost btn-icon btn-sm" id="themeBtn" title="Light/Dark mode" onclick="toggleTheme()" style="font-size:15px">🌙</button>
     <button class="btn btn-ghost btn-icon btn-sm" title="Announcement Center" onclick="openAnnouncements()" style="position:relative;font-size:15px">🔔<span class="ai-unread" id="annBadge" style="display:none">1</span></button>
     <button class="btn btn-ghost btn-icon btn-sm" title="About We Deploy" onclick="openM('aboutModal')" style="font-size:14px">⭐</button>
-    <button class="btn btn-ghost btn-icon btn-sm" title="Lameero's Assistant" onclick="openAI()" style="font-size:16px">🤖</button>
+    <button class="btn btn-ghost btn-icon btn-sm" title="We Deploy AI" onclick="openAI()" style="font-size:16px">🤖</button>
     <div class="avatar" id="avatar" title="Account menu" onclick="toggleUserMenu()">WD</div>
   </div>
 </header>
@@ -870,7 +891,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <button class="nav-btn" onclick="openM('donateModal')" style="font-size:12px"><div class="nav-icon" style="font-size:12px">☕</div>Donate</button>
     <button class="nav-btn" onclick="openM('aboutModal')" style="font-size:12px"><div class="nav-icon" style="font-size:12px">⭐</div>About We Deploy</button>
     <button class="nav-btn" onclick="openM('installModal')" style="font-size:12px"><div class="nav-icon" style="font-size:12px">📱</div>Install on Phone</button>
-    <button class="nav-btn" onclick="openAI()" style="font-size:12px"><div class="nav-icon" style="font-size:12px">🤖</div>Ask Lameero's Assistant</button>
+    <button class="nav-btn" onclick="openAI()" style="font-size:12px"><div class="nav-icon" style="font-size:12px">🤖</div>Ask We Deploy AI</button>
   </div>
 </aside>
 
@@ -1623,13 +1644,13 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
 </div>
 
 <!-- LAMEERO'S ASSISTANT -->
-<div class="ai-launcher" id="aiLauncher" onclick="toggleAI()" title="Lameero's Assistant">🤖<span class="ai-unread" id="aiUnread" style="display:none">1</span></div>
+<div class="ai-launcher" id="aiLauncher" onclick="toggleAI()" title="We Deploy AI">🤖<span class="ai-unread" id="aiUnread" style="display:none">1</span></div>
 <div class="ai-panel" id="aiPanel">
   <div class="ai-head">
     <div class="ai-ava">🤖</div>
     <div style="flex:1">
-      <div class="ai-name">Lameero's Assistant</div>
-      <div class="ai-status"><span class="ai-dot"></span>Online — trained on everything</div>
+      <div class="ai-name">We Deploy <span class="ai-tag">AI</span></div>
+      <div class="ai-status"><span class="ai-dot"></span>Online — knows your leads &amp; the whole site</div>
     </div>
     <div class="modal-close" onclick="closeAI()" style="width:30px;height:30px;font-size:14px">✕</div>
   </div>
@@ -1649,7 +1670,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
     <div class="ai-chip" onclick="aiQuickAsk('How do I backup my data')">💾 Backup</div>
   </div>
   <div class="ai-input">
-    <input id="aiInput" placeholder="Ask Lameero's Assistant anything…" onkeydown="if(event.key==='Enter'){event.preventDefault();sendAI()}">
+    <input id="aiInput" placeholder="Ask We Deploy anything…" onkeydown="if(event.key==='Enter'){event.preventDefault();sendAI()}">
     <button onclick="sendAI()" title="Send">➤</button>
   </div>
 </div>
@@ -1960,7 +1981,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
       <div class="mtab-content" id="st-feedback">
         <div class="section-title">Rate We Deploy</div>
         <div id="fb-stars" style="display:flex;gap:4px;margin-bottom:14px"></div>
-        <div class="form-group" style="margin-bottom:10px"><label>Favorite feature</label><select class="filter-input" id="fb-feature"><option>Lead Finder</option><option>Call Scripts</option><option>WhatsApp Messages</option><option>Mockup Generator</option><option>Earnings Tracker</option><option>Lameero's Assistant</option><option>Everything 🔥</option></select></div>
+        <div class="form-group" style="margin-bottom:10px"><label>Favorite feature</label><select class="filter-input" id="fb-feature"><option>Lead Finder</option><option>Call Scripts</option><option>WhatsApp Messages</option><option>Mockup Generator</option><option>Earnings Tracker</option><option>We Deploy AI</option><option>Everything 🔥</option></select></div>
         <div class="form-group" style="margin-bottom:10px"><label>Your feedback / ideas</label><textarea class="filter-input" id="fb-message" rows="4" placeholder="What do you love? What should Lameero build next?" style="resize:vertical"></textarea></div>
         <button class="btn btn-primary btn-sm" onclick="submitTicket('feedback')">💡 Send Feedback</button>
         <div class="divider"></div>
@@ -2224,7 +2245,7 @@ table.data-table{width:100%;border-collapse:collapse}table.data-table th,table.d
   <div class="um-item" onclick="sv('leaderboard');toggleUserMenu()">🏆 Leaderboard</div>
   <div class="um-item" onclick="sv('settings');toggleUserMenu()">👤 Profile & Settings</div>
   <div class="um-item" onclick="openM('changePwModal');toggleUserMenu()">🔑 Change Password</div>
-  <div class="um-item" onclick="openAI();toggleUserMenu()">🤖 Ask Lameero's Assistant</div>
+  <div class="um-item" onclick="openAI();toggleUserMenu()">🤖 Ask We Deploy AI</div>
   <div class="um-item danger" onclick="logout()">🚪 Log Out</div>
 </div>
 
@@ -2425,7 +2446,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='10.4';   // ← Change this number whenever you update the site
+const APP_VERSION='10.6';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -2676,7 +2697,7 @@ function seedAnns(){
  return [
   {id:'a1',type:'update',ts:now,title:'🚀 v9.1 — crash-proof login',body:'Login can no longer be blocked by anything — every part of the startup is protected, and the app now detects and reports a damaged/copied-incomplete file automatically. Also new: 👑 Owner Unlock, ❓ FAQ Center, full-height Assistant, 5-second intro, and ✕ close buttons on all views. — Lameero'},
   {id:'a2',type:'notice',ts:now-864e5,title:'🔐 Invoice Builder — owner access only',body:'Reserved for Lameero Mendoza. Unlock via 👑 avatar menu (verify with owner email) or contact Lameero via Support (081 727 4007).'},
-  {id:'a3',type:'feature',ts:now-864e5*3,title:'🎧 Support • 💡 Feedback • ☕ Donations • 🤖 Assistant',body:'Open tickets, report bugs, rate the app, donate, and chat with Lameero\'s Assistant — one-tap buttons ready to go.'},
+  {id:'a3',type:'feature',ts:now-864e5*3,title:'🎧 Support • 💡 Feedback • ☕ Donations • 🤖 Assistant',body:'Open tickets, report bugs, rate the app, donate, and chat with We Deploy AI — one-tap buttons ready to go.'},
   {id:'a5',type:'update',ts:now-864e5*30,title:'🎉 Welcome to We Deploy',body:'Find businesses without websites in 65 countries, generate call scripts, send WhatsApp messages and close deals. Built by one mastermind: Lameero Mendoza. 🧠'}
  ];
 }
@@ -3829,7 +3850,7 @@ function renderWaQueue(){
  setT('wq-progress',(q.i+1)+' / '+q.ids.length);
  box.innerHTML='<div class="wq-bar"><i style="width:'+Math.round(q.i/q.ids.length*100)+'%"></i></div>'+
  '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:12px 0 10px"><div><div style="font-weight:800;font-size:15px">'+esc(l.name)+'</div><div style="font-size:12px;color:var(--muted)">'+(l.flag||'')+' '+esc(l.city||'')+' • '+esc(l.phone)+'</div></div>'+typeBadge(l.type)+'</div>'+
- '<textarea id="wq-msg" class="filter-input" rows="9" style="width:100%;resize:vertical;font-size:13px;line-height:1.5">'+esc(waTemplate(l.name,l.city,l.industry,l.type))+'</textarea>';
+ '<textarea id="wq-msg" class="filter-input" rows="9" style="width:100%;resize:vertical;font-size:13px;line-height:1.5">'+esc(leadWAMsg(l))+'</textarea>';
 }
 function waqSend(){
  const q=state.waq;if(!q||q.i>=q.ids.length)return;
@@ -5059,7 +5080,7 @@ function aiSmart(raw){
  // knowledge base
  let best=null,bs=0;
  AI_KB.forEach(function(it){let s=0;it.k.forEach(function(k){if(t.indexOf(' '+k+' ')>-1||t.indexOf(k)>-1)s+=k.split(' ').length*2});if(s>bs){bs=s;best=it}});
- if(best&&bs>=2)return say(best.a,best.c);
+ if(best&&bs>=2&&!window.AI_LLM_ON)return say(best.a,best.c);
  return false;
 }
 const _aiRespondG=window.aiRespond;
@@ -5221,6 +5242,252 @@ function supportReset(id,name){
   openM('pwResetModal');
  });
 }
+
+/* ===== EDITABLE SCRIPTS & MESSAGES (✏️ pencil) ===== */
+function msgEdits(){if(!UD)return {};UD.msgEdits=UD.msgEdits||{};return UD.msgEdits}
+let _meT=null;function saveEditsSoon(){clearTimeout(_meT);_meT=setTimeout(function(){try{saveUD()}catch(e){}},700)}
+function msgText(holder){const b=holder.querySelector('.msg-body');return (b?b.innerText:holder.innerText.replace(/^copy\s*/i,'')).replace(/ /g,' ').replace(/\n{3,}/g,'\n\n').trim()}
+function leadWAMsg(l){const s=msgEdits()['L'+l.id+'|wa|0'];return s||waTemplate(l.name,l.city,l.industry,l.type)}
+function addEditPencils(root,scope){
+ if(!root)return;
+ root.querySelectorAll('.script-text,.wa-bubble').forEach(function(h,i){
+  if(h.dataset.ek)return;
+  const key=scope+'|'+(h.classList.contains('wa-bubble')?'wa':'s')+'|'+i;h.dataset.ek=key;
+  const body=document.createElement('div');body.className='msg-body';
+  Array.from(h.childNodes).forEach(function(n){if(!(n.nodeType===1&&n.tagName==='BUTTON'))body.appendChild(n)});
+  h.appendChild(body);h._defHTML=body.innerHTML;h.classList.add('msg-editable');
+  const pen=document.createElement('button');pen.type='button';pen.className='msg-pen';pen.title='Edit this message';pen.textContent='✏️';
+  pen.onclick=function(e){e.stopPropagation();toggleMsgEdit(h)};h.insertBefore(pen,body);
+  const bar=document.createElement('div');bar.className='msg-editbar';
+  bar.innerHTML='<span class="msg-edited-tag">✏️ Edited</span><button type="button" class="msg-reset">↩ Reset to default</button>';
+  bar.querySelector('.msg-reset').onclick=function(e){e.stopPropagation();resetMsg(h)};h.appendChild(bar);
+  const saved=msgEdits()[key];
+  if(saved){body.textContent=saved;h.classList.add('is-edited')}
+  body.addEventListener('input',function(){storeMsg(h)});
+ });
+}
+function storeMsg(h){
+ const E=msgEdits(),b=h.querySelector('.msg-body'),t=msgText(h);
+ const tmp=document.createElement('div');tmp.innerHTML=h._defHTML;tmp.style.cssText='position:fixed;left:-9999px;white-space:normal';document.body.appendChild(tmp);
+ const def=tmp.innerText.replace(/ /g,' ').replace(/\n{3,}/g,'\n\n').trim();tmp.remove();
+ if(!t||t===def){delete E[h.dataset.ek];h.classList.remove('is-edited')}else{E[h.dataset.ek]=t;h.classList.add('is-edited')}
+ saveEditsSoon();
+}
+function toggleMsgEdit(h){
+ const b=h.querySelector('.msg-body'),pen=h.querySelector('.msg-pen');
+ if(h.classList.contains('editing')){
+  b.contentEditable='false';h.classList.remove('editing');pen.textContent='✏️';storeMsg(h);
+  showToast(h.classList.contains('is-edited')?'✅ Your message is saved':'✅ Default message kept','success');return;
+ }
+ document.querySelectorAll('.msg-editable.editing').forEach(function(o){if(o!==h)toggleMsgEdit(o)});
+ if(h.classList.contains('is-edited')===false&&b.querySelector('*')){b.innerText=msgText(h)}
+ b.contentEditable='true';h.classList.add('editing');pen.textContent='✅';
+ b.focus();try{const r=document.createRange();r.selectNodeContents(b);r.collapse(false);const s=getSelection();s.removeAllRanges();s.addRange(r)}catch(e){}
+}
+function resetMsg(h){
+ const b=h.querySelector('.msg-body');delete msgEdits()[h.dataset.ek];
+ b.contentEditable='false';b.innerHTML=h._defHTML;h.classList.remove('is-edited','editing');h.querySelector('.msg-pen').textContent='✏️';
+ saveEditsSoon();showToast('↩ Back to the default message','info');
+}
+window.copyEl=function(btn){
+ const holder=btn.closest('.script-text')||btn.closest('.wa-bubble')||(btn.closest('.wa-card')&&btn.closest('.wa-card').querySelector('.wa-bubble'));
+ if(holder)copyStr(msgText(holder));
+};
+function unlockEmail(btn){
+ const card=btn.closest('.email-card');
+ card.querySelectorAll('input,textarea').forEach(function(f,i){if(i===0)return;f.readOnly=false;f.classList.add('email-editing')});
+ const ta=card.querySelector('textarea');if(ta){ta.focus()}
+ btn.style.display='none';showToast('✏️ You can edit this email now','info');
+}
+const _openLeadE=window.openLead;
+window.openLead=function(id){
+ const r=_openLeadE.apply(this,arguments);
+ try{const l=findLead(id);if(l){addEditPencils(el('modal-script-content'),'L'+l.id);addEditPencils(el('modal-wa-content'),'L'+l.id);addEmailPencil(el('modal-email-content'))}}catch(e){}
+ return r;
+};
+function addEmailPencil(root){
+ if(!root)return;
+ root.querySelectorAll('.email-card').forEach(function(c){
+  if(c.querySelector('.email-pen'))return;const h=c.querySelector('.email-head');if(!h)return;
+  h.style.display='flex';h.style.alignItems='center';h.style.justifyContent='space-between';
+  h.insertAdjacentHTML('beforeend','<button type="button" class="btn btn-ghost btn-sm email-pen" onclick="unlockEmail(this)">✏️ Edit</button>');
+ });
+}
+const _renderScriptsE=window.renderScripts;
+window.renderScripts=function(){const r=_renderScriptsE.apply(this,arguments);try{addEditPencils(el('scriptsArea'),'Psc|'+el('scriptIndustry').value+'|'+el('scriptType').value)}catch(e){}return r};
+const _renderWAE=window.renderWA;
+window.renderWA=function(){const r=_renderWAE.apply(this,arguments);try{addEditPencils(el('waArea'),'Pwa|'+el('waIndustry').value)}catch(e){}return r};
+const _renderEmailsE=window.renderEmails;
+window.renderEmails=function(){const r=_renderEmailsE.apply(this,arguments);try{addEmailPencil(el('emailArea'))}catch(e){}return r};
+window.openWaGeneric=function(i){
+ const b=document.querySelectorAll('#waArea .wa-bubble')[i];
+ const t=b?msgText(b):state.waMsgs[i];
+ window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
+};
+
+/* ═══════════════════════ WE DEPLOY AI — real AI brain ═══════════════════════
+   Instant commands still run locally (fast). Everything else goes to a real AI model
+   on the server that knows the whole site AND the user's live data, remembers the chat,
+   and can press buttons in the app for you.                                          */
+const AI_NAME='We Deploy';
+let AI_HIST=[],AI_LLM=true,AI_BUSY=false;
+function aiPush(role,content){content=String(content||'').replace(/<[^>]+>/g,'').trim();if(!content)return;AI_HIST.push({role:role,content:content.slice(0,2500)});if(AI_HIST.length>24)AI_HIST=AI_HIST.slice(-24)}
+const _userSayA=window.userSay;window.userSay=function(t){aiPush('user',t);return _userSayA.apply(this,arguments)};
+const _botSayA=window.botSay;window.botSay=function(t,c){aiPush('assistant',t);return _botSayA.apply(this,arguments)};
+function aiSafe(f,d){try{const v=f();return v===undefined?d:v}catch(e){return d}}
+function aiContext(){
+ const L=state.leads||[];const now=todayKey();
+ const tags=(UD&&UD.statusTags)||{};
+ const lite=function(l){return {name:l.name,industry:l.industry,city:l.city,country:l.country,website:l.type==='no-website'?'none':'outdated',score:l.score,phone:!!String(l.phone||'').replace(/\D/g,''),contacted:!!l.contacted,tag:tags[l.id]||'',followup:(UD.followups||{})[l.id]||''}};
+ const top=L.filter(function(l){return !l.contacted}).sort(function(a,b){return (b.score||0)-(a.score||0)}).slice(0,12).map(lite);
+ const contacted=L.filter(function(l){return l.contacted}).slice(-8).map(lite);
+ const due=Object.keys(UD.followups||{}).filter(function(id){return UD.followups[id]<=now}).map(function(id){const l=findLead(id);return l?l.name+' ('+UD.followups[id]+')':null}).filter(Boolean).slice(0,10);
+ const cur=state.curLead&&document.getElementById('leadModal')&&document.getElementById('leadModal').classList.contains('open')?lite(state.curLead):null;
+ return {
+  today:new Date().toDateString(),page:state.view||'',openLeadWindow:cur,
+  me:{name:aiSafe(function(){return CUR.name},''),business:aiSafe(myBiz,''),owner:aiSafe(isOwner,false),level:aiSafe(function(){return levelFor(UD.xp)},0),xp:UD.xp||0,rank:aiSafe(function(){return roleTitle({noMarket:true})},''),streakDays:UD.streakN||0,badges:(UD.badges||[]).length,currency:aiSafe(function(){return curSym()},'$')},
+  missionsToday:aiSafe(function(){return todaysMissions().map(function(m){return m.t+' — '+Math.min(m.n,dayCount(m.type))+'/'+m.n})},[]),
+  totals:{leads:L.length,noWebsite:L.filter(function(l){return l.type==='no-website'}).length,contacted:L.filter(function(l){return l.contacted}).length,pipeline:PIPE.length,dealsClosed:(UD.stats||{}).deals||0,paymentsLogged:aiSafe(function(){return money0((UD.payments||[]).reduce(function(s,p){return s+(p.amount||0)},0))},''),openPipelineValue:aiSafe(function(){return money0(PIPE.filter(function(p){return p.s!==5}).reduce(function(s,p){return s+pipeVal(p)},0))},''),monthlyTarget:UD.target||0,invoices:(state.invoices||[]).length},
+  followupsDue:due,
+  bestUncontactedLeads:top,recentlyContacted:contacted,
+  pipeline:PIPE.slice(0,12).map(function(p){return {name:p.name,stage:(PSTAGES[p.s]||{}).n,value:p.val}}),
+  recentActivity:(UD.activity||[]).slice(0,8).map(function(a){return a.type+': '+a.text}),
+  industries:Object.keys(IND),
+  lastSearch:aiSafe(function(){return {country:scSel.country,city:scSel.city}},{})
+ };
+}
+function aiFindLeadByName(n){
+ n=String(n||'').toLowerCase().trim();if(!n)return null;
+ const all=(state.leads||[]).concat(state.results||[]);
+ return all.find(function(l){return String(l.name).toLowerCase()===n})||all.find(function(l){return String(l.name).toLowerCase().indexOf(n)>-1||n.indexOf(String(l.name).toLowerCase())>-1})||null;
+}
+function aiQ(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function aiRunActions(list){
+ const chips=[];
+ list.forEach(function(a){try{
+  if(a.do==='search'){
+   const p=aiPlace(' '+String(a.city||'').toLowerCase()+' '+String(a.country||'').toLowerCase()+' ');
+   if(!p)return;const city=a.city&&p.city?p.city:(p.city||p.ct.cities[0]);
+   scSel.country=p.ct.name;scSel.city=city;
+   const v=el('sc-val');if(v){v.textContent=p.ct.flag+' '+p.ct.name;v.classList.remove('ph')}
+   const cv=el('sci-val');if(cv){cv.textContent='📍 '+city;cv.classList.remove('ph')}
+   const si=el('s-ind');if(si)si.value=IND[a.industry]?a.industry:'';
+   const st=el('s-type');if(st&&a.nosite)st.value='No Website';
+   try{renderCityList('sci')}catch(e){}
+   sv('search');runSearch();
+  }else if(a.do==='go'){const v=AI_PAGES[String(a.page||'').toLowerCase()]||a.page;if(el('view-'+v))sv(v)}
+  else if(a.do==='drop'){chips.push({t:'🎁 Today\'s Lead Drop',a:'openDrop()'})}
+  else if(a.do==='lead'){
+   const l=aiFindLeadByName(a.name);if(!l)return;const id=aiQ(l.id);
+   const M={call:{t:'📞 Call '+l.name,a:"markContacted('"+id+"','call');location.href='tel:"+String(l.phone||'').replace(/[^\d+]/g,'')+"'"},whatsapp:{t:'💬 WhatsApp '+l.name,a:"waLead('"+id+"')"},open:{t:'👁 Open '+l.name,a:"openLead('"+id+"')"},
+    script:{t:'📞 Script for '+l.name,a:"openLead('"+id+"');setTimeout(function(){switchMTab(document.querySelector('#leadModal .mtab:nth-child(2)'),'mt-script')},200)"},
+    email:{t:'📧 Email '+l.name,a:"openLead('"+id+"');setTimeout(function(){switchMTab(document.querySelector('#leadModal .mtab:nth-child(4)'),'mt-email')},200)"},
+    pipeline:{t:'📋 Add '+l.name+' to pipeline',a:"addToPipeline('"+id+"')"},proposal:{t:'📄 Proposal for '+l.name,a:"openProposalFor('"+id+"')"}};
+   if(M[a.act])chips.push(M[a.act]);
+  }else if(a.do==='followup'){
+   const l=aiFindLeadByName(a.name);if(!l)return;const d=Math.max(0,Math.min(90,parseInt(a.days,10)||1));
+   chips.push({t:'⏰ Follow up '+l.name+' in '+d+' day'+(d===1?'':'s'),q:'follow up with '+l.name+' in '+d+' days'});
+  }else if(a.do==='status'){
+   const l=aiFindLeadByName(a.name);const tg=String(a.tag||'').toLowerCase();if(l&&/^(hot|warm|cold)$/.test(tg))setLeadStatus(l.id,tg);
+  }else if(a.do==='wa'){
+   const l=aiFindLeadByName(a.name);if(!l||!a.text)return;const k='AIWA'+Date.now()+Math.random().toString(36).slice(2,6);
+   window.__aiWA=window.__aiWA||{};window.__aiWA[k]={id:l.id,text:String(a.text).slice(0,2000)};
+   chips.push({t:'💬 Send this to '+l.name,a:"aiSendWA('"+k+"')"});
+  }else if(a.do==='suggest'){(a.q||[]).slice(0,3).forEach(function(q){if(q)chips.push({t:String(q).slice(0,60),q:String(q)})})}
+ }catch(e){console.warn('ai action',e)}});
+ return chips;
+}
+function aiSendWA(k){
+ const x=(window.__aiWA||{})[k];if(!x)return;
+ msgEdits()['L'+x.id+'|wa|0']=x.text;saveEditsSoon();
+ waLead(x.id);showToast('💬 Your AI message is saved on this lead (✏️ to edit)','success');
+}
+function aiParse(raw){
+ const acts=[];
+ let text=String(raw||'').replace(/\[\[\s*(\{[\s\S]*?\})\s*\]\]/g,function(_,j){try{acts.push(JSON.parse(j))}catch(e){}return ''});
+ text=text.replace(/^#{1,6}\s*/gm,'').replace(/^\s*[-*]\s+/gm,'• ').replace(/```[a-z]*\n?/g,'').replace(/\n{3,}/g,'\n\n').trim();
+ return {text:text,acts:acts};
+}
+function aiShowTyping(){const b=el('aiBody');if(!b||el('aiThinking'))return;b.insertAdjacentHTML('beforeend','<div class="typing" id="aiThinking"><i></i><i></i><i></i></div>');scrollAI()}
+function aiHideTyping(){const t=el('aiThinking');if(t)t.remove()}
+function aiSayNow(text,chips){
+ aiPush('assistant',text);
+ const b=el('aiBody');if(!b)return;
+ b.insertAdjacentHTML('beforeend','<div class="ai-msg bot">'+md(esc(text))+'</div>');
+ if(chips&&chips.length){AI_CHIPS=chips;b.insertAdjacentHTML('beforeend','<div class="ai-chip-row">'+chips.map(function(c,i){return '<div class="ai-chip" onclick="aiChip('+i+',this)">'+esc(c.t)+'</div>'}).join('')+'</div>')}else AI_CHIPS=[];
+ scrollAI();
+}
+function aiAsk(input,fallback){
+ if(!AI_LLM||!onlineReady()){return fallback()}
+ AI_BUSY=true;aiShowTyping();
+ const h={'Content-Type':'application/json'};const tk=srvToken();if(tk)h.Authorization='Bearer '+tk;
+ const ctrl=typeof AbortController!=='undefined'?new AbortController():null;const kill=setTimeout(function(){if(ctrl)ctrl.abort()},30000);
+ let ctx={};try{ctx=aiContext()}catch(e){}
+ fetch('/api/wd/ai',{method:'POST',headers:h,body:JSON.stringify({messages:AI_HIST.slice(-14),ctx:ctx}),signal:ctrl?ctrl.signal:undefined})
+  .then(function(r){return r.json()}).catch(function(){return {error:'offline'}})
+  .then(function(r){
+   clearTimeout(kill);AI_BUSY=false;aiHideTyping();
+   if(r&&r.mode)aiSetMode(r.mode);
+   if(AI_MODE==='basic')return;
+   if(r&&r.ok&&r.text){const p=aiParse(r.text);const chips=aiRunActions(p.acts);aiSayNow(p.text||'Done ✅',chips);return}
+   if(r&&r.error==='ai_off')AI_LLM=false;
+   if(r&&r.error==='limit'){aiSayNow('🧠 You\'ve used all '+r.limit+' smart answers for today — they refill tomorrow. I can still do quick commands like "find plumbers in Windhoek" or "who should I call next".');return}
+   fallback();
+  });
+}
+/* honest heads-up when today's AI allowance runs out — times shown in each user's own time zone */
+let AI_MODE='full',AI_MODE_TOLD='',AI_CD=null;
+function aiResetAt(){const n=new Date();return Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+1)}  // allowance resets at 00:00 UTC
+function aiResetClock(){return new Date(aiResetAt()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+function aiLeft(){const ms=Math.max(0,aiResetAt()-Date.now());const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4),sec=Math.floor(ms%6e4/1e3);return (h?h+'h ':'')+(h||m?m+'m ':'')+(h?'':sec+'s')}
+function aiModeTxt(m){
+ return m==='lite'?'🧠 **Light Mode today** — lots of people used the AI today, so for the rest of the day I\'m running on a lighter brain. Still free and unlimited, but some answers may be simpler. Full power returns at **'+aiResetClock()+'** your time (in '+aiLeft()+').'
+ :'⏸ **The AI is paused** — today\'s AI allowance for the whole site is fully used up, so I can\'t answer right now. I\'ll be back at **'+aiResetClock()+'** your time — the countdown is below. Everything else on the site works normally. 💛';
+}
+function aiLock(on){
+ const i=el('aiInput'),bt=i&&i.nextElementSibling,box=i&&i.parentElement;if(!i)return;
+ i.disabled=on;if(bt)bt.disabled=on;if(box)box.classList.toggle('ai-locked',on);
+ document.querySelectorAll('.ai-chips .ai-chip, #aiBody .ai-chip').forEach(function(c){c.style.pointerEvents=on?'none':'';c.style.opacity=on?'.4':''});
+ clearInterval(AI_CD);
+ if(on){
+  const tick=function(){
+   if(Date.now()>=aiResetAt()-500){clearInterval(AI_CD);AI_MODE='full';AI_MODE_TOLD='';aiLock(false);aiModeBar();aiSayNow('✅ **I\'m back at full power!** Ask me anything. 🚀');return}
+   i.value='';i.placeholder='⏳ AI back in '+aiLeft()+' (at '+aiResetClock()+')';
+   const bar=el('aiModeBar');if(bar)bar.innerHTML='⏸ <b>AI paused</b> — back in <b>'+aiLeft()+'</b> (at '+aiResetClock()+' your time)';
+  };
+  tick();AI_CD=setInterval(tick,1000);
+ }else i.placeholder='Ask We Deploy anything…';
+}
+function aiModeBar(){
+ const body=el('aiBody');if(!body)return;
+ let bar=el('aiModeBar');
+ const st=document.querySelector('.ai-status');if(st)st.innerHTML=AI_MODE==='basic'?'<span class="ai-dot" style="background:#ff6b6b"></span>Paused — back at '+aiResetClock():AI_MODE==='lite'?'<span class="ai-dot" style="background:var(--yellow)"></span>Light mode today':'<span class="ai-dot"></span>Online — knows your leads &amp; the whole site';
+ if(AI_MODE==='full'){if(bar)bar.remove();aiLock(false);return}
+ if(!bar){body.insertAdjacentHTML('beforebegin','<div class="ai-mode-bar" id="aiModeBar"></div>');bar=el('aiModeBar')}
+ bar.className='ai-mode-bar '+AI_MODE;
+ if(AI_MODE==='lite'){bar.innerHTML='🧠 <b>Light Mode</b> until '+aiResetClock()+' your time — answers may be simpler';aiLock(false)}
+ else aiLock(true);
+}
+function aiSetMode(m){
+ if(!m||m===AI_MODE)return;
+ const worse=(m==='basic')||(m==='lite'&&AI_MODE==='full');
+ AI_MODE=m;aiModeBar();
+ if(worse&&AI_MODE_TOLD!==m){AI_MODE_TOLD=m;aiSayNow(aiModeTxt(m));try{loadAnns()}catch(e){}}
+}
+function aiCheckMode(){
+ if(!onlineReady())return;
+ fetch('/api/wd/ai/status').then(function(r){return r.json()}).then(function(r){if(r&&r.ok){if(!r.on)AI_LLM=false;AI_MODE_TOLD=r.mode;AI_MODE=r.mode;aiModeBar()}}).catch(function(){});
+}
+/* announcements: {{AI_RESET}} becomes the reader's own local reset time */
+const _annFromSrvT=annFromSrv;
+annFromSrv=function(a){const o=_annFromSrvT(a);const f=function(x){return String(x||'').replace(/\{\{AI_RESET\}\}/g,aiResetClock()+' your time')};o.title=f(o.title);o.body=f(o.body);return o};
+const _openAIM=window.openAI;window.openAI=function(){const r=_openAIM.apply(this,arguments);try{aiCheckMode()}catch(e){}return r};
+window.aiRespond=function(input){
+ if(AI_MODE==='basic'){aiSayNow(aiModeTxt('basic'));return}
+ window.AI_LLM_ON=AI_LLM&&onlineReady();
+ try{if(aiSmart(input))return}catch(e){console.warn('aiSmart',e)}
+ aiAsk(input,function(){window.AI_LLM_ON=false;try{if(aiSmart(input))return}catch(e){}return _aiRespondG.call(window,aiFix(input))});
+};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
@@ -5475,7 +5742,7 @@ Just reply "Yes" and I'll lock in a time 👇`;
 function waLead(id){
  const l=findLead(id);if(!l)return;
  markContacted(l.id,'whatsapp');
- const msg=waTemplate(l.name,l.city,l.industry,l.type);
+ const msg=leadWAMsg(l);
  window.open('https://wa.me/'+l.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
  showToast('💬 WhatsApp opening for '+esc(l.name),'success');
 }
@@ -5932,7 +6199,7 @@ function openAI(){
  if(!aiWelcomed){
   aiWelcomed=true;
   const first=CUR?CUR.name.split(' ')[0]:'there';
-  botSay('Hi '+esc(first)+'! 👋 I\'m **Lameero\'s Assistant** — I know every corner of '+siteName()+' and I can do things for you.\n\nTry: **"find plumbers in Cape Town"**, **"who should I call next"**, **"WhatsApp them"**, **"follow up with them in 3 days"** or **"how am I doing"**. 👇',
+  botSay('Hi '+esc(first)+'! 👋 I\'m **We Deploy**, your AI — I know every corner of '+siteName()+' and I can do things for you.\n\nTry: **"find plumbers in Cape Town"**, **"who should I call next"**, **"WhatsApp them"**, **"follow up with them in 3 days"** or **"how am I doing"**. 👇',
   [{t:'📋 Plan my day',q:'what should I do today'},{t:'👉 Who should I call?',q:'who should I call next'},{t:'🔍 Find restaurants near me',q:'find restaurants in '+((UD&&UD.role&&UD.role.market&&(CTRY.find(function(c){return c.name===UD.role.market})||{}).cities||['Windhoek'])[0])},{t:'📊 How am I doing?',q:'how am I doing'}]);
  }
  setTimeout(function(){const i=el('aiInput');if(i)i.focus()},150);
@@ -6021,7 +6288,7 @@ const AI_INTENTS=[
   return {text:'Live snapshot:\n\n• **'+total+'** leads • **'+nw+'** no-website\n• **'+ctd+'** contacted • **'+svd+'** saved\n• **'+PIPE.length+'** pipeline deals\n• **'+money0(earned)+'** earned 💰'+(UD&&UD.streakN?'\n• 🔥 '+UD.streakN+'-day streak':''),chips:[{t:'📊 Dashboard',a:"sv('dashboard')"},{t:'💰 Earnings',a:"sv('earnings')"}]};
  }},
  {k:['shortcut','keyboard','ctrl','hotkey'],re:()=>({text:'**Ctrl+K** — search • **Enter** — submit • **Esc** — close anything',chips:[]})},
- {k:['who are you','what are you','assistant','bot','robot','are you ai'],re:()=>({text:'I\'m **Lameero\'s Assistant** 🤖 — built by Lameero Mendoza. Trained on every feature, plus sales advice. Runs entirely in your browser.',chips:[{t:'✨ What can you do?',q:'what can you do'}]})},
+ {k:['who are you','what are you','assistant','bot','robot','are you ai'],re:()=>({text:'I\'m **We Deploy** 🤖 — your AI sales partner. I know every feature, I can see your own leads, pipeline and progress, I remember our chat, and I can do things for you: search, open pages, write messages, set follow-ups.',chips:[{t:'✨ What can you do?',q:'what can you do'}]})},
  {k:['thank','thanks','thx','appreciate','awesome','nice work','love it','perfect'],re:()=>({text:'You\'re welcome! 😊 Go close some deals. 🔥',chips:[{t:'🔍 Find leads',a:"sv('search')"}]})},
  {k:['bye','goodbye','see you','later','good night'],re:()=>({text:'Goodbye! 👋 Go get those clients. 💪',chips:[]})}
 ];
