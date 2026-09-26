@@ -35,6 +35,10 @@ export async function onRequest(context) {
         return json({ error: 'New sign-ups are closed right now' }, 403, cors);
       }
 
+      if (email.toLowerCase() !== OWNER_EMAIL) {
+        const ipWhy = await ipBlockMsg(env, clientIp(request));
+        if (ipWhy) return json({ error: ipWhy }, 403, cors);
+      }
       // anti-spam: max 20 new accounts per network per hour (mobile networks share IPs)
       const ip = clientIp(request);
       await ensureSec(env);
@@ -104,8 +108,11 @@ export async function onRequest(context) {
       }
       await env.DB.prepare('DELETE FROM wd_auth_fail WHERE k = ?').bind('e:' + em).run();
 
-      if (await isBanned(env, user)) {
-        return json({ error: 'This account has been suspended. Contact the owner.' }, 403, cors);
+      const why = await blockMsg(env, user);
+      if (why) return json({ error: why, blocked: true, locked: true }, 403, cors);
+      if (String(user.email || '').toLowerCase() !== OWNER_EMAIL) {
+        const ipWhy = await ipBlockMsg(env, ip);
+        if (ipWhy) return json({ error: ipWhy, blocked: true, locked: true }, 403, cors);
       }
 
       const sessionId = await createSession(env, user.id);
@@ -167,12 +174,29 @@ async function signupsOpen(env) {
     return JSON.parse(row.v).allowSignups !== false;
   } catch (e) { return true; }
 }
-async function isBanned(env, user) {
-  if (String(user.email || '').toLowerCase() === OWNER_EMAIL) return false;
+async function isBanned(env, user) { return !!(await blockMsg(env, user)); }
+// why this account can't sign in right now (banned forever / suspended for a while) — or null
+async function blockMsg(env, user) {
+  if (String(user.email || '').toLowerCase() === OWNER_EMAIL) return null;
+  let f = null;
+  try { f = await env.DB.prepare('SELECT * FROM wd_flags WHERE user_id = ?').bind(user.id).first(); } catch (e) { return null; }
+  if (!f) return null;
+  const why = f.reason ? ' Reason: ' + f.reason : '';
+  if (f.banned) return '⛔ This account has been banned.' + why;
+  const until = Number(f.suspended_until || 0);
+  if (until > Date.now()) {
+    if (until >= 9e15) return '⏸ This account is suspended.' + why;
+    const ms = until - Date.now(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.ceil(ms % 36e5 / 6e4);
+    return '⏸ This account is suspended for another ' + ((d ? d + 'd ' : '') + (h ? h + 'h ' : '') + (!d ? m + 'min' : '')).trim() + '.' + why;
+  }
+  return null;
+}
+async function ipBlockMsg(env, ip) {
+  if (!ip || ip === 'unknown') return null;
   try {
-    const f = await env.DB.prepare('SELECT banned FROM wd_flags WHERE user_id = ?').bind(user.id).first();
-    return !!(f && f.banned);
-  } catch (e) { return false; }
+    const r = await env.DB.prepare('SELECT until FROM wd_ip_blocks WHERE ip = ? AND until > ?').bind(ip, Date.now()).first();
+    return r ? '🚫 Access from your network has been blocked by the site owner.' : null;
+  } catch (e) { return null; }
 }
 
 function json(data, status = 200, cors = {}) {
@@ -216,14 +240,16 @@ async function ensureSec(env) {
     env.DB.prepare('CREATE INDEX IF NOT EXISTS wd_auth_fail_k ON wd_auth_fail (k, t)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS wd_logins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, t INTEGER, ip TEXT, country TEXT, city TEXT, device TEXT, kind TEXT)')
   ]);
+  try { await env.DB.prepare('ALTER TABLE wd_logins ADD COLUMN ip_full TEXT').run(); } catch (e) {}
   _secReady = true;
 }
 async function recordLogin(env, request, userId, kind) {
   try {
     await ensureSec(env);
     const cf = request.cf || {};
-    await env.DB.prepare('INSERT INTO wd_logins (user_id, t, ip, country, city, device, kind) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(userId, Date.now(), maskIp(clientIp(request)), cf.country || '', cf.city || '', deviceName(request.headers.get('User-Agent')), kind).run();
+    // ip = shortened (shown to the user), ip_full = full address (visible only to the owner, for security)
+    await env.DB.prepare('INSERT INTO wd_logins (user_id, t, ip, country, city, device, kind, ip_full) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(userId, Date.now(), maskIp(clientIp(request)), cf.country || '', cf.city || '', deviceName(request.headers.get('User-Agent')), kind, clientIp(request)).run();
   } catch (e) {}
 }
 
