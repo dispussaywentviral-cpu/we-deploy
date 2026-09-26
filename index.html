@@ -2680,7 +2680,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.3';   // ← Change this number whenever you update the site
+const APP_VERSION='11.4';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4639,7 +4639,7 @@ window.runSearch=function(){
  const ld=el('locDisplay');if(ld)ld.style.display='block';
  const lt=el('locText');if(lt)lt.textContent=ct.flag+' '+city+', '+ct.name;
  const box=el('searchResults');
- if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max')):'EVERY')+' '+(ind?esc(ind.toLowerCase()):'businesses of every kind')+' from the live map'+(v('s-area')==='country'?' across the whole country':'')+' — big searches can take a few minutes, keep this page open</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
+ if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max'))+' ':'every ')+(ind?esc(ind.toLowerCase()):'business')+' from the live map'+(v('s-area')==='country'?' across the whole country':'')+'</div><div id="searchLiveCount" style="font-size:13px;color:var(--a);margin-top:6px">⚡ Asking the map servers…</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
  RES_SHOWN=60;searchPlaces(city,ct,ind||'').then(function(r){
   if(!r||!r.ok){
    if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button></div>';return}
@@ -4654,7 +4654,7 @@ window.runSearch=function(){
   state.lastSearch={ct:ct,city:city,real:true,cached:r.cached,total:r.places.length,nosite:r.places.filter(function(p){return !p.website}).length};
   renderResults();
   logAct('search',state.results.length+' real businesses in '+city+', '+ct.name);
-  showToast('🎯 '+r.places.length+' real businesses in '+city+' — '+state.lastSearch.nosite+' with no website listed','success');
+  showToast('🎯 '+fmtNum(r.places.length)+' real businesses in '+city+(r.secs!=null?' in '+r.secs+'s':'')+' — '+fmtNum(state.lastSearch.nosite)+' with no website listed','success');
  });
 };
 const _resCard=window.resCard;
@@ -6290,6 +6290,9 @@ function kindOf(t) {
   return '';
 }
 function guessInd(t) {
+  if (t.office && !/^(estate_agent|property_management|it|telecommunication|construction_company|travel_agent)$/.test(t.office)) return 'Legal & Finance';
+  if (t.healthcare) return 'Health & Wellness';
+  if (t.craft) { for (const [re, ind] of TAG_IND) if (re.test(t.craft)) return ind; return 'Home Services'; }
   for (const k of ['amenity', 'shop', 'craft', 'office', 'tourism', 'leisure', 'healthcare']) {
     const v = t[k]; if (!v) continue;
     for (const [re, ind] of TAG_IND) if (re.test(v)) return ind;
@@ -6350,6 +6353,87 @@ function searchPlaces(city,ct,ind){
   });
  });
 }
+/* FAST search: the area is split into several small questions that go to different map servers AT THE SAME TIME.
+   Results arrive in seconds and the count updates live. "All industries" asks for every named shop, office,
+   workshop, restaurant, clinic, school, hotel… so it finds far more businesses than before.                */
+const GEO_CACHE_KEY='wd_geo_cache';
+function geoLookup(city,ct){
+ const k=(city+'|'+ct.name).toLowerCase();let cache={};try{cache=JSON.parse(localStorage.getItem(GEO_CACHE_KEY)||'{}')}catch(e){}
+ if(cache[k])return Promise.resolve(cache[k]);
+ return fetchJSONTimed('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(city+', '+ct.name),{headers:{'Accept':'application/json'}},12000).then(function(geo){
+  if(!geo||!geo[0])throw new Error('City not found on the map');
+  const g={lat:+geo[0].lat,lon:+geo[0].lon};cache[k]=g;try{localStorage.setItem(GEO_CACHE_KEY,JSON.stringify(cache))}catch(e){}return g;
+ });
+}
+const ALL_PARTS=[
+ '["shop"]["name"]',
+ '["amenity"~"^(restaurant|cafe|fast_food|bar|pub|food_court|ice_cream|biergarten|nightclub|clinic|doctors|dentist|pharmacy|veterinary|hospital|car_wash|car_rental|fuel|bureau_de_change|bank|school|college|kindergarten|language_school|driving_school|music_school|training|prep_school|childcare|internet_cafe|events_venue|marketplace|studio|dojo)$"]["name"]',
+ '["craft"]["name"]',
+ '["office"]["name"]',
+ '["tourism"~"^(hotel|guest_house|hostel|motel|apartment|chalet|camp_site|caravan_site|attraction|information)$"]["name"]',
+ '["leisure"~"^(fitness_centre|sports_centre|dance|spa|golf_course|water_park)$"]["name"]',
+ '["healthcare"]["name"]'
+];
+function placeFromEl(e,ind){
+ const t=e.tags||{};if(!t.name)return null;
+ return {key:'osm-'+e.type+'-'+e.id,name:String(t.name).slice(0,80),ind:ind||guessInd(t),kind:kindOf(t).slice(0,40),
+  phone:String(t.phone||t['contact:phone']||t['contact:mobile']||t.mobile||'').split(';')[0].trim().slice(0,30),
+  website:String(t.website||t['contact:website']||t.url||'').slice(0,120),social:String(t['contact:facebook']||t.facebook||t['contact:instagram']||t.instagram||'').slice(0,120),
+  email:String(t.email||t['contact:email']||'').slice(0,80),addr:[t['addr:housenumber'],t['addr:street'],t['addr:suburb']||t['addr:city']].filter(Boolean).join(' ').slice(0,120),
+  hours:String(t.opening_hours||'').slice(0,80),city:String(t['addr:city']||t['addr:town']||'').slice(0,40),
+  lat:e.lat!=null?e.lat:(e.center&&e.center.lat),lon:e.lon!=null?e.lon:(e.center&&e.center.lon),_dd:(t.name+'|'+(t['addr:street']||'')).toLowerCase()};
+}
+function askPart(q,start){
+ // try the map servers one after another, starting at a different one for each part (spreads the load)
+ let i=0;const order=BIG_OVERPASS.map(function(_,k){return BIG_OVERPASS[(start+k)%BIG_OVERPASS.length]});
+ const next=function(){
+  if(i>=order.length)return Promise.reject(new Error('All map servers busy'));
+  const u=order[i++];
+  return fetchJSONTimed(u,{method:'POST',body:'data='+encodeURIComponent(q),headers:{'Content-Type':'application/x-www-form-urlencoded'}},i===1?40000:60000).catch(next);
+ };
+ return next();
+}
+window.bigFetchPlaces=function(city,ct,ind,km,max,onProgress){
+ const parts=ind&&OSM_SEL[ind]?OSM_SEL[ind].map(function(sel){return sel+'["name"]'}):ALL_PARTS;
+ const outN=max>0?' '+Math.ceil(max/parts.length*1.3):'';
+ const scope=km==='country'?Promise.resolve('area.c'):geoLookup(city,ct).then(function(g){
+  const dLat=km/111,dLon=km/(111*Math.max(0.2,Math.cos(g.lat*Math.PI/180)));
+  return [g.lat-dLat,g.lon-dLon,g.lat+dLat,g.lon+dLon].map(function(x){return x.toFixed(5)}).join(',');
+ });
+ return scope.then(function(sc){
+  const head='[out:json][timeout:'+(km==='country'?170:55)+'];'+(km==='country'?'area["name:en"="'+String(ct.name).replace(/"/g,'')+'"]["admin_level"="2"]->.c;':'');
+  const seen={},out=[];let ok=0,fail=0;
+  const jobs=parts.map(function(sel,i){
+   return askPart(head+'nwr'+sel+'('+sc+');out center tags qt'+outN+';',i).then(function(data){
+    ok++;
+    (data.elements||[]).forEach(function(e){const p=placeFromEl(e,ind);if(!p||seen[p.key]||seen[p._dd])return;seen[p.key]=seen[p._dd]=1;delete p._dd;out.push(p)});
+    if(onProgress)onProgress(out.length,ok,parts.length);
+   },function(){fail++;if(onProgress)onProgress(out.length,ok,parts.length)});
+  });
+  return Promise.all(jobs).then(function(){
+   if(!ok)throw new Error('All map servers busy');
+   if(max>0&&out.length>max)out.length=max;
+   out.partial=fail>0;return out;
+  });
+ });
+};
+window.searchPlaces=function(city,ct,ind){
+ const a=v('s-area')||'15',km=a==='country'?'country':+a,max=+(v('s-max')||0);
+ const t0=Date.now();
+ const prog=function(n,done,total){const s=el('searchLiveCount');if(s)s.innerHTML='⚡ <b>'+fmtNum(n)+'</b> businesses found so far… ('+done+'/'+total+' map sections done, '+Math.round((Date.now()-t0)/1000)+'s)'};
+ return wdApi('search/allow','POST',{}).then(function(a){
+  if(!a||!a.ok)return a||{error:'Could not start the search'};
+  return window.bigFetchPlaces(city,ct,ind,km,max,prog).then(function(places){
+   const nosite=places.filter(function(p){return !p.website}).length;
+   if(places.partial)setTimeout(function(){showToast('ℹ️ Some map servers were busy — search again later to find even more','info')},1500);
+   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
+  },function(err){
+   console.warn('map direct failed, using server',err);
+   return wdApi('places?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name)+'&ind='+encodeURIComponent(ind||''),'GET',null,45000);
+  });
+ });
+};
+
 /* results: show 60 at a time so phones stay fast, even with thousands */
 let RES_SHOWN=60;
 window.renderResults=function(){
