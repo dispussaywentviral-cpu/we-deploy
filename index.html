@@ -808,7 +808,32 @@ input.pay-bad{border-color:var(--red)!important}
 }
 #waIndustry,#scriptIndustry,#emailIndustry{max-width:100%!important;min-width:0;flex:1 1 180px;text-overflow:ellipsis}
 .diag{margin-top:14px;font-size:11px;color:var(--muted);text-align:left;word-break:break-word}.diag summary{cursor:pointer}
+.rc-intel{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 2px}
+.note-tag{font-size:10.5px;padding:3px 7px;border-radius:7px;background:var(--panel3);color:var(--text2);border:1px solid var(--line)}
+.note-tag.n-interested{color:var(--green)}.note-tag.n-notint,.note-tag.n-designer,.note-tag.n-hassite,.note-tag.n-badnum{color:#ff9a7a}
+.intel-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin:12px 0}
+.intel-h{font-weight:800;font-size:13px;margin-bottom:6px}.intel-line{font-size:12.5px;color:var(--text2);margin:5px 0;line-height:1.5}.intel-line a{color:var(--a)}
+.intel-line.warn{color:#ffb38a}.intel-line.ok{color:var(--green)}
+.intel-sub{font-size:11px;color:var(--muted);margin:10px 0 6px}.intel-notes{display:flex;flex-wrap:wrap;gap:6px}.note-on{border-color:var(--a)!important;color:var(--a)!important}
 .live-strip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid rgba(255,122,26,.35);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
+.wac-btns{display:flex;flex-direction:column;gap:8px}.wac-btns .btn{justify-content:center;padding:12px}
+.wal-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.wal-row{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.wal-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.wal-name{font-weight:700;font-size:13.5px}.wal-meta{font-size:11px;color:var(--muted)}
+.wal-msg{font-size:12px;color:var(--text2);margin:6px 0;white-space:pre-wrap;line-height:1.5;max-height:5.2em;overflow:hidden}
+.wal-act{display:flex;gap:6px;flex-wrap:wrap}
+.page-head-left,.page-head-right{min-width:0;max-width:100%}
+@media(max-width:640px){
+ .modal-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+ .modal-actions .btn{flex:none!important;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;padding:10px 8px}
+ .modal-actions .btn:only-child,.modal-actions .btn:last-child:nth-child(odd){grid-column:1/-1}
+ .page-head-right{width:100%}
+ #invoicePreviewBody .invoice-wrap{overflow-x:auto}
+ #invoicePreviewBody table th,#invoicePreviewBody table td{padding:7px 5px!important;font-size:11.5px!important;white-space:normal}
+ #invoicePreviewBody .invoice-header{padding:18px!important}
+ .page-head-right>select{flex:1 1 100%!important}
+}
 .res-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px}.res-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .tpl-for{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:12px;flex-wrap:wrap}
 .tpl-for span{font-size:12px;font-weight:700;color:var(--text2)}.tpl-for select{flex:1;min-width:180px}
@@ -1260,7 +1285,7 @@ input.pay-bad{border-color:var(--red)!important}
         <option>Health & Wellness</option><option>Beauty & Grooming</option>
       </select>
       <button class="btn btn-wa btn-sm" onclick="openWaQueue()">🚀 Queue</button>
-      <button class="btn btn-primary btn-sm" onclick="renderWA()">🔄 Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="openWaLog()">📜 Log <span class="wal-badge owner-rep-badge" style="display:none">0</span></button>
     </div>
   </div>
   <div class="scroll-area" id="waArea"></div>
@@ -1874,6 +1899,22 @@ input.pay-bad{border-color:var(--red)!important}
     </div>
   </div>
 </div>
+<div class="modal-overlay" id="waCheckModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><h2>💬 Did your WhatsApp send?</h2><div class="modal-close" onclick="closeM('waCheckModal')" title="Close">✕</div></div>
+    <div class="modal-body" id="wac-body"></div>
+  </div>
+</div>
+<div class="modal-overlay" id="waLogModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head"><h2>📜 WhatsApp log</h2><div class="modal-close" onclick="closeM('waLogModal')" title="Close">✕</div></div>
+    <div class="modal-body">
+      <div class="wal-tabs" id="waLogTabs"></div>
+      <div id="waLogBody"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" style="color:var(--red)" onclick="waDelAll(this)">🗑 Delete all</button><button class="btn btn-ghost" onclick="closeM('waLogModal')">Close</button></div>
+  </div>
+</div>
 <!-- LAMEERO'S ASSISTANT -->
 <div class="ai-launcher" id="aiLauncher" onclick="toggleAI()" title="We Deploy AI">🤖<span class="ai-unread" id="aiUnread" style="display:none">1</span></div>
 <div class="ai-panel" id="aiPanel">
@@ -2342,12 +2383,12 @@ input.pay-bad{border-color:var(--red)!important}
     <div class="modal-head"><h2>🧾 Invoice Preview</h2><div class="modal-close" onclick="closeM('invoiceModal')" title="Close">✕</div></div>
     <div class="modal-body" id="invoicePreviewBody"></div>
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="printInvoice()">🖨️ Print / Save PDF</button>
-      <button class="btn btn-wa" onclick="sendInvoiceWA()">💬 Send via WhatsApp</button>
-      <button class="btn btn-gmail" onclick="gmailInvoice()">✉️ Send via Gmail</button>
+      <button class="btn btn-primary" onclick="printInvoice()">🖨️ Print / PDF</button>
+      <button class="btn btn-wa" onclick="sendInvoiceWA()">💬 WhatsApp</button>
+      <button class="btn btn-gmail" onclick="gmailInvoice()">✉️ Gmail</button>
       <button class="btn btn-purple" onclick="shareInvoicePDF()">📤 Share PDF</button>
       <button class="btn btn-ghost" onclick="downloadInvoicePDF()">⬇ Download PDF</button>
-      <button class="btn btn-blue" onclick="emailInvoice()">📧 Other Email App</button>
+      <button class="btn btn-blue" onclick="emailInvoice()">📧 Other email</button>
       <button class="btn btn-ghost" onclick="closeM('invoiceModal')">✕ Close</button>
     </div>
   </div>
@@ -2469,6 +2510,7 @@ input.pay-bad{border-color:var(--red)!important}
   <div class="um-item gold" id="umUnlock" onclick="toggleUserMenu();openM('ownerUnlockModal')">👑 Unlock Owner Access</div>
   <div class="um-item" onclick="openAnnouncements();toggleUserMenu()">📢 Announcements</div>
   <div class="um-item gold" id="umReports" style="display:none" onclick="toggleUserMenu();openReportsInbox()">📥 Reports inbox <span class="owner-rep-badge" style="display:none">0</span></div>
+  <div class="um-item" onclick="toggleUserMenu();openWaLog()">📜 WhatsApp log <span class="wal-badge owner-rep-badge" style="display:none">0</span></div>
   <div class="um-item" onclick="toggleUserMenu();startTour()">🧭 Take the tour</div>
   <div class="um-item" onclick="openSupport();toggleUserMenu()">🎧 Support & Feedback</div>
   <div class="um-item" onclick="toggleUserMenu();reportIssue()">🚩 Report a problem</div>
@@ -2682,7 +2724,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.6';   // ← Change this number whenever you update the site
+const APP_VERSION='11.8';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4648,7 +4690,7 @@ window.runSearch=function(){
    if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>This happens when lots of people use the free world map at the same time. Wait a few seconds and try again — a smaller <b>Search area</b> also helps.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button>'+(SEARCH_DIAG.length?'<details class="diag"><summary>Technical details (screenshot this for support)</summary>'+esc(SEARCH_DIAG.slice(-10).join(' • '))+'</details>':'')+'</div>';
    return;
   }
-  let list=r.places.map(function(p){return leadFromPlace(p,ct,city,r.claims[p.key])});
+  let list=r.places.map(function(p){const l=leadFromPlace(p,ct,city,(r.claims||{})[p.key]);l.intel={notes:(r.notes||{})[p.key]||null,reserve:(r.reserves||{})[p.key]||null};return l});
   if(tsel==='No Website')list=list.filter(function(l){return l.type==='no-website'});
   if(tsel==='Outdated Site')list=list.filter(function(l){return l.type!=='no-website'});
   list.sort(function(a,b){return b.score-a.score});
@@ -4665,7 +4707,7 @@ window.resCard=function(l){
  if(!l.osm)return h;
  const extra='<div class="rc-real">'+
   '<span class="real-tag">✅ Real business</span>'+
-  (l.claims&&l.claims.n?'<span class="claim-tag" title="Other We Deploy users already contacted them">👥 Contacted by '+l.claims.n+' user'+(l.claims.n>1?'s':'')+'</span>':'<span class="fresh-tag">✨ Nobody has contacted yet</span>')+
+  (l.claims&&l.claims.n?'<span class="claim-tag" title="Other We Deploy users already contacted them">👥 Contacted by '+l.claims.n+' user'+(l.claims.n>1?'s':'')+'</span>':'<span class="fresh-tag" title="No We Deploy member has contacted them through the site">✨ No member contacted yet</span>')+
   (l.social?'<span class="real-tag" style="background:rgba(91,156,246,.12);color:var(--blue)">📘 Social page only</span>':'')+
   '</div><div class="rc-links">'+
   (l.lat?'<a href="https://www.google.com/maps/search/?api=1&query='+l.lat+','+l.lon+'" target="_blank" rel="noopener">🗺 Map</a>':'')+
@@ -6470,7 +6512,7 @@ window.searchPlaces=function(city,ct,ind){
   return window.bigFetchPlaces(city,ct,ind,km,max,prog).then(function(places){
    const nosite=places.filter(function(p){return !p.website}).length;
    if(places.partial)setTimeout(function(){showToast('ℹ️ Some parts of the map were busy — search again in a minute to find even more','info')},1500);
-   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
+   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},notes:(r&&r.notes)||{},reserves:(r&&r.reserves)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
   },function(err){
    console.warn('map direct failed, using server',err);
    SEARCH_DIAG.push('direct: '+(err&&err.message||err));
@@ -6501,6 +6543,196 @@ window.addAllResults=function(){
  if(room<=0)showToast('➕ '+fmtNum(n)+' added — My Leads is full ('+fmtNum(LEAD_CAP)+'). Delete old leads to add more.','info');
  else showToast(n?'➕ '+fmtNum(n)+' businesses added to My Leads':'All results already added',n?'success':'info');
 };
+
+/* ═══════════════════════ WhatsApp log + "did it send?" check + landline detection ═══════════════════════
+   Opening WhatsApp doesn't mean the message was sent, and many numbers aren't on WhatsApp at all.
+   So: every WhatsApp we open is logged as "Opened". When you come back to the site we ask what happened
+   (Sent / Not on WhatsApp / Didn't send). Only "Sent" counts as contacted.                                   */
+function waLog(){if(!UD)return [];UD.waLog=UD.waLog||[];return UD.waLog}
+let WA_PENDING=null;
+function waOpen(l,msg,src){
+ const ph=String((l&&l.phone)||'').replace(/\D/g,'');
+ if(!ph){showToast('📵 No phone number for this lead','info');return}
+ const e={id:'w'+Date.now()+Math.random().toString(36).slice(2,5),leadId:l.id||null,name:l.name||'Unknown',phone:l.phone||ph,msg:String(msg||'').slice(0,1500),t:Date.now(),status:'opened',src:src||'lead'};
+ const L=waLog();L.unshift(e);if(L.length>1000)L.length=1000;saveUD();
+ WA_PENDING={id:e.id,at:Date.now()};
+ window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg||''),'_blank');
+ renderWaLogBadge();
+}
+window.waLead=function(id){
+ const l=findLead(id);if(!l)return;
+ if(!String(l.phone||'').replace(/\D/g,'')){showToast('📵 No phone number listed for '+esc(l.name)+' — use 🔎 Check online to find it','info');window.open('https://www.google.com/search?q='+encodeURIComponent(l.name+' '+l.city+' phone'),'_blank');return}
+ if(l.noWA&&state.waWarn!==id){state.waWarn=id;setTimeout(function(){if(state.waWarn===id)state.waWarn=null},5000);return showToast('📵 You marked '+esc(l.name)+' as NOT on WhatsApp — tap again to try anyway, or call them instead','info')}
+ const pt=phoneTypeOf(l);
+ if(pt==='landline'&&state.waWarn!==id){state.waWarn=id;setTimeout(function(){if(state.waWarn===id)state.waWarn=null},5000);return showToast('☎️ This looks like a landline — landlines usually aren\'t on WhatsApp. Tap again to try anyway, or call instead','info')}
+ state.waWarn=null;
+ waOpen(l,leadWAMsg(l),'lead');
+ showToast('💬 WhatsApp opening for '+esc(l.name)+' — come back here after sending','success');
+};
+window.waqSend=function(){
+ const q=state.waq;if(!q||q.i>=q.ids.length)return;
+ const l=findLead(q.ids[q.i]);if(!l)return waqSkip();
+ waOpen(l,el('wq-msg').value,'queue');q.i++;renderWaQueue();
+};
+/* ask what happened when the person returns from WhatsApp */
+function waCheckBack(){
+ if(!WA_PENDING||document.hidden)return;
+ if(Date.now()-WA_PENDING.at<1500)return;
+ const e=waLog().find(function(x){return x.id===WA_PENDING.id});WA_PENDING=null;
+ if(!e||e.status!=='opened')return;
+ setH('wac-body','<div style="font-size:15px;font-weight:700;margin-bottom:4px">'+esc(e.name)+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:14px">'+esc(e.phone)+'</div>'+
+  '<div class="wac-btns"><button class="btn btn-green" onclick="waSetStatus(\''+e.id+'\',\'sent\');closeM(\'waCheckModal\')">✅ Yes, I sent it</button>'+
+  '<button class="btn btn-ghost" onclick="waSetStatus(\''+e.id+'\',\'notwa\');closeM(\'waCheckModal\')">📵 Not on WhatsApp</button>'+
+  '<button class="btn btn-ghost" onclick="waSetStatus(\''+e.id+'\',\'cancelled\');closeM(\'waCheckModal\')">❌ I didn\'t send it</button></div>');
+ openM('waCheckModal');
+}
+document.addEventListener('visibilitychange',function(){setTimeout(waCheckBack,400)});
+window.addEventListener('focus',function(){setTimeout(waCheckBack,400)});
+function waSetStatus(id,st){
+ const e=waLog().find(function(x){return x.id===id});if(!e)return;
+ const was=e.status;e.status=st;e.ts=Date.now();
+ const l=e.leadId?findLead(e.leadId):null;
+ if(st==='sent'){
+  if(l&&was!=='sent')markContacted(l.id,'whatsapp');
+  if(state.waq&&e.src==='queue')state.waq.sent++;
+  if(l)l.noWA=false;
+  showToast('✅ Logged as sent'+(l?' — '+esc(l.name)+' marked contacted':''),'success');
+ }else if(st==='notwa'){
+  if(l)l.noWA=true;
+  showToast('📵 Marked not on WhatsApp — try calling'+(l&&l.phone?' '+esc(l.phone):'')+' instead','info');
+ }else showToast('Okay — not counted as contacted','info');
+ saveUD();renderWaLog();renderWaLogBadge();try{renderLeads()}catch(x){}
+}
+/* log view */
+let WAL_FILTER='all';
+function openWaLog(){renderWaLog();openM('waLogModal')}
+function renderWaLog(){
+ const box=el('waLogBody');if(!box)return;
+ const L=waLog(),cnt={all:L.length,opened:0,sent:0,notwa:0,cancelled:0};L.forEach(function(e){cnt[e.status]=(cnt[e.status]||0)+1});
+ const lab={all:'All',opened:'⏳ Not confirmed',sent:'✅ Sent',notwa:'📵 Not on WhatsApp',cancelled:'❌ Not sent'};
+ setH('waLogTabs',Object.keys(lab).map(function(k){return '<div class="chip'+(WAL_FILTER===k?' chip-orange':'')+'" onclick="WAL_FILTER=\''+k+'\';renderWaLog()">'+lab[k]+' '+(cnt[k]||0)+'</div>'}).join(''));
+ const rows=L.filter(function(e){return WAL_FILTER==='all'||e.status===WAL_FILTER}).slice(0,300);
+ const tag={opened:'<span class="tag tag-warm">⏳ Not confirmed</span>',sent:'<span class="tag tag-new">✅ Sent</span>',notwa:'<span class="tag tag-hot">📵 Not on WhatsApp</span>',cancelled:'<span class="tag tag-cold">❌ Not sent</span>'};
+ box.innerHTML=rows.length?rows.map(function(e){return '<div class="wal-row"><div class="wal-top"><div style="min-width:0"><div class="wal-name">'+esc(e.name)+'</div><div class="wal-meta">'+esc(e.phone)+' • '+fmtWhen(e.t)+(e.src==='queue'?' • queue':'')+'</div></div>'+(tag[e.status]||'')+'</div>'+
+  '<div class="wal-msg">'+esc(e.msg).slice(0,220)+(e.msg.length>220?'…':'')+'</div>'+
+  '<div class="wal-act">'+(e.status!=='sent'?'<button class="btn btn-ghost btn-xs" onclick="waSetStatus(\''+e.id+'\',\'sent\')">✅ Sent</button>':'')+(e.status!=='notwa'?'<button class="btn btn-ghost btn-xs" onclick="waSetStatus(\''+e.id+'\',\'notwa\')">📵 Not on WA</button>':'')+
+  '<button class="btn btn-ghost btn-xs" onclick="waResend(\''+e.id+'\')">🔁 Open again</button><button class="btn btn-ghost btn-xs" style="color:var(--red)" onclick="waDel(\''+e.id+'\')">🗑</button></div></div>'}).join('')
+  :'<div class="empty-mini" style="padding:24px 0">No WhatsApp messages logged yet. Every message you open from the site shows up here.</div>';
+}
+function waDel(id){UD.waLog=waLog().filter(function(e){return e.id!==id});saveUD();renderWaLog();renderWaLogBadge()}
+let _walAll=0;
+function waDelAll(btn){
+ const n=waLog().length;if(!n)return;
+ if(Date.now()-_walAll>4000){_walAll=Date.now();btn.textContent='⚠️ Tap again to delete all '+n;setTimeout(function(){btn.textContent='🗑 Delete all'},4000);return}
+ _walAll=0;UD.waLog=[];saveUD();renderWaLog();renderWaLogBadge();btn.textContent='🗑 Delete all';showToast('🗑 WhatsApp log cleared','success');
+}
+function waResend(id){const e=waLog().find(function(x){return x.id===id});if(!e)return;e.t=Date.now();e.status='opened';WA_PENDING={id:e.id,at:Date.now()};saveUD();window.open('https://wa.me/'+String(e.phone).replace(/\D/g,'')+'?text='+encodeURIComponent(e.msg),'_blank');closeM('waLogModal')}
+function renderWaLogBadge(){const n=waLog().filter(function(e){return e.status==='opened'}).length;document.querySelectorAll('.wal-badge').forEach(function(b){b.textContent=n;b.style.display=n?'inline-flex':'none'})}
+/* landline detection — landlines can't have WhatsApp (uses the free libphonenumber data, loaded in the background) */
+let LPN=null;
+function loadPhoneLib(){
+ if(LPN||window.__lpnLoading)return;window.__lpnLoading=1;
+ const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/libphonenumber-js@1.12.10/bundle/libphonenumber-max.js';s.async=true;
+ s.onload=function(){LPN=window.libphonenumber||null;try{if(state.curLead)decoratePhone(state.curLead)}catch(e){}};document.head.appendChild(s);
+}
+function phoneTypeOf(l){
+ if(!LPN||!l||!l.phone)return '';
+ if(l._pt!==undefined)return l._pt;
+ let t='';
+ try{
+  const fn=LPN.parsePhoneNumberFromString||LPN.parsePhoneNumber;
+  const dial=String(l.dial||'').replace(/\D/g,'');
+  const p=fn(String(l.phone),dial?{defaultCallingCode:dial}:undefined);
+  const ty=p&&p.getType&&p.getType();
+  t=ty==='FIXED_LINE'?'landline':ty==='MOBILE'?'mobile':(ty?'maybe':'');
+ }catch(e){t=''}
+ l._pt=t;return t;
+}
+function phoneBadge(l){
+ if(l.noWA)return ' <span class="tag tag-hot">📵 Not on WhatsApp</span>';
+ const t=phoneTypeOf(l);
+ return t==='landline'?' <span class="tag tag-cold" title="Landlines usually aren\'t on WhatsApp">☎️ Landline</span>':t==='mobile'?' <span class="tag tag-new">📱 Mobile</span>':'';
+}
+function decoratePhone(l){const n=el('m-phone');if(n&&l)n.innerHTML=esc(l.phone||'—')+phoneBadge(l)}
+const _openLeadW=window.openLead;
+window.openLead=function(id){const r=_openLeadW.apply(this,arguments);try{decoratePhone(findLead(id))}catch(e){}return r};
+setTimeout(loadPhoneLib,4000);
+
+/* ═══════════════════════ LEAD INTEL: website detector, community notes, last contact, reservations ═══════════════════════ */
+const NOTE_LBL={interested:'🔥 Interested',later:'⏰ Call back later',notint:'🙅 Not interested',designer:'🧑‍💻 Has a web designer',hassite:'🌐 Already has a website',badnum:'📵 Wrong / dead number'};
+function agoTxt(t){if(!t)return '';const d=Math.floor((Date.now()-t)/864e5);if(d<1){const h=Math.floor((Date.now()-t)/36e5);return h<1?'just now':h+'h ago'}return d<30?d+' day'+(d>1?'s':'')+' ago':Math.floor(d/30)+' month'+(d>=60?'s':'')+' ago'}
+function intelChips(l){
+ const out=[],it=l.intel||{};
+ if(it.reserve)out.push(it.reserve.mine?'<span class="claim-tag" style="background:rgba(34,197,94,.12);color:var(--green)">🔒 Reserved by you</span>':'<span class="claim-tag">🔒 Reserved by a member · '+Math.max(1,Math.ceil((it.reserve.until-Date.now())/864e5))+'d left</span>');
+ if(it.notes)Object.keys(it.notes).sort(function(a,b){return it.notes[b].n-it.notes[a].n}).slice(0,3).forEach(function(k){if(NOTE_LBL[k])out.push('<span class="note-tag n-'+k+'">'+NOTE_LBL[k]+(it.notes[k].n>1?' ×'+it.notes[k].n:'')+' · '+agoTxt(it.notes[k].last)+'</span>')});
+ if(l.claims&&l.claims.last)out.push('<span class="note-tag">🕒 last contacted '+agoTxt(l.claims.last)+'</span>');
+ if(l.webGuess&&l.webGuess.found)out.push('<span class="note-tag n-hassite">⚠️ Might have a website: '+esc(l.webGuess.found)+'</span>');
+ return out.length?'<div class="rc-intel">'+out.join('')+'</div>':'';
+}
+const _resCardI=window.resCard;
+window.resCard=function(l){const h=_resCardI(l);if(!l.osm)return h;return h.replace('<div class="rc-actions">',intelChips(l)+'<div class="rc-actions">')};
+/* ---- website detector: does a website address for this business name exist? (asks the public DNS) ---- */
+const CC_TLD={'Namibia':['com.na','na'],'South Africa':['co.za'],'Kenya':['co.ke'],'Nigeria':['com.ng','ng'],'Ghana':['com.gh'],'Botswana':['co.bw'],'Zambia':['co.zm'],'Zimbabwe':['co.zw'],'Uganda':['co.ug'],'Tanzania':['co.tz'],'United Kingdom':['co.uk'],'India':['in','co.in'],'Australia':['com.au'],'Canada':['ca'],'Germany':['de'],'France':['fr'],'Netherlands':['nl'],'Spain':['es'],'Italy':['it'],'Portugal':['pt'],'Ireland':['ie'],'United Arab Emirates':['ae'],'Egypt':['com.eg'],'Morocco':['ma'],'Brazil':['com.br'],'Mexico':['com.mx'],'New Zealand':['co.nz'],'Singapore':['com.sg'],'Philippines':['com.ph'],'Malaysia':['com.my']};
+function nameSlugs(n){
+ const base=String(n||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/&/g,' and ');
+ const words=base.replace(/[^a-z0-9 ]+/g,' ').split(/\s+/).filter(Boolean);
+ const core=words.filter(function(w){return !/^(the|cc|pty|ltd|limited|inc|llc|co|and)$/.test(w)});
+ const s=[core.join(''),core.join('-'),words.join('')].filter(function(x){return x&&x.length>=4&&x.length<=40});
+ return s.filter(function(x,i){return s.indexOf(x)===i}).slice(0,2);
+}
+function dnsExists(host){
+ return fetchJSONTimed('https://cloudflare-dns.com/dns-query?name='+encodeURIComponent(host)+'&type=A',{headers:{'Accept':'application/dns-json'}},6000).then(function(j){return !!(j&&j.Status===0&&j.Answer&&j.Answer.length)},function(){return false});
+}
+function checkWebsite(l){
+ if(!l||l.website)return Promise.resolve(null);
+ if(l.webGuess)return Promise.resolve(l.webGuess);
+ const tlds=['com'].concat(CC_TLD[l.country]||[]);
+ const hosts=[];nameSlugs(l.name).forEach(function(s){tlds.forEach(function(t){hosts.push(s+'.'+t)})});
+ if(!hosts.length)return Promise.resolve(null);
+ return Promise.all(hosts.slice(0,8).map(function(h){return dnsExists(h).then(function(ok){return ok?h:null})})).then(function(r){
+  l.webGuess={found:(r.filter(Boolean)[0])||'',checked:hosts.length,t:Date.now()};try{saveUD()}catch(e){}return l.webGuess;
+ });
+}
+/* ---- lead window: intel panel ---- */
+function renderIntel(l){
+ const box=el('m-intel');if(!box||!l)return;
+ const it=l.intel||{};
+ const noteBtns=Object.keys(NOTE_LBL).map(function(k){return '<button class="btn btn-ghost btn-xs'+(it.myNote===k?' note-on':'')+'" onclick="setLeadNote(\''+esc(l.id)+'\',\''+(it.myNote===k?'':k)+'\')">'+NOTE_LBL[k]+'</button>'}).join('');
+ const web=l.website?'<div class="intel-line">🌐 Website listed: <b>'+esc(l.website)+'</b></div>':l.webGuess?(l.webGuess.found?'<div class="intel-line warn">⚠️ A website may already exist: <a href="https://'+esc(l.webGuess.found)+'" target="_blank" rel="noopener">'+esc(l.webGuess.found)+'</a> — check it before pitching</div>':'<div class="intel-line ok">✅ No website found for this name ('+l.webGuess.checked+' addresses checked)</div>'):'<div class="intel-line">🌐 Checking for a website…</div>';
+ const claim=it.claims&&it.claims.n?'<div class="intel-line">👥 Contacted by '+it.claims.n+' member'+(it.claims.n>1?'s':'')+' · last '+agoTxt(it.claims.last)+'</div>':(l.osm?'<div class="intel-line ok">✨ No We Deploy member has contacted them yet</div>':'');
+ const notes=it.notes&&it.notes.length?'<div class="intel-line">📝 Members said: '+it.notes.map(function(n){return (NOTE_LBL[n.outcome]||n.outcome)+(n.n>1?' ×'+n.n:'')+' ('+agoTxt(n.last)+')'}).join(', ')+'</div>':'';
+ const res=it.reserve?(it.reserve.mine?'<div class="intel-line ok">🔒 You reserved this business until '+fmtWhen(it.reserve.until)+' <button class="btn btn-ghost btn-xs" onclick="reserveLead(\''+esc(l.id)+'\',1)">Release</button></div>':'<div class="intel-line warn">🔒 Reserved by another member until '+fmtWhen(it.reserve.until)+' — pick a different lead</div>'):(l.osm?'<button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="reserveLead(\''+esc(l.id)+'\')">🔒 Reserve for 7 days</button>':'');
+ box.innerHTML='<div class="intel-box"><div class="intel-h">🧠 Lead intel</div>'+web+claim+notes+res+(l.osm?'<div class="intel-sub">After you contact them, tell the team what happened:</div><div class="intel-notes">'+noteBtns+'</div>':'')+'</div>';
+}
+function loadIntel(l){
+ if(!l)return;renderIntel(l);
+ checkWebsite(l).then(function(){if(state.curLead&&state.curLead.id===l.id)renderIntel(l)});
+ if(!l.osm||!onlineReady())return;
+ wdApi('intel?key='+encodeURIComponent(l.id)).then(function(r){
+  if(!r||!r.ok)return;const it=l.intel||{};
+  it.claims=r.claims;it.notes=r.notes;it.myNote=r.myNote;it.reserve=r.reserve;l.intel=it;
+  if(state.curLead&&state.curLead.id===l.id)renderIntel(l);
+ });
+}
+function setLeadNote(id,o){
+ const l=findLead(id);if(!l)return;
+ wdApi('lead-note','POST',{key:id,outcome:o}).then(function(r){
+  if(!r||!r.ok)return showToast('⚠️ '+((r&&r.error)||'Could not save'),'error');
+  showToast(o?'📝 Saved — the team can see "'+NOTE_LBL[o]+'"':'📝 Note removed','success');
+  if(o==='hassite'||o==='notint'||o==='designer'){try{setLeadStatus(id,'cold')}catch(e){}}
+  if(o==='interested'){try{setLeadStatus(id,'hot')}catch(e){}}
+  loadIntel(l);
+ });
+}
+function reserveLead(id,release){
+ const l=findLead(id);if(!l)return;
+ wdApi('reserve','POST',{key:id,release:!!release}).then(function(r){
+  if(!r||!r.ok)return showToast('⚠️ '+((r&&r.error)||'Could not reserve'),'error');
+  showToast(release?'🔓 Released — other members can take it now':'🔒 Reserved for you for 7 days','success');loadIntel(l);
+ });
+}
+const _openLeadI=window.openLead;
+window.openLead=function(id){const r=_openLeadI.apply(this,arguments);try{const l=findLead(id);if(l&&!el('m-intel')){const w=el('m-web');if(w&&w.closest('.info-row'))w.closest('.info-row').insertAdjacentHTML('afterend','<div id="m-intel"></div>')}loadIntel(l)}catch(e){console.warn(e)}return r};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
