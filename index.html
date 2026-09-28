@@ -815,6 +815,17 @@ input.pay-bad{border-color:var(--red)!important}
 .intel-h{font-weight:800;font-size:13px;margin-bottom:6px}.intel-line{font-size:12.5px;color:var(--text2);margin:5px 0;line-height:1.5}.intel-line a{color:var(--a)}
 .intel-line.warn{color:#ffb38a}.intel-line.ok{color:var(--green)}
 .intel-sub{font-size:11px;color:var(--muted);margin:10px 0 6px}.intel-notes{display:flex;flex-wrap:wrap;gap:6px}.note-on{border-color:var(--a)!important;color:var(--a)!important}
+.vn-box{margin-top:14px;background:linear-gradient(135deg,rgba(37,211,102,.08),rgba(37,211,102,.02));border:1px solid rgba(37,211,102,.3);border-radius:14px;padding:14px}
+.vn-h{font-weight:800;font-size:14px}.vn-sub{font-size:12px;color:var(--muted);margin:2px 0 10px}
+.vn-row{display:flex;align-items:center;gap:14px}
+.vn-mic{width:64px;height:64px;border-radius:50%;border:0;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;font-size:28px;cursor:pointer;box-shadow:0 6px 20px rgba(37,211,102,.35);flex-shrink:0;transition:transform .15s}
+.vn-mic:active{transform:scale(.94)}
+.vn-mic.rec{background:linear-gradient(135deg,#ff4d4d,#d91a1a);box-shadow:0 0 0 0 rgba(255,77,77,.6);animation:vnPulse 1.2s infinite}
+@keyframes vnPulse{0%{box-shadow:0 0 0 0 rgba(255,77,77,.55)}70%{box-shadow:0 0 0 18px rgba(255,77,77,0)}100%{box-shadow:0 0 0 0 rgba(255,77,77,0)}}
+.vn-info{flex:1;min-width:0}.vn-time{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+.vn-level{height:6px;border-radius:3px;background:var(--panel3);overflow:hidden;margin-top:6px}.vn-level i{display:block;height:100%;width:0;background:linear-gradient(90deg,#25d366,#b6f36b);transition:width .08s}
+.vn-steps{display:grid;grid-template-columns:1fr;gap:8px}.vn-steps .btn{justify-content:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 6px}
+.vn-row2{display:flex;gap:6px;margin-top:8px}.vn-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
 .live-strip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid rgba(255,122,26,.35);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
 .wac-btns{display:flex;flex-direction:column;gap:8px}.wac-btns .btn{justify-content:center;padding:12px}
 .wal-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -2724,7 +2735,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.8';   // ← Change this number whenever you update the site
+const APP_VERSION='11.9';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -6733,6 +6744,81 @@ function reserveLead(id,release){
 }
 const _openLeadI=window.openLead;
 window.openLead=function(id){const r=_openLeadI.apply(this,arguments);try{const l=findLead(id);if(l&&!el('m-intel')){const w=el('m-web');if(w&&w.closest('.info-row'))w.closest('.info-row').insertAdjacentHTML('afterend','<div id="m-intel"></div>')}loadIntel(l)}catch(e){console.warn(e)}return r};
+
+/* ═══════════════════════ 🎙 VOICE NOTE RECORDER — read the script, record, send to WhatsApp ═══════════════════════ */
+const VN={rec:null,chunks:[],blob:null,url:'',t0:0,timer:null,stream:null,leadId:null,ext:'webm',type:'',ac:null,raf:0,chatOpened:{}};
+function vnPickType(){
+ const c=[['audio/mp4;codecs=mp4a.40.2','m4a'],['audio/mp4','m4a'],['audio/ogg;codecs=opus','ogg'],['audio/webm;codecs=opus','webm'],['audio/webm','webm']];
+ for(const x of c){try{if(window.MediaRecorder&&MediaRecorder.isTypeSupported(x[0]))return x}catch(e){}}
+ return ['','webm'];
+}
+function vnHTML(l){
+ if(!l||!l.id||!String(l.phone||'').replace(/\D/g,''))return '';
+ return '<div class="vn-box" id="vn-box" data-lead="'+esc(l.id)+'">'+
+  '<div class="vn-h">🎙 Record your voice note here</div>'+
+  '<div class="vn-sub">Tap the mic, read the script above, tap again to stop.</div>'+
+  '<div class="vn-row"><button type="button" class="vn-mic" id="vn-mic" onclick="vnToggle(\''+esc(l.id)+'\')" aria-label="Record voice note">🎙</button>'+
+  '<div class="vn-info"><div class="vn-time" id="vn-time">0:00</div><div class="vn-level"><i id="vn-lvl"></i></div></div></div>'+
+  '<div id="vn-after" style="display:none">'+
+   '<audio id="vn-audio" controls style="width:100%;margin:10px 0"></audio>'+
+   '<div class="vn-steps"><button type="button" class="btn btn-ghost btn-sm" onclick="vnOpenChat()">① Open their WhatsApp chat</button><button type="button" class="btn btn-wa btn-sm" onclick="vnShare()">② 📤 Send voice note</button></div>'+
+   '<div class="vn-row2"><button type="button" class="btn btn-ghost btn-xs" onclick="vnReset()">🔁 Record again</button><button type="button" class="btn btn-ghost btn-xs" onclick="vnSave()">⬇ Save file</button></div>'+
+   '<div class="vn-note">Step ① opens the chat with this number so it shows at the top of WhatsApp. Step ② opens your share menu → pick <b>WhatsApp</b> → pick their chat. It arrives as an audio message they can play.</div>'+
+  '</div></div>';
+}
+const _buildVoiceNoteV=window.buildVoiceNote;
+window.buildVoiceNote=function(l){const h=_buildVoiceNoteV.apply(this,arguments);const add=vnHTML(l);if(!add)return h;const i=h.lastIndexOf('</div>\n</div>');return i>0?h.slice(0,i)+add+h.slice(i):h+add};
+function vnToggle(id){if(VN.rec&&VN.rec.state==='recording')return vnStop();vnStart(id)}
+function vnStart(id){
+ if(!navigator.mediaDevices||!window.MediaRecorder)return showToast('🎙 Your browser can\'t record audio — try Chrome','error');
+ VN.leadId=id;
+ navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}}).then(function(stream){
+  VN.stream=stream;const pt=vnPickType();VN.type=pt[0];VN.ext=pt[1];VN.chunks=[];
+  VN.rec=pt[0]?new MediaRecorder(stream,{mimeType:pt[0]}):new MediaRecorder(stream);
+  VN.rec.ondataavailable=function(e){if(e.data&&e.data.size)VN.chunks.push(e.data)};
+  VN.rec.onstop=vnDone;VN.rec.start(250);VN.t0=Date.now();
+  const mic=el('vn-mic');if(mic)mic.classList.add('rec');
+  VN.timer=setInterval(function(){const s=Math.floor((Date.now()-VN.t0)/1000);setT('vn-time',Math.floor(s/60)+':'+String(s%60).padStart(2,'0'));if(s>=120)vnStop()},250);
+  try{VN.ac=new (window.AudioContext||window.webkitAudioContext)();const src=VN.ac.createMediaStreamSource(stream),an=VN.ac.createAnalyser();an.fftSize=256;src.connect(an);const d=new Uint8Array(an.frequencyBinCount);
+   const loop=function(){an.getByteFrequencyData(d);let m=0;for(let i=0;i<d.length;i++)m=Math.max(m,d[i]);const b=el('vn-lvl');if(b)b.style.width=Math.min(100,m/2.2)+'%';VN.raf=requestAnimationFrame(loop)};loop()}catch(e){}
+  if(navigator.vibrate)navigator.vibrate(30);
+ },function(err){
+  showToast(/denied|NotAllowed/i.test(String(err&&err.name||err))?'🎙 Microphone blocked — allow the microphone for this site in your browser settings':'🎙 Couldn\'t start the microphone','error');
+ });
+}
+function vnStop(){if(VN.rec&&VN.rec.state==='recording')VN.rec.stop()}
+function vnDone(){
+ VN.dur=Math.round((Date.now()-VN.t0)/1000);clearInterval(VN.timer);cancelAnimationFrame(VN.raf);try{VN.ac&&VN.ac.close()}catch(e){}
+ if(VN.stream)VN.stream.getTracks().forEach(function(t){t.stop()});
+ const mic=el('vn-mic');if(mic)mic.classList.remove('rec');const b=el('vn-lvl');if(b)b.style.width='0';
+ VN.blob=new Blob(VN.chunks,{type:(VN.type||'audio/webm').split(';')[0]});
+ if(VN.url)URL.revokeObjectURL(VN.url);VN.url=URL.createObjectURL(VN.blob);
+ const a=el('vn-audio');if(a)a.src=VN.url;const af=el('vn-after');if(af)af.style.display='';
+ if(navigator.vibrate)navigator.vibrate([20,40,20]);
+}
+function vnReset(){VN.blob=null;const af=el('vn-after');if(af)af.style.display='none';setT('vn-time','0:00')}
+function vnFileName(){const l=findLead(VN.leadId);return 'Voice note'+(l?' for '+String(l.name).replace(/[^\w ]+/g,'').slice(0,40):'')+'.'+VN.ext}
+function vnOpenChat(){
+ const l=findLead(VN.leadId);if(!l)return;
+ const ph=String(l.phone||'').replace(/\D/g,'');
+ VN.chatOpened[l.id]=1;
+ window.open('https://wa.me/'+ph+'?text='+encodeURIComponent('Hi '+l.name+' 👋 '+me()+' here from '+myBiz()+' — sending you a quick voice note 🎙'),'_blank');
+}
+function vnShare(){
+ const l=findLead(VN.leadId);if(!VN.blob||!l)return;
+ if(!VN.chatOpened[l.id]&&!state.vnWarned){state.vnWarned=1;setTimeout(function(){state.vnWarned=0},6000);return showToast('Tip: tap ① first so their chat shows at the top of WhatsApp — or tap ② again to send anyway','info')}
+ const file=new File([VN.blob],vnFileName(),{type:VN.blob.type||'audio/webm'});
+ const secs=VN.dur||0;
+ const logIt=function(){try{const L=waLog();const e={id:'w'+Date.now(),leadId:l.id,name:l.name,phone:l.phone,msg:'🎙 Voice note ('+Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0')+')',t:Date.now(),status:'opened',src:'voice'};L.unshift(e);saveUD();WA_PENDING={id:e.id,at:Date.now()};renderWaLogBadge()}catch(x){}};
+ if(navigator.canShare&&navigator.canShare({files:[file]})){
+  logIt();
+  navigator.share({files:[file],title:'Voice note'}).catch(function(err){if(err&&err.name!=='AbortError')showToast('Couldn\'t open the share menu — use ⬇ Save file and send it from WhatsApp','error')});
+ }else{
+  showToast('Your browser can\'t share files directly — saving the voice note so you can attach it in WhatsApp (📎 → Audio)','info');vnSave();logIt();
+ }
+}
+function vnSave(){if(!VN.blob)return;const a=document.createElement('a');a.href=VN.url;a.download=vnFileName();document.body.appendChild(a);a.click();a.remove()}
+const _closeMVN=window.closeM;window.closeM=function(id){if(id==='leadModal'){try{vnStop()}catch(e){}}return _closeMVN.apply(this,arguments)};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
