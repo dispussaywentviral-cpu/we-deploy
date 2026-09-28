@@ -137,7 +137,7 @@ function restricted(flags, what, me) {
   return null;
 }
 async function deleteUserEverywhere(DB, id) {
-  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts'];
+  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves'];
   for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(id).run(); } catch (e) {} }
   try { await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(id).run(); } catch (e) {}
   await DB.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
@@ -293,7 +293,7 @@ async function handleWd(context, segs) {
       const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
       if (!u || (await wdHash(String(b.password || ''), u.salt)) !== u.hash) return json({ error: 'Your password is not correct' }, 401);
       await ensureSupport(DB);
-      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts'];
+      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves'];
       for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(me.id).run(); } catch (e) {} }
       await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(me.id).run();
       await DB.prepare('DELETE FROM users WHERE id = ?').bind(me.id).run();
@@ -748,10 +748,56 @@ async function handleGrowth(ctx) {
       const rows = await all('SELECT lead_key, COUNT(*) AS n, MAX(created) AS last FROM wd_claims WHERE user_id <> ? AND lead_key IN (' + chunk.map(() => '?').join(',') + ') GROUP BY lead_key', me.id, ...chunk);
       rows.forEach(r => { claims[r.lead_key] = { n: r.n, last: r.last }; });
     }
-    return json({ ok: true, cached: fromCache, ...result, claims });
+    let notes = {}, reserves = {};
+    try {
+      for (let i = 0; i < keys.length; i += 90) {
+        const chunk = keys.slice(i, i + 90), ph = chunk.map(() => '?').join(',');
+        (await all('SELECT lead_key, outcome, COUNT(*) AS n, MAX(created) AS last FROM wd_lead_notes WHERE lead_key IN (' + ph + ') GROUP BY lead_key, outcome', ...chunk)).forEach(r => { (notes[r.lead_key] = notes[r.lead_key] || {})[r.outcome] = { n: r.n, last: r.last }; });
+        (await all('SELECT lead_key, user_id, until FROM wd_reserves WHERE until > ? AND lead_key IN (' + ph + ')', Date.now(), ...chunk)).forEach(r => { reserves[r.lead_key] = { until: r.until, mine: r.user_id === me.id }; });
+      }
+    } catch (e) {}
+    return json({ ok: true, cached: fromCache, ...result, claims, notes, reserves });
   }
 
   // ---------- big searches: the browser asks the map directly; the server checks permission, logs the scan, returns claims ----------
+  // ---------- lead intel: community notes, reservations, last contact ----------
+  if (path === 'intel' || path === 'lead-note' || path === 'reserve') {
+    await DB.batch([
+      DB.prepare('CREATE TABLE IF NOT EXISTS wd_lead_notes (lead_key TEXT, user_id TEXT, outcome TEXT, created INTEGER, PRIMARY KEY (lead_key, user_id))'),
+      DB.prepare('CREATE TABLE IF NOT EXISTS wd_reserves (lead_key TEXT PRIMARY KEY, user_id TEXT, until INTEGER)')
+    ]);
+    const okKey = k => /^osm-(node|way|relation)-\d+$/.test(String(k || ''));
+    if (path === 'intel' && m === 'GET') {
+      const key = str(url.searchParams.get('key'), 60);
+      if (!okKey(key)) return json({ error: 'Bad lead' }, 400);
+      const c = await q('SELECT COUNT(*) AS n, MAX(created) AS last FROM wd_claims WHERE lead_key = ? AND user_id <> ?', key, me.id);
+      const notes = await all('SELECT outcome, COUNT(*) AS n, MAX(created) AS last FROM wd_lead_notes WHERE lead_key = ? GROUP BY outcome', key);
+      const mine = await q('SELECT outcome FROM wd_lead_notes WHERE lead_key = ? AND user_id = ?', key, me.id);
+      const r = await q('SELECT user_id, until FROM wd_reserves WHERE lead_key = ? AND until > ?', key, Date.now());
+      return json({ ok: true, claims: { n: c.n || 0, last: c.last || 0 }, notes, myNote: mine.outcome || '', reserve: r.until ? { until: r.until, mine: r.user_id === me.id } : null });
+    }
+    if (path === 'lead-note' && m === 'POST') {
+      { const no = restricted(me.flags, 'post', me); if (no) return no; }
+      const b = await request.json().catch(() => ({}));
+      if (!okKey(b.key)) return json({ error: 'Bad lead' }, 400);
+      const o = ['designer', 'notint', 'later', 'interested', 'hassite', 'badnum'].includes(b.outcome) ? b.outcome : '';
+      if (!o) await DB.prepare('DELETE FROM wd_lead_notes WHERE lead_key = ? AND user_id = ?').bind(b.key, me.id).run();
+      else await DB.prepare('INSERT INTO wd_lead_notes (lead_key, user_id, outcome, created) VALUES (?,?,?,?) ON CONFLICT(lead_key, user_id) DO UPDATE SET outcome = excluded.outcome, created = excluded.created').bind(b.key, me.id, o, Date.now()).run();
+      return json({ ok: true });
+    }
+    if (path === 'reserve' && m === 'POST') {
+      const b = await request.json().catch(() => ({}));
+      if (!okKey(b.key)) return json({ error: 'Bad lead' }, 400);
+      const cur = await q('SELECT user_id, until FROM wd_reserves WHERE lead_key = ?', b.key);
+      if (b.release) { if (cur.user_id === me.id || me.isOwner) await DB.prepare('DELETE FROM wd_reserves WHERE lead_key = ?').bind(b.key).run(); return json({ ok: true }); }
+      if (cur.until > Date.now() && cur.user_id !== me.id) return json({ error: 'Another member already reserved this business', until: cur.until }, 409);
+      const n = await q('SELECT COUNT(*) AS n FROM wd_reserves WHERE user_id = ? AND until > ?', me.id, Date.now());
+      if ((n.n || 0) >= 100 && !me.isOwner && cur.user_id !== me.id) return json({ error: 'You can reserve up to 100 businesses at a time — release some first' }, 429);
+      const until = Date.now() + 7 * 864e5;
+      await DB.prepare('INSERT INTO wd_reserves (lead_key, user_id, until) VALUES (?,?,?) ON CONFLICT(lead_key) DO UPDATE SET user_id = excluded.user_id, until = excluded.until').bind(b.key, me.id, until).run();
+      return json({ ok: true, until });
+    }
+  }
   // city → map coordinates (asked once, then remembered for everyone)
   if (path === 'geo' && m === 'GET') {
     const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
@@ -779,7 +825,12 @@ async function handleGrowth(ctx) {
     if (city && country) await DB.prepare('INSERT INTO wd_scans (city, country, industry, total, nosite, user_id, created) VALUES (?,?,?,?,?,?,?)').bind(city, country, ind, int(b.total, 1e6), int(b.nosite, 1e6), me.id, Date.now()).run();
     const rows = await all('SELECT lead_key, COUNT(*) AS n, MAX(created) AS last FROM wd_claims WHERE user_id <> ? GROUP BY lead_key LIMIT 50000', me.id);
     const claims = {}; rows.forEach(r => { claims[r.lead_key] = { n: r.n, last: r.last }; });
-    return json({ ok: true, claims });
+    let notes = {}, reserves = {};
+    try {
+      (await all('SELECT lead_key, outcome, COUNT(*) AS n, MAX(created) AS last FROM wd_lead_notes GROUP BY lead_key, outcome LIMIT 50000')).forEach(r => { (notes[r.lead_key] = notes[r.lead_key] || {})[r.outcome] = { n: r.n, last: r.last }; });
+      (await all('SELECT lead_key, user_id, until FROM wd_reserves WHERE until > ? LIMIT 50000', Date.now())).forEach(r => { reserves[r.lead_key] = { until: r.until, mine: r.user_id === me.id }; });
+    } catch (e) {}
+    return json({ ok: true, claims, notes, reserves });
   }
 
   // ---------- community lead claims ----------
