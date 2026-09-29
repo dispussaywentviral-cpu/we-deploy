@@ -137,7 +137,7 @@ function restricted(flags, what, me) {
   return null;
 }
 async function deleteUserEverywhere(DB, id) {
-  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves'];
+  const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves', 'wd_wa'];
   for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(id).run(); } catch (e) {} }
   try { await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(id).run(); } catch (e) {}
   await DB.prepare('DELETE FROM users WHERE id = ?').bind(id).run();
@@ -293,7 +293,7 @@ async function handleWd(context, segs) {
       const u = await DB.prepare('SELECT salt, hash FROM users WHERE id = ?').bind(me.id).first();
       if (!u || (await wdHash(String(b.password || ''), u.salt)) !== u.hash) return json({ error: 'Your password is not correct' }, 401);
       await ensureSupport(DB);
-      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves'];
+      const del = ['sessions', 'wd_profiles', 'wd_flags', 'wd_ai_usage', 'wd_logins', 'wd_claims', 'wd_feed', 'wd_wins', 'wd_reacts', 'user_data', 'user_data_parts', 'wd_lead_notes', 'wd_reserves', 'wd_wa'];
       for (const t of del) { try { await DB.prepare('DELETE FROM ' + t + ' WHERE user_id = ?').bind(me.id).run(); } catch (e) {} }
       await DB.prepare("UPDATE wd_tickets SET name = 'Deleted user', email = '' WHERE user_id = ?").bind(me.id).run();
       await DB.prepare('DELETE FROM users WHERE id = ?').bind(me.id).run();
@@ -756,11 +756,21 @@ async function handleGrowth(ctx) {
         (await all('SELECT lead_key, user_id, until FROM wd_reserves WHERE until > ? AND lead_key IN (' + ph + ')', Date.now(), ...chunk)).forEach(r => { reserves[r.lead_key] = { until: r.until, mine: r.user_id === me.id }; });
       }
     } catch (e) {}
-    return json({ ok: true, cached: fromCache, ...result, claims, notes, reserves });
+    const wa = {};
+    try { for (let i = 0; i < keys.length; i += 90) { const chunk = keys.slice(i, i + 90); (await all('SELECT lead_key, SUM(ok) AS yes, SUM(1 - ok) AS no FROM wd_wa WHERE lead_key IN (' + chunk.map(() => '?').join(',') + ') GROUP BY lead_key', ...chunk)).forEach(r => { wa[r.lead_key] = { yes: r.yes || 0, no: r.no || 0 }; }); } } catch (e) {}
+    return json({ ok: true, cached: fromCache, ...result, claims, notes, reserves, wa });
   }
 
   // ---------- big searches: the browser asks the map directly; the server checks permission, logs the scan, returns claims ----------
   // ---------- lead intel: community notes, reservations, last contact ----------
+  // ---------- is this number on WhatsApp? (what members found out) ----------
+  if (path === 'wa-status' && m === 'POST') {
+    await DB.prepare('CREATE TABLE IF NOT EXISTS wd_wa (lead_key TEXT, user_id TEXT, ok INTEGER, created INTEGER, PRIMARY KEY (lead_key, user_id))').run();
+    const b = await request.json().catch(() => ({}));
+    if (!/^osm-(node|way|relation)-\d+$/.test(String(b.key || ''))) return json({ error: 'Bad lead' }, 400);
+    await DB.prepare('INSERT INTO wd_wa (lead_key, user_id, ok, created) VALUES (?,?,?,?) ON CONFLICT(lead_key, user_id) DO UPDATE SET ok = excluded.ok, created = excluded.created').bind(b.key, me.id, b.ok ? 1 : 0, Date.now()).run();
+    return json({ ok: true });
+  }
   if (path === 'intel' || path === 'lead-note' || path === 'reserve') {
     await DB.batch([
       DB.prepare('CREATE TABLE IF NOT EXISTS wd_lead_notes (lead_key TEXT, user_id TEXT, outcome TEXT, created INTEGER, PRIMARY KEY (lead_key, user_id))'),
@@ -774,7 +784,9 @@ async function handleGrowth(ctx) {
       const notes = await all('SELECT outcome, COUNT(*) AS n, MAX(created) AS last FROM wd_lead_notes WHERE lead_key = ? GROUP BY outcome', key);
       const mine = await q('SELECT outcome FROM wd_lead_notes WHERE lead_key = ? AND user_id = ?', key, me.id);
       const r = await q('SELECT user_id, until FROM wd_reserves WHERE lead_key = ? AND until > ?', key, Date.now());
-      return json({ ok: true, claims: { n: c.n || 0, last: c.last || 0 }, notes, myNote: mine.outcome || '', reserve: r.until ? { until: r.until, mine: r.user_id === me.id } : null });
+      let wa = null;
+      try { const w = await q('SELECT SUM(ok) AS yes, SUM(1 - ok) AS no FROM wd_wa WHERE lead_key = ?', key); if (w.yes || w.no) wa = { yes: w.yes || 0, no: w.no || 0 }; } catch (e) {}
+      return json({ ok: true, claims: { n: c.n || 0, last: c.last || 0 }, notes, myNote: mine.outcome || '', reserve: r.until ? { until: r.until, mine: r.user_id === me.id } : null, wa });
     }
     if (path === 'lead-note' && m === 'POST') {
       { const no = restricted(me.flags, 'post', me); if (no) return no; }
@@ -803,15 +815,42 @@ async function handleGrowth(ctx) {
     const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
     if (!city || !country) return json({ error: 'Pick a city' }, 400);
     await DB.prepare('CREATE TABLE IF NOT EXISTS wd_geo (k TEXT PRIMARY KEY, lat REAL, lon REAL, created INTEGER)').run();
+    try { await DB.prepare('ALTER TABLE wd_geo ADD COLUMN bbox TEXT').run(); } catch (e) {}
     const k = (city + '|' + country).toLowerCase();
-    const hit = await DB.prepare('SELECT lat, lon FROM wd_geo WHERE k = ?').bind(k).first();
-    if (hit) return json({ ok: true, lat: hit.lat, lon: hit.lon, cached: true });
+    const hit = await DB.prepare('SELECT lat, lon, bbox FROM wd_geo WHERE k = ?').bind(k).first();
+    if (hit && hit.bbox) return json({ ok: true, lat: hit.lat, lon: hit.lon, bbox: JSON.parse(hit.bbox), cached: true });
     try {
       const g = await osmFetchJSON('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' + encodeURIComponent(city + ', ' + country), {}, 10000);
       if (!g || !g[0]) return json({ error: 'City not found on the map' }, 404);
-      await DB.prepare('INSERT OR REPLACE INTO wd_geo (k, lat, lon, created) VALUES (?, ?, ?, ?)').bind(k, Number(g[0].lat), Number(g[0].lon), Date.now()).run();
-      return json({ ok: true, lat: Number(g[0].lat), lon: Number(g[0].lon) });
+      const bb = (g[0].boundingbox || []).map(Number);   // [south, north, west, east] of the town itself
+      await DB.prepare('INSERT OR REPLACE INTO wd_geo (k, lat, lon, created, bbox) VALUES (?, ?, ?, ?, ?)').bind(k, Number(g[0].lat), Number(g[0].lon), Date.now(), JSON.stringify(bb)).run();
+      return json({ ok: true, lat: Number(g[0].lat), lon: Number(g[0].lon), bbox: bb });
     } catch (e) { return json({ error: 'Map lookup failed: ' + String(e.message || e).slice(0, 80) }, 502); }
+  }
+  // city → list of suburbs / neighbourhoods (asked once, then remembered for everyone for 30 days)
+  if (path === 'areas' && m === 'GET') {
+    const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
+    const lat = Number(url.searchParams.get('lat')), lon = Number(url.searchParams.get('lon'));
+    if (!city || !country || !isFinite(lat) || !isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return json({ error: 'Pick a city' }, 400);
+    await DB.prepare('CREATE TABLE IF NOT EXISTS wd_areas (k TEXT PRIMARY KEY, list TEXT, created INTEGER)').run();
+    const k = (city + '|' + country).toLowerCase();
+    const hit = await DB.prepare('SELECT list, created FROM wd_areas WHERE k = ?').bind(k).first();
+    if (hit) { const L = JSON.parse(hit.list || '[]'); if (Date.now() - hit.created < (L.length ? 30 : 1) * 864e5) return json({ ok: true, areas: L, cached: true }); }
+    const qy = '[out:json][timeout:25];(node["place"~"^(suburb|neighbourhood|quarter|borough|city_block)$"]["name"](around:16000,' + lat + ',' + lon + ');way["place"~"^(suburb|neighbourhood|quarter)$"]["name"](around:16000,' + lat + ',' + lon + ');relation["place"~"^(suburb|neighbourhood|quarter|borough)$"]["name"](around:16000,' + lat + ',' + lon + '););out center tags qt 600;';
+    try {
+      const data = await Promise.any(OVERPASS.map(u => osmFetchJSON(u, { method: 'POST', body: 'data=' + encodeURIComponent(qy), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, 25000)));
+      const seen = {}, L = [];
+      for (const e of (data.elements || [])) {
+        const t = e.tags || {}, nm = String(t['name:en'] || t.name || '').trim().slice(0, 60);
+        const la = e.lat != null ? e.lat : e.center && e.center.lat, lo = e.lon != null ? e.lon : e.center && e.center.lon;
+        if (!nm || la == null || seen[nm.toLowerCase()]) continue;
+        seen[nm.toLowerCase()] = 1;
+        L.push({ n: nm, t: String(t.place || '').slice(0, 14), lat: +Number(la).toFixed(5), lon: +Number(lo).toFixed(5) });
+      }
+      L.sort((a, b) => a.n.localeCompare(b.n));
+      await DB.prepare('INSERT OR REPLACE INTO wd_areas (k, list, created) VALUES (?, ?, ?)').bind(k, JSON.stringify(L.slice(0, 600)), Date.now()).run();
+      return json({ ok: true, areas: L.slice(0, 600) });
+    } catch (e) { return json({ error: 'Map busy — could not load areas' }, 502); }
   }
   if (path === 'search/allow' && m === 'POST') {
     { const no = restricted(me.flags, 'search', me); if (no) return no; }
@@ -830,7 +869,9 @@ async function handleGrowth(ctx) {
       (await all('SELECT lead_key, outcome, COUNT(*) AS n, MAX(created) AS last FROM wd_lead_notes GROUP BY lead_key, outcome LIMIT 50000')).forEach(r => { (notes[r.lead_key] = notes[r.lead_key] || {})[r.outcome] = { n: r.n, last: r.last }; });
       (await all('SELECT lead_key, user_id, until FROM wd_reserves WHERE until > ? LIMIT 50000', Date.now())).forEach(r => { reserves[r.lead_key] = { until: r.until, mine: r.user_id === me.id }; });
     } catch (e) {}
-    return json({ ok: true, claims, notes, reserves });
+    const wa = {};
+    try { (await all('SELECT lead_key, SUM(ok) AS yes, SUM(1 - ok) AS no FROM wd_wa GROUP BY lead_key LIMIT 50000')).forEach(r => { wa[r.lead_key] = { yes: r.yes || 0, no: r.no || 0 }; }); } catch (e) {}
+    return json({ ok: true, claims, notes, reserves, wa });
   }
 
   // ---------- community lead claims ----------
