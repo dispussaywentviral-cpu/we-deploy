@@ -826,6 +826,10 @@ input.pay-bad{border-color:var(--red)!important}
 .vn-level{height:6px;border-radius:3px;background:var(--panel3);overflow:hidden;margin-top:6px}.vn-level i{display:block;height:100%;width:0;background:linear-gradient(90deg,#25d366,#b6f36b);transition:width .08s}
 .vn-steps{display:grid;grid-template-columns:1fr;gap:8px}.vn-steps .btn{justify-content:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 6px}
 .vn-row2{display:flex;gap:6px;margin-top:8px}.vn-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+.ph-row{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 2px}
+.ph-tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:7px;border:1px solid var(--line);background:var(--panel3)}
+.ph-mob{color:#8ab4ff}.ph-land{color:#ff9a7a;border-color:rgba(255,120,90,.35)}.ph-wa{color:var(--green);border-color:rgba(34,197,94,.35)}.ph-q{color:var(--muted)}.ph-none{color:var(--muted)}
+.wa-dim{opacity:.45;filter:grayscale(.6)}
 .live-strip{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid rgba(255,122,26,.35);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
 .wac-btns{display:flex;flex-direction:column;gap:8px}.wac-btns .btn{justify-content:center;padding:12px}
 .wal-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -1222,6 +1226,11 @@ input.pay-bad{border-color:var(--red)!important}
           <span class="filter-label">City</span>
           <div class="cs-trigger" id="sci-trigger" onclick="toggleCS('sci')"><span class="cs-val ph" id="sci-val">Select country first…</span><span class="cs-arrow">▼</span></div>
           <div class="cs-drop" id="sci-drop"><div class="cs-srch-wrap"><input class="cs-srch" id="sci-srch" placeholder="Search city…" oninput="filterCS('sci',this.value)"></div><div class="cs-list" id="sci-list"></div></div>
+        </div>
+        <div class="cs-wrap" style="min-width:180px" id="sub-wrap">
+          <span class="filter-label">Suburb / Area</span>
+          <div class="cs-trigger" id="sub-trigger" onclick="toggleCS('sub')"><span class="cs-val ph" id="sub-val">Select city first…</span><span class="cs-arrow">▼</span></div>
+          <div class="cs-drop" id="sub-drop"><div class="cs-srch-wrap"><input class="cs-srch" id="sub-srch" placeholder="Search suburb…" oninput="renderSubList(this.value)"></div><div class="cs-list" id="sub-list"><div class="cs-empty">Select a city first</div></div></div>
         </div>
         <div class="filter-group" style="min-width:150px">
           <span class="filter-label">Industry</span>
@@ -2735,7 +2744,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='11.9';   // ← Change this number whenever you update the site
+const APP_VERSION='12.1';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -4692,24 +4701,28 @@ window.runSearch=function(){
  const city=scSel.city||ct.cities[0];
  if(!scSel.city)showToast('📍 No city picked — searching '+city+', the main city in '+ct.name,'info');
  const ld=el('locDisplay');if(ld)ld.style.display='block';
- const lt=el('locText');if(lt)lt.textContent=ct.flag+' '+city+', '+ct.name;
+ const SB0=subFor(city,ct);const lt=el('locText');if(lt)lt.textContent=ct.flag+' '+(SB0?SB0.n+', ':'')+city+', '+ct.name;
  const box=el('searchResults');
- if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc(city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max'))+' ':'every ')+(ind?esc(ind.toLowerCase()):'business')+' from the live map'+(v('s-area')==='country'?' across the whole country':'')+'</div><div id="searchLiveCount" style="font-size:13px;color:var(--a);margin-top:6px">⚡ Asking the map servers…</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
+ if(box)box.innerHTML='<div class="loading-bar"><div class="spinner"></div><div style="font-weight:700;font-size:15px">Scanning real businesses in '+esc((SB0?SB0.n+', ':'')+city)+'…</div><div style="font-size:12px;color:var(--muted);max-width:420px">Pulling '+(+(v('s-max')||0)?'up to '+fmtNum(+v('s-max'))+' ':'every ')+(ind?esc(ind.toLowerCase()):'business')+' from the live map'+(SB0?' in this suburb only':v('s-area')==='country'?' across the whole country':'')+'</div><div id="searchLiveCount" style="font-size:13px;color:var(--a);margin-top:6px">⚡ Asking the map servers…</div><div class="progress-track"><div class="progress-fill"></div></div></div>';
  RES_SHOWN=60;searchPlaces(city,ct,ind||'').then(function(r){
   if(!r||!r.ok){
    if(r&&r.offline){if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">📶</div><h3>The map took too long to answer</h3><p>'+(navigator.onLine===false?'You seem to be offline — check your internet.':'The free map service is busy right now.')+' Your search wasn\'t lost — just try again.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button>'+(SEARCH_DIAG.length?'<details class="diag"><summary>Technical details (screenshot this for support)</summary>'+esc(SEARCH_DIAG.slice(-10).join(' • '))+'</details>':'')+'</div>';return}
    if(box)box.innerHTML='<div class="empty-state"><div class="empty-icon">🗺️</div><h3>'+esc((r&&r.error)||'Search failed')+'</h3><p>This happens when lots of people use the free world map at the same time. Wait a few seconds and try again — a smaller <b>Search area</b> also helps.</p><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="runSearch()">🔄 Try again</button>'+(SEARCH_DIAG.length?'<details class="diag"><summary>Technical details (screenshot this for support)</summary>'+esc(SEARCH_DIAG.slice(-10).join(' • '))+'</details>':'')+'</div>';
    return;
   }
-  let list=r.places.map(function(p){const l=leadFromPlace(p,ct,city,(r.claims||{})[p.key]);l.intel={notes:(r.notes||{})[p.key]||null,reserve:(r.reserves||{})[p.key]||null};return l});
+  const areaV=v('s-area')||'15',ncity=String(city).toLowerCase().replace(/[^a-z]/g,'');
+  let places=r.places;const SB=subFor(city,ct);
+  if(SB){const R=subKm(SB)*1.6;const inS=places.filter(function(p){return p.lat==null||kmBetween(SB.lat,SB.lon,+p.lat,+p.lon)<=R});if(inS.length||!places.length)places=inS}
+  else if(areaV==='5'||areaV==='15'){const kept=places.filter(function(p){const pc=String(p.city||'').toLowerCase().replace(/[^a-z]/g,'');return !pc||pc===ncity||pc.indexOf(ncity)>-1||ncity.indexOf(pc)>-1});if(kept.length)places=kept}
+  let list=places.map(function(p){const l=leadFromPlace(p,ct,city,(r.claims||{})[p.key]);l.intel={notes:(r.notes||{})[p.key]||null,reserve:(r.reserves||{})[p.key]||null,wa:(r.wa||{})[p.key]||null};return l});
   if(tsel==='No Website')list=list.filter(function(l){return l.type==='no-website'});
   if(tsel==='Outdated Site')list=list.filter(function(l){return l.type!=='no-website'});
   list.sort(function(a,b){return b.score-a.score});
   state.results=list;
-  state.lastSearch={ct:ct,city:city,real:true,cached:r.cached,total:r.places.length,nosite:r.places.filter(function(p){return !p.website}).length};
+  state.lastSearch={ct:ct,city:city,sub:SB?SB.n:'',real:true,cached:r.cached,total:r.places.length,nosite:r.places.filter(function(p){return !p.website}).length};
   renderResults();
   logAct('search',state.results.length+' real businesses in '+city+', '+ct.name);
-  showToast('🎯 '+fmtNum(r.places.length)+' real businesses in '+city+(r.secs!=null?' in '+r.secs+'s':'')+' — '+fmtNum(state.lastSearch.nosite)+' with no website listed','success');
+  showToast('🎯 '+fmtNum(places.length)+' real businesses in '+(SB?SB.n+', ':'')+city+(r.secs!=null?' in '+r.secs+'s':'')+' — '+fmtNum(state.lastSearch.nosite)+' with no website listed','success');
  });
 };
 const _resCard=window.resCard;
@@ -6411,17 +6424,17 @@ function searchPlaces(city,ct,ind){
 /* FAST search: the area is split into several small questions that go to different map servers AT THE SAME TIME.
    Results arrive in seconds and the count updates live. "All industries" asks for every named shop, office,
    workshop, restaurant, clinic, school, hotel… so it finds far more businesses than before.                */
-const GEO_CACHE_KEY='wd_geo_cache';let SEARCH_DIAG=[];
+const GEO_CACHE_KEY='wd_geo_cache2';let SEARCH_DIAG=[];
 function geoLookup(city,ct){
  const k=(city+'|'+ct.name).toLowerCase();let cache={};try{cache=JSON.parse(localStorage.getItem(GEO_CACHE_KEY)||'{}')}catch(e){}
  if(cache[k])return Promise.resolve(cache[k]);
  const save=function(g){cache[k]=g;try{localStorage.setItem(GEO_CACHE_KEY,JSON.stringify(cache))}catch(e){}return g};
  return wdApi('geo?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(ct.name),'GET',null,15000).then(function(r){
-  if(r&&r.ok)return save({lat:+r.lat,lon:+r.lon});
+  if(r&&r.ok)return save({lat:+r.lat,lon:+r.lon,bbox:r.bbox||null});
   SEARCH_DIAG.push('city lookup (server): '+((r&&r.error)||'failed'));
   return fetchJSONTimed('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(city+', '+ct.name),{headers:{'Accept':'application/json'}},12000).then(function(geo){
    if(!geo||!geo[0])throw new Error('City not found on the map');
-   return save({lat:+geo[0].lat,lon:+geo[0].lon});
+   return save({lat:+geo[0].lat,lon:+geo[0].lon,bbox:(geo[0].boundingbox||[]).map(Number)});
   },function(e){SEARCH_DIAG.push('city lookup (direct): '+(e&&e.message||e));throw e});
  });
 }
@@ -6479,8 +6492,19 @@ function runPool(queries,onDone){
 function tilesFor(bb,n){const out=[];const dLa=(bb[2]-bb[0])/n,dLo=(bb[3]-bb[1])/n;for(let a=0;a<n;a++)for(let b=0;b<n;b++)out.push([bb[0]+a*dLa,bb[1]+b*dLo,bb[0]+(a+1)*dLa,bb[1]+(b+1)*dLo].map(function(x){return x.toFixed(5)}).join(','));return out}
 window.bigFetchPlaces=function(city,ct,ind,km,max,onProgress){
  const parts=ind&&OSM_SEL[ind]?[OSM_SEL[ind].map(function(sel){return sel+'["name"]'})]:[[ALL_PARTS[0]],[ALL_PARTS[1]],[ALL_PARTS[2],ALL_PARTS[3]],[ALL_PARTS[4],ALL_PARTS[5],ALL_PARTS[6]]];
- const scope=km==='country'?Promise.resolve(null):geoLookup(city,ct).then(function(g){
-  const dLat=km/111,dLon=km/(111*Math.max(0.2,Math.cos(g.lat*Math.PI/180)));
+ const SB=subFor(city,ct);
+ const scope=SB?Promise.resolve(subTiles(SB)):km==='country'?Promise.resolve(null):geoLookup(city,ct).then(function(g){
+  const cos=Math.max(0.2,Math.cos(g.lat*Math.PI/180));
+  if(km===15&&g.bbox&&g.bbox.length===4&&g.bbox.every(isFinite)){
+   // "Whole city" = the town's own boundary box (so Swakopmund doesn't pull in Walvis Bay), kept between ±2 km and ±15 km
+   let s0=g.bbox[0],n0=g.bbox[1],w0=g.bbox[2],e0=g.bbox[3];
+   const minLat=2/111,minLon=2/(111*cos),maxLat=15/111,maxLon=15/(111*cos);
+   s0=Math.max(Math.min(s0,g.lat-minLat),g.lat-maxLat);n0=Math.min(Math.max(n0,g.lat+minLat),g.lat+maxLat);
+   w0=Math.max(Math.min(w0,g.lon-minLon),g.lon-maxLon);e0=Math.min(Math.max(e0,g.lon+minLon),g.lon+maxLon);
+   const spanKm=Math.max((n0-s0)*111,(e0-w0)*111*cos);
+   return tilesFor([s0,w0,n0,e0],spanKm<=10?1:spanKm<=22?2:3);
+  }
+  const dLat=km/111,dLon=km/(111*cos);
   return tilesFor([g.lat-dLat,g.lon-dLon,g.lat+dLat,g.lon+dLon],km<=5?1:km<=15?2:km<=40?3:5);
  });
  return scope.then(function(tiles){
@@ -6523,7 +6547,7 @@ window.searchPlaces=function(city,ct,ind){
   return window.bigFetchPlaces(city,ct,ind,km,max,prog).then(function(places){
    const nosite=places.filter(function(p){return !p.website}).length;
    if(places.partial)setTimeout(function(){showToast('ℹ️ Some parts of the map were busy — search again in a minute to find even more','info')},1500);
-   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},notes:(r&&r.notes)||{},reserves:(r&&r.reserves)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
+   return wdApi('search/log','POST',{city:city,country:ct.name,ind:ind,total:places.length,nosite:nosite},null,20000).then(function(r){return {ok:true,places:places,claims:(r&&r.claims)||{},notes:(r&&r.notes)||{},reserves:(r&&r.reserves)||{},wa:(r&&r.wa)||{},big:true,secs:Math.round((Date.now()-t0)/1000)}});
   },function(err){
    console.warn('map direct failed, using server',err);
    SEARCH_DIAG.push('direct: '+(err&&err.message||err));
@@ -6542,7 +6566,7 @@ window.renderResults=function(){
  const box=el('searchResults');const ls=state.lastSearch;if(!box)return;
  if(!ls||!state.results.length){box.innerHTML='<div class="empty-state"><div class="empty-icon">🌍</div><h3>Pick a country and city to begin</h3><p>Choose a country, city and industry above, then tap 🔍 Search</p></div>';return}
  const all=state.results,shown=all.slice(0,RES_SHOWN),nos=all.filter(function(l){return l.type==='no-website'}).length;
- box.innerHTML='<div class="res-head"><div><div class="section-title" style="margin:0">🎯 '+fmtNum(all.length)+' businesses found — '+ls.ct.flag+' '+(ls.city&&v('s-area')!=='country'?esc(ls.city)+', ':'all of ')+esc(ls.ct.name)+'</div><div class="res-sub">'+fmtNum(nos)+' without a website • showing '+fmtNum(shown.length)+' of '+fmtNum(all.length)+'</div></div><button class="btn btn-green btn-sm" onclick="addAllResults()">➕ Add all '+fmtNum(all.length)+' to My Leads</button></div><div class="results-grid">'+shown.map(resCard).join('')+'</div>'+
+ box.innerHTML='<div class="res-head"><div><div class="section-title" style="margin:0">🎯 '+fmtNum(all.length)+' businesses found — '+ls.ct.flag+' '+(ls.sub?esc(ls.sub)+', ':'')+(ls.city&&(ls.sub||v('s-area')!=='country')?esc(ls.city)+', ':'all of ')+esc(ls.ct.name)+'</div><div class="res-sub">'+fmtNum(nos)+' without a website • showing '+fmtNum(shown.length)+' of '+fmtNum(all.length)+'</div></div><button class="btn btn-green btn-sm" onclick="addAllResults()">➕ Add all '+fmtNum(all.length)+' to My Leads</button></div><div class="results-grid">'+shown.map(resCard).join('')+'</div>'+
  (all.length>RES_SHOWN?'<div style="text-align:center;margin:16px 0"><button class="btn btn-primary" onclick="RES_SHOWN+=120;renderResults()">⬇ Show more ('+fmtNum(all.length-RES_SHOWN)+' left)</button></div>':'');
 };
 const LEAD_CAP=15000;   // what a phone can safely keep offline
@@ -6721,7 +6745,7 @@ function loadIntel(l){
  if(!l.osm||!onlineReady())return;
  wdApi('intel?key='+encodeURIComponent(l.id)).then(function(r){
   if(!r||!r.ok)return;const it=l.intel||{};
-  it.claims=r.claims;it.notes=r.notes;it.myNote=r.myNote;it.reserve=r.reserve;l.intel=it;
+  it.claims=r.claims;it.notes=r.notes;it.myNote=r.myNote;it.reserve=r.reserve;if(r.wa)it.wa=r.wa;l.intel=it;try{decoratePhone(l)}catch(x){}
   if(state.curLead&&state.curLead.id===l.id)renderIntel(l);
  });
 }
@@ -6819,6 +6843,136 @@ function vnShare(){
 }
 function vnSave(){if(!VN.blob)return;const a=document.createElement('a');a.href=VN.url;a.download=vnFileName();document.body.appendChild(a);a.click();a.remove()}
 const _closeMVN=window.closeM;window.closeM=function(id){if(id==='leadModal'){try{vnStop()}catch(e){}}return _closeMVN.apply(this,arguments)};
+
+/* ═══════════ Phone labels on every result: 📱 Mobile / ☎️ Landline + WhatsApp status from members ═══════════
+   Built-in number rules for the main countries (works instantly, no download); the phone-number library
+   covers the rest once it has loaded.                                                                          */
+const PHONE_RULES={ // calling code → [mobile prefixes (after the code), landline prefixes]
+ '264':[/^(8[0-9]|60)/,/^6[1-7]/],               // Namibia: 81/85 mobile, 61-67 landlines
+ '27':[/^([6-8][0-9])/,/^[1-5]/],                 // South Africa
+ '267':[/^7/,/^[2-6]/],'260':[/^(7|9)/,/^2/],'263':[/^7/,/^[1-6]/],'254':[/^(7|1)/,/^[2-6]/],
+ '234':[/^(70|8|9)/,/^[1-6]/],'233':[/^(2|5)/,/^3/],'256':[/^7/,/^[3-4]/],'255':[/^(6|7)/,/^2/],
+ '44':[/^7/,/^[1-3]/],'91':[/^[6-9]/,/^[1-5]/],'49':[/^1[5-7]/,/^[2-9]/],'33':[/^[67]/,/^[1-5]/],
+ '61':[/^4/,/^[2378]/],'971':[/^5/,/^[2-9]/],'353':[/^8/,/^[1-9]/],'31':[/^6/,/^[1-5,7]/],'34':[/^[67]/,/^[89]/]
+};
+function phoneDigits(l){
+ let d=String((l&&l.phone)||'').replace(/[^\d+]/g,'');if(!d)return null;
+ const cc=String((l&&l.dial)||'').replace(/\D/g,'');
+ if(d[0]==='+')d=d.slice(1);else if(d.indexOf('00')===0)d=d.slice(2);else if(cc){d=cc+d.replace(/^0+/,'')}
+ return d;
+}
+function ruleType(l){
+ const d=phoneDigits(l);if(!d)return '';
+ const codes=Object.keys(PHONE_RULES).sort(function(a,b){return b.length-a.length});
+ for(const c of codes){if(d.indexOf(c)===0){const rest=d.slice(c.length).replace(/^0/,'');const r=PHONE_RULES[c];if(r[0].test(rest))return 'mobile';if(r[1].test(rest))return 'landline';return ''}}
+ return '';
+}
+const _phoneTypeOfR=window.phoneTypeOf;
+window.phoneTypeOf=function(l){
+ if(!l||!l.phone)return '';
+ if(l._pt)return l._pt;
+ const r=ruleType(l);if(r){l._pt=r;return r}
+ return _phoneTypeOfR?_phoneTypeOfR(l):'';
+};
+function waStatusOf(l){
+ const w=(l.intel&&l.intel.wa)||null;
+ if(l.noWA)return 'no-me';
+ if(l.onWA)return 'yes-me';
+ if(w&&w.no>w.yes)return 'no';
+ if(w&&w.yes)return 'yes';
+ return '';
+}
+function phoneLabels(l){
+ if(!String(l.phone||'').replace(/\D/g,''))return '<span class="ph-tag ph-none">📵 No number listed</span>';
+ const t=phoneTypeOf(l),w=waStatusOf(l),ww=(l.intel&&l.intel.wa)||{};
+ const out=[];
+ if(t==='landline')out.push('<span class="ph-tag ph-land">☎️ Landline — no WhatsApp, call instead</span>');
+ else if(t==='mobile')out.push('<span class="ph-tag ph-mob">📱 Mobile number</span>');
+ if(w==='no-me')out.push('<span class="ph-tag ph-land">📵 Not on WhatsApp (you checked)</span>');
+ else if(w==='no')out.push('<span class="ph-tag ph-land">📵 Not on WhatsApp ('+ww.no+' member'+(ww.no>1?'s':'')+' checked)</span>');
+ else if(w==='yes-me')out.push('<span class="ph-tag ph-wa">✅ On WhatsApp (you messaged them)</span>');
+ else if(w==='yes')out.push('<span class="ph-tag ph-wa">✅ On WhatsApp ('+ww.yes+' member'+(ww.yes>1?'s':'')+' messaged)</span>');
+ else if(t==='mobile')out.push('<span class="ph-tag ph-q">💬 WhatsApp not checked yet</span>');
+ return out.join('');
+}
+const _resCardP=window.resCard;
+window.resCard=function(l){
+ let h=_resCardP(l);
+ h=h.replace(/(<div class="rc-meta-row">📞[^<]*<\/div>)/,'$1<div class="ph-row">'+phoneLabels(l)+'</div>');
+ const t=phoneTypeOf(l),w=waStatusOf(l);
+ if(t==='landline'||w==='no'||w==='no-me')h=h.replace(/class="([^"]*btn[^"]*)"([^>]*onclick="[^"]*waLead)/,'class="$1 wa-dim"$2');
+ return h;
+};
+/* members share what they find out about WhatsApp */
+const _waSetStatusP=window.waSetStatus;
+window.waSetStatus=function(id,st){
+ const e=waLog().find(function(x){return x.id===id});
+ const r=_waSetStatusP.apply(this,arguments);
+ try{const l=e&&e.leadId?findLead(e.leadId):null;
+  if(l&&(st==='sent'||st==='notwa')){if(st==='sent'){l.onWA=true;l.noWA=false}saveUD();if(l.osm&&onlineReady())wdApi('wa-status','POST',{key:l.id,ok:st==='sent'?1:0})}
+ }catch(x){}
+ return r;
+};
+/* lead window: show the same labels under the phone number */
+window.decoratePhone=function(l){const n=el('m-phone');if(n&&l)n.innerHTML=esc(l.phone||'—')+'<div class="ph-row" style="margin-top:4px">'+phoneLabels(l)+'</div>'};
+
+/* ===== SUBURB / AREA PICKER (v12.1) =====
+   After picking a city you can pick one of its suburbs / neighbourhoods (e.g. Olympia, Academia in Windhoek).
+   The list comes live from the world map for ANY city in ANY country, is remembered on the server for everyone,
+   and the search then only covers that suburb.                                                                */
+const SUB_KEY='wd_subs1';let SUBS={list:[],city:'',country:'',loading:false,err:''};scSel.sub=null;
+function kmBetween(a,b,c,d){const R=6371,x=(c-a)*Math.PI/180,y=(d-b)*Math.PI/180;const h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+function subKm(sb){return /^(neighbourhood|quarter|city_block)$/.test(sb.t)?1.3:2.2}
+function subFor(city,ct){const s=scSel.sub;return (s&&ct&&s.city===city&&s.country===ct.name)?s:null}
+function subTiles(sb){const km=subKm(sb),cos=Math.max(0.2,Math.cos(sb.lat*Math.PI/180)),dLa=km/111,dLo=km/(111*cos);return tilesFor([sb.lat-dLa,sb.lon-dLo,sb.lat+dLa,sb.lon+dLo],1)}
+function subIcon(t){return t==='suburb'||t==='borough'?'🏘️':'🏠'}
+function subLabel(t){return {suburb:'suburb',borough:'district',neighbourhood:'neighbourhood',quarter:'quarter',city_block:'block'}[t]||'area'}
+function resetSub(msg){scSel.sub=null;const v=el('sub-val');if(v){v.textContent=msg||(scSel.city?'🏙️ Whole city':'Select city first…');v.classList.add('ph')}}
+function renderSubList(q){
+ const list=el('sub-list');if(!list)return;
+ if(!scSel.city){list.innerHTML='<div class="cs-empty">Select a city first</div>';return}
+ if(SUBS.loading){list.innerHTML='<div class="cs-empty">⏳ Loading suburbs of '+esc(scSel.city)+'…</div>';return}
+ let h='<div class="cs-item" onclick="pickSub(-1)"><span class="cs-flag">🏙️</span><strong>Whole city — all suburbs</strong></div>';
+ if(SUBS.err&&!SUBS.list.length)return list.innerHTML=h+'<div class="cs-empty">'+esc(SUBS.err)+' <a href="#" onclick="event.preventDefault();loadSubs(true)">Try again</a></div>';
+ if(!SUBS.list.length)return list.innerHTML=h+'<div class="cs-empty">No suburbs are listed on the map for '+esc(scSel.city)+' yet — search the whole city instead.</div>';
+ const ql=String(q||'').toLowerCase();let n=0;
+ SUBS.list.forEach(function(a,i){if(ql&&a.n.toLowerCase().indexOf(ql)<0)return;n++;h+='<div class="cs-item'+(scSel.sub&&scSel.sub.n===a.n?' sel':'')+'" onclick="pickSub('+i+')"><span class="cs-flag">'+subIcon(a.t)+'</span>'+esc(a.n)+' <span style="font-size:10px;color:var(--muted);margin-left:auto">'+subLabel(a.t)+'</span></div>'});
+ list.innerHTML=(ql&&!n)?h+'<div class="cs-empty">No suburb matches</div>':h;
+}
+function pickSub(i){
+ const a=SUBS.list[i];closeAllCS();
+ if(!a){resetSub();return}
+ scSel.sub={n:a.n,t:a.t,lat:a.lat,lon:a.lon,city:SUBS.city,country:SUBS.country};
+ const v=el('sub-val');if(v){v.textContent=subIcon(a.t)+' '+a.n;v.classList.remove('ph')}
+ showToast('📍 Searching only in '+a.n+', '+SUBS.city,'info');
+}
+function loadSubs(force){
+ const city=scSel.city,cn=scSel.country,ct=CTRY.find(function(c){return c.name===cn});
+ if(!city||!ct)return;
+ const k=(city+'|'+cn).toLowerCase();let cache={};try{cache=JSON.parse(localStorage.getItem(SUB_KEY)||'{}')}catch(e){}
+ SUBS={list:[],city:city,country:cn,loading:false,err:''};
+ if(!force&&cache[k]&&Date.now()-cache[k].at<7*864e5){SUBS.list=cache[k].list;renderSubList();return}
+ SUBS.loading=true;renderSubList();
+ const done=function(L){if(SUBS.city!==city||SUBS.country!==cn)return;SUBS.loading=false;SUBS.list=L;cache[k]={at:Date.now(),list:L};try{localStorage.setItem(SUB_KEY,JSON.stringify(cache))}catch(e){}renderSubList(el('sub-srch')&&el('sub-srch').value)};
+ const fail=function(e){if(SUBS.city!==city)return;SUBS.loading=false;SUBS.err='Could not load suburbs right now.';renderSubList()};
+ geoLookup(city,ct).then(function(g){
+  return wdApi('areas?city='+encodeURIComponent(city)+'&country='+encodeURIComponent(cn)+'&lat='+g.lat+'&lon='+g.lon,'GET',null,30000).then(function(r){
+   if(r&&r.ok)return done(r.areas||[]);
+   // server busy → ask the map directly from the phone
+   const qy='[out:json][timeout:25];(node["place"~"^(suburb|neighbourhood|quarter|borough)$"]["name"](around:16000,'+g.lat+','+g.lon+');way["place"~"^(suburb|neighbourhood|quarter)$"]["name"](around:16000,'+g.lat+','+g.lon+'););out center tags qt 600;';
+   let got=null;
+   return runPool([qy],function(d){got=d}).then(function(){
+    if(!got)throw new Error('map busy');
+    const seen={},L=[];(got.elements||[]).forEach(function(e){const t=e.tags||{},nm=String(t['name:en']||t.name||'').trim().slice(0,60),la=e.lat!=null?e.lat:e.center&&e.center.lat,lo=e.lon!=null?e.lon:e.center&&e.center.lon;if(!nm||la==null||seen[nm.toLowerCase()])return;seen[nm.toLowerCase()]=1;L.push({n:nm,t:String(t.place||''),lat:+la,lon:+lo})});
+    L.sort(function(a,b){return a.n.localeCompare(b.n)});done(L);
+   });
+  });
+ }).catch(fail);
+}
+const _selCity=selectCity;selectCity=function(id,city){_selCity(id,city);if(id==='sci'){resetSub('🏙️ Whole city');loadSubs()}};
+const _clrCity=clearCity;clearCity=function(id){_clrCity(id);if(id==='sci'){resetSub('Select city first…');SUBS={list:[],city:'',country:'',loading:false,err:''};renderSubList()}};
+const _selCtry=selectCountry;selectCountry=function(id,name){_selCtry(id,name);if(id==='sc'){resetSub('Select city first…');SUBS={list:[],city:'',country:'',loading:false,err:''};renderSubList()}};
+const _clrCtry=clearCountry;clearCountry=function(id){_clrCtry(id);if(id==='sc'){resetSub('Select city first…');renderSubList()}};
 
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
