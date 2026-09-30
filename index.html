@@ -41,8 +41,37 @@ body.light .topbar{background:linear-gradient(180deg,#fffdf7,rgba(244,239,228,.9
 body.light .modal-overlay{background:rgba(60,45,20,.42)}
 body.light #authScreen{background:radial-gradient(1100px 600px at 75% -10%,rgba(255,107,26,.1),transparent),radial-gradient(900px 500px at 5% 110%,rgba(167,139,250,.08),transparent),var(--bg)}
 body.light .toast{background:#fffdf7}
-#introOverlay{position:fixed;inset:0;z-index:5000;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(1300px 750px at 50% 32%,#1c130b 0%,#0d0a07 52%,#060403 100%);overflow:hidden;cursor:pointer}
+#introOverlay{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:10050;display:none;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(1300px 750px at 50% 32%,#1c130b 0%,#0d0a07 52%,#060403 100%);overflow:hidden;cursor:pointer}
 #introOverlay.active{display:flex}
+body.intro-on{overflow:hidden}
+body.intro-on .consent-bar,body.intro-on .ai-launcher,body.intro-on .toast-wrap{visibility:hidden}
+.intro-top,.intro-grid,.intro-beam{display:none}
+.intro-grid{position:absolute;left:-50%;right:-50%;bottom:0;height:34%;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,140,66,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(255,140,66,.22) 1px,transparent 1px);background-size:44px 44px;transform:perspective(420px) rotateX(62deg);transform-origin:bottom center;-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 92%);mask-image:linear-gradient(to top,#000 10%,transparent 92%);animation:gridMove 1.6s linear infinite,fadeSoft 1.2s ease .3s both}
+@keyframes gridMove{from{background-position:0 0,0 0}to{background-position:0 44px,0 0}}
+.intro-beam{position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,179,71,.55) 30%,rgba(255,107,26,.35) 70%,transparent);box-shadow:0 0 40px 10px rgba(255,107,26,.12);animation:beamIn 1.4s ease .2s both}
+@keyframes beamIn{from{opacity:0;transform:translateX(-50%) scaleY(0)}to{opacity:.75;transform:translateX(-50%) scaleY(1)}}
+.intro-top{flex-direction:column;align-items:center;gap:12px;z-index:2;animation:fadeSoft 1s ease .4s both}
+.intro-top .it-logo{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:32px;background:linear-gradient(135deg,rgba(255,107,26,.28),rgba(255,179,71,.10));border:1px solid rgba(255,140,66,.45);box-shadow:0 0 40px rgba(255,107,26,.35)}
+.intro-top .it-name{font-family:var(--font-d);font-size:11px;font-weight:700;letter-spacing:.5em;color:var(--text2);text-transform:uppercase;padding-left:.5em}
+.intro-bottom{display:flex;flex-direction:column;align-items:center;z-index:2}
+/* PHONE (portrait): spread the intro over the whole screen, head to toe */
+@media (max-aspect-ratio:4/5){
+ #introOverlay{justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 11vh) 0 calc(env(safe-area-inset-bottom,0px) + 7vh);background:radial-gradient(120vw 80vh at 50% 45%,#23170c 0%,#0d0a07 55%,#050302 100%)}
+ .intro-top,.intro-grid,.intro-beam{display:flex}
+ .intro-beam{display:block}
+ .intro-grid{display:block}
+ .intro-scene{flex:1;width:100vw;height:auto;min-height:0}
+ .intro-flare{top:30%;bottom:30%}
+ .intro-word span{font-size:min(17.5vw,15vh)}
+ .intro-ring.r1{width:112vw}
+ .intro-ring.r2{width:90vw}
+ .intro-ring.r3{width:140vw}
+ .intro-tag{margin-top:0;font-size:12px;letter-spacing:.42em;text-align:center;line-height:2}
+ .intro-tag i{width:34px}
+ .intro-credit{margin-top:18px}
+ .intro-skip{top:calc(env(safe-area-inset-top,0px) + 16px)}
+ .intro-progress{bottom:env(safe-area-inset-bottom,0px);height:3px}
+}
 #introOverlay::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 42%,rgba(0,0,0,.62) 100%);pointer-events:none;z-index:9}
 #introOverlay.out{animation:introOut .55s ease forwards}
 @keyframes introOut{to{opacity:0}}
@@ -61,7 +90,7 @@ body.light .toast{background:#fffdf7}
 @keyframes orbitB{from{transform:translate(-50%,-50%) rotateX(62deg) rotateY(-16deg) rotateZ(0deg)}to{transform:translate(-50%,-50%) rotateX(62deg) rotateY(-16deg) rotateZ(360deg)}}
 @keyframes orbitC{from{transform:translate(-50%,-50%) rotateX(80deg) rotateZ(0deg)}to{transform:translate(-50%,-50%) rotateX(80deg) rotateZ(-360deg)}}
 .intro-flare{position:absolute;top:-20%;bottom:-20%;left:-45%;width:34%;background:linear-gradient(100deg,transparent 0%,rgba(255,179,71,.10) 42%,rgba(255,240,214,.30) 50%,rgba(255,179,71,.10) 58%,transparent 100%);transform:skewX(-14deg);mix-blend-mode:screen;pointer-events:none;animation:flareSweep 1.1s cubic-bezier(.35,.5,.4,1) 2.2s both;z-index:3}
-@keyframes flareSweep{from{transform:skewX(-14deg) translateX(0)}to{transform:skewX(-14deg) translateX(430%)}}
+@keyframes flareSweep{0%{transform:skewX(-14deg) translateX(0);opacity:1}85%{opacity:1}100%{transform:skewX(-14deg) translateX(430%);opacity:0}}
 .intro-tag{margin-top:38px;display:flex;align-items:center;gap:16px;font-family:var(--font-d);font-size:11px;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--a);animation:tagIn 1.1s cubic-bezier(.2,.7,.3,1) 2.7s both;z-index:2}
 .intro-tag i{display:block;height:1px;width:54px}
 .intro-tag i:first-child{background:linear-gradient(90deg,transparent,rgba(255,140,66,.65))}
@@ -878,6 +907,9 @@ input.pay-bad{border-color:var(--red)!important}
 <!-- ═══════════ CINEMATIC 360° INTRO (5 seconds) ═══════════ -->
 <div id="introOverlay" onclick="skipIntro()">
   <div class="intro-stars" id="introStars"></div>
+  <div class="intro-beam"></div>
+  <div class="intro-grid"></div>
+  <div class="intro-top"><div class="it-logo">🎯</div><div class="it-name">Lead Finder Pro</div></div>
   <div class="intro-scene">
     <div class="intro-ring r1"></div>
     <div class="intro-ring r2"></div>
@@ -885,8 +917,10 @@ input.pay-bad{border-color:var(--red)!important}
     <div class="intro-word" id="introWord"></div>
     <div class="intro-flare"></div>
   </div>
+  <div class="intro-bottom">
   <div class="intro-tag"><i></i>GLOBAL LEAD INTELLIGENCE<i></i></div>
   <div class="intro-credit">ENGINEERED BY <b>WE DEPLOY</b></div>
+  </div>
   <div class="intro-progress"><i></i></div>
   <div class="intro-skip" onclick="skipIntro()">SKIP ✕</div>
 </div>
@@ -2744,7 +2778,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='12.1';   // ← Change this number whenever you update the site
+const APP_VERSION='12.2';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -3177,8 +3211,9 @@ function playIntro(done){
  introDone=false;
  const ov=el('introOverlay');
  if(!ov){done();return}
+ try{buildIntro()}catch(e){}
  ov.classList.remove('out');
- ov.classList.add('active');
+ ov.classList.add('active');document.body.classList.add('intro-on');
  introTimer=setTimeout(finishIntro,INTRO_MS);
 }
 function finishIntro(){
@@ -3189,7 +3224,7 @@ function finishIntro(){
  if(!ov){const cb=introCallback;introCallback=null;if(cb)cb();return}
  ov.classList.add('out');
  setTimeout(function(){
-  ov.classList.remove('active','out');
+  ov.classList.remove('active','out');document.body.classList.remove('intro-on');
   const cb=introCallback;introCallback=null;
   if(cb)cb();
  },560);
