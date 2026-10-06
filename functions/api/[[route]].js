@@ -827,6 +827,28 @@ async function handleGrowth(ctx) {
       return json({ ok: true, lat: Number(g[0].lat), lon: Number(g[0].lon), bbox: bb });
     } catch (e) { return json({ error: 'Map lookup failed: ' + String(e.message || e).slice(0, 80) }, 502); }
   }
+  // live exchange rates (1 USD = x), fetched at most every 6 hours and shared by everyone
+  if (path === 'fx' && m === 'GET') {
+    await DB.prepare('CREATE TABLE IF NOT EXISTS wd_fx (k TEXT PRIMARY KEY, rates TEXT, updated INTEGER, fetched INTEGER)').run();
+    const hit = await DB.prepare("SELECT rates, updated, fetched FROM wd_fx WHERE k = 'USD'").first();
+    if (hit && Date.now() - hit.fetched < 6 * 3600e3) return json({ ok: true, base: 'USD', rates: JSON.parse(hit.rates), updated: hit.updated, cached: true });
+    const srcs = [
+      async () => { const j = await osmFetchJSON('https://open.er-api.com/v6/latest/USD', {}, 12000); if (!j || j.result !== 'success' || !j.rates) throw new Error('bad'); return { rates: j.rates, updated: (j.time_last_update_unix || 0) * 1000 || Date.now() }; },
+      async () => { const j = await osmFetchJSON('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json', {}, 12000); if (!j || !j.usd) throw new Error('bad'); const r = {}; for (const k in j.usd) if (/^[a-z]{3}$/.test(k) && j.usd[k] > 0) r[k.toUpperCase()] = j.usd[k]; return { rates: r, updated: Date.parse(j.date) || Date.now() }; }
+    ];
+    for (const f of srcs) {
+      try {
+        const r = await f(); const clean = {};
+        for (const k in r.rates) { const v = Number(r.rates[k]); if (/^[A-Z]{3}$/.test(k) && isFinite(v) && v > 0) clean[k] = v; }
+        if (!clean.NAD && clean.ZAR) clean.NAD = clean.ZAR;   // N$ is pegged 1:1 to the Rand
+        clean.USD = 1;
+        await DB.prepare("INSERT OR REPLACE INTO wd_fx (k, rates, updated, fetched) VALUES ('USD', ?, ?, ?)").bind(JSON.stringify(clean), r.updated, Date.now()).run();
+        return json({ ok: true, base: 'USD', rates: clean, updated: r.updated });
+      } catch (e) {}
+    }
+    if (hit) return json({ ok: true, base: 'USD', rates: JSON.parse(hit.rates), updated: hit.updated, stale: true });
+    return json({ error: 'Exchange rates unavailable right now' }, 502);
+  }
   // city → list of suburbs / neighbourhoods (asked once, then remembered for everyone for 30 days)
   if (path === 'areas' && m === 'GET') {
     const city = str(url.searchParams.get('city'), 60).trim(), country = str(url.searchParams.get('country'), 60).trim();
