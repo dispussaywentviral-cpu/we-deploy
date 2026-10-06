@@ -900,6 +900,19 @@ input.pay-bad{border-color:var(--red)!important}
 .lb-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
 .lb-row:last-child{border-bottom:none}
 .empty-mini{color:var(--muted);font-size:12px;padding:10px 0;text-align:center}
+.fx-box{margin-top:14px;background:linear-gradient(135deg,rgba(255,107,26,.08),rgba(91,156,246,.05));border:1px solid var(--line2);border-radius:12px;padding:14px}
+.fx-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:14px}
+.fx-live{font-size:11px;color:var(--muted)}.fx-live.ok{color:var(--green)}.fx-live.bad{color:var(--red,#f87171)}
+.fx-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.fx-grid .form-group{margin:0}
+.fx-grid select,.fx-grid input[type=number]{width:100%;background:var(--panel3);border:1px solid var(--line2);border-radius:8px;padding:7px 10px;font-size:13px;color:var(--text)}
+.fx-grid2{align-items:end;margin-top:10px}
+.fx-chk{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;padding-bottom:8px}
+.fx-result{margin-top:12px;padding:12px;border-radius:10px;background:var(--panel3);border:1px solid var(--line);font-size:13px;color:var(--text2);line-height:1.6}
+.fx-result .big{display:block;font-family:var(--font-d);font-size:22px;font-weight:800;color:var(--a);margin:2px 0}
+.fx-inv{margin-top:8px;font-size:12.5px;color:var(--text2);line-height:1.7}.fx-inv b{color:var(--green)}
+.fx-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.fx-foot{margin-top:8px;font-size:10.5px;color:var(--muted);line-height:1.5}
+@media(max-width:620px){.fx-grid{grid-template-columns:1fr}.fx-chk{padding-bottom:0}}
 </style>
 </head>
 <body>
@@ -1447,6 +1460,23 @@ input.pay-bad{border-color:var(--red)!important}
             <div class="inv-total-row"><span style="color:var(--muted)">Tax (<span id="inv-tax-pct">0</span>%)</span><span id="inv-tax-amt">$0.00</span></div>
             <div class="inv-total-row"><span style="color:var(--muted)">Shipping</span><span id="inv-shipping-amt">$0.00</span></div>
             <div class="inv-total-row grand"><span>Total</span><span id="inv-total">$1,700.00</span></div>
+          </div>
+          <div class="fx-box" id="fxBox">
+            <div class="fx-head"><b>💱 Currency converter</b><span class="fx-live" id="fx-status">loading live rates…</span></div>
+            <div class="fx-grid">
+              <div class="form-group"><label>Your price</label><input id="fx-amt" type="number" min="0" inputmode="decimal" value="2500" oninput="fxRender()"></div>
+              <div class="form-group"><label>Your currency</label><select id="fx-mine" onchange="fxSave();fxRender()"></select></div>
+              <div class="form-group"><label>Client's currency <span class="opt" id="fx-auto-note"></span></label><select id="fx-client" onchange="fxRender()"></select></div>
+            </div>
+            <div class="fx-result" id="fx-result">—</div>
+            <div class="fx-inv" id="fx-inv"></div>
+            <div class="fx-grid fx-grid2">
+              <div class="form-group"><label>Bank / transfer fee %</label><input id="fx-fee" type="number" min="0" max="20" step="0.5" value="3" oninput="fxSave();fxRender()"></div>
+              <label class="fx-chk"><input type="checkbox" id="fx-round" checked onchange="fxSave()"> Round to a clean price</label>
+              <label class="fx-chk"><input type="checkbox" id="fx-show" onchange="fxSave()"> Show my-currency amount on the invoice</label>
+            </div>
+            <div class="fx-btns"><button class="btn btn-primary btn-sm" id="fx-bill" onclick="fxBillClient()">💱 Bill client in their currency</button><button class="btn btn-ghost btn-sm" id="fx-back" onclick="fxBillMine()">↩ Back to my currency</button><button class="btn btn-ghost btn-sm" onclick="fxRates(true).then(fxRender)">🔄 Refresh rates</button></div>
+            <div class="fx-foot">Live mid-market rates. Banks, PayPal and Wise usually take a small extra cut — the fee % above estimates what actually lands in your account.</div>
           </div>
         </div>
         <div class="inv-section">
@@ -2778,7 +2808,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- ═══ SCRIPT BLOCK B — THE MAIN APP ═══ -->
 <script>
 // ===== APP VERSION (change this when you release updates) =====
-const APP_VERSION='12.2';   // ← Change this number whenever you update the site
+const APP_VERSION='12.3';   // ← Change this number whenever you update the site
 const OWNER={name:'Lameero Mendoza',email:'delonmayne@gmail.com',phone:'081 727 4007',phoneDigits:'264817274007'};
 function canInvoice(){return !!CUR}  // every signed-in account has its own private Invoice Builder
 function isOwner(){
@@ -7009,6 +7039,105 @@ const _clrCity=clearCity;clearCity=function(id){_clrCity(id);if(id==='sci'){rese
 const _selCtry=selectCountry;selectCountry=function(id,name){_selCtry(id,name);if(id==='sc'){resetSub('Select city first…');SUBS={list:[],city:'',country:'',loading:false,err:''};renderSubList()}};
 const _clrCtry=clearCountry;clearCountry=function(id){_clrCtry(id);if(id==='sc'){resetSub('Select city first…');renderSubList()}};
 
+/* ===== CURRENCY CONVERTER (v12.3) =====
+   Live exchange rates on the invoice page. The client's currency is picked automatically from the lead's country,
+   you see what they pay and what you actually receive (after bank fees), and one tap re-prices the invoice. */
+const FX_CUR={'Namibia':'NAD','South Africa':'ZAR','Nigeria':'NGN','Kenya':'KES','Ghana':'GHS','Egypt':'EGP','Morocco':'MAD','Ethiopia':'ETB','Tanzania':'TZS','Uganda':'UGX','Zimbabwe':'USD','Botswana':'BWP','Zambia':'ZMW','Rwanda':'RWF','Senegal':'XOF','Ivory Coast':'XOF','Cameroon':'XAF','Angola':'AOA','Mozambique':'MZN','Tunisia':'TND','Algeria':'DZD','Sudan':'SDG','DR Congo':'CDF','Malawi':'MWK','Libya':'LYD','United Kingdom':'GBP','Ireland':'EUR','France':'EUR','Germany':'EUR','Spain':'EUR','Italy':'EUR','Netherlands':'EUR','Portugal':'EUR','Belgium':'EUR','Switzerland':'CHF','Austria':'EUR','Sweden':'SEK','Norway':'NOK','Denmark':'DKK','Finland':'EUR','Poland':'PLN','Czechia':'CZK','Greece':'EUR','Romania':'RON','Turkey':'TRY','United Arab Emirates':'AED','Saudi Arabia':'SAR','Qatar':'QAR','Israel':'ILS','India':'INR','Pakistan':'PKR','Bangladesh':'BDT','China':'CNY','Japan':'JPY','South Korea':'KRW','Singapore':'SGD','Malaysia':'MYR','Indonesia':'IDR','Thailand':'THB','Vietnam':'VND','Philippines':'PHP','United States':'USD','Canada':'CAD','Mexico':'MXN','Brazil':'BRL','Argentina':'ARS','Chile':'CLP','Colombia':'COP','Peru':'PEN','Australia':'AUD','New Zealand':'NZD'};
+const FX_MAIN=['NAD','ZAR','USD','EUR','GBP','BWP','ZMW','KES','NGN','GHS','AUD','CAD','AED','INR'];
+let FX=null,FX_P=null;
+function fxCode(sel){const x=el(sel);return x&&x.value?String(x.value).split(' ')[0]:''}
+function fxFind(code){return Array.from((el('inv-currency')||{options:[]}).options).find(function(o){return o.value.split(' ')[0]===code})}
+function fxSym(code){const o=fxFind(code);return o?o.value.split(' ').slice(1).join(' '):''}
+function fxOpt(code){const o=fxFind(code);return o?o.value:''}
+function fxBig(code){return !!(FX&&FX.rates[code]>=500)}
+function fxFmt(x,code){const b=fxBig(code);return (fxSym(code)?fxSym(code)+' ':'')+Number(x||0).toLocaleString('en-US',{minimumFractionDigits:b?0:2,maximumFractionDigits:b?0:2})+' '+code}
+function fxConv(x,from,to){if(!FX||!FX.rates[from]||!FX.rates[to])return null;return x/FX.rates[from]*FX.rates[to]}
+function fxNice(x,code){if(fxBig(code))return Math.round(x/100)*100;if(x>=100)return Math.round(x);return Math.round(x*100)/100}
+function fxRate(r){return r<0.01?r.toPrecision(3):r.toFixed(r>=10?2:4)}
+function fxRates(force){
+ if(FX&&!force&&!FX.stale&&Date.now()-FX.at<6*3600e3)return Promise.resolve(FX);
+ if(FX_P)return FX_P;
+ let cache=null;try{cache=JSON.parse(localStorage.getItem('wd_fx1')||'null')}catch(e){}
+ if(!force&&cache&&Date.now()-cache.at<6*3600e3){FX=cache;return Promise.resolve(FX)}
+ const st=el('fx-status');if(st){st.textContent='loading live rates…';st.className='fx-live'}
+ const keep=function(r,upd){const R={};for(const k in r){const n=+r[k];if(/^[A-Z]{3}$/.test(k)&&n>0)R[k]=n}if(!R.NAD&&R.ZAR)R.NAD=R.ZAR;R.USD=1;FX={rates:R,updated:upd||Date.now(),at:Date.now()};try{localStorage.setItem('wd_fx1',JSON.stringify(FX))}catch(e){}return FX};
+ FX_P=Promise.resolve(wdApi('fx','GET',null,15000)).then(function(r){
+  if(r&&r.ok&&r.rates)return keep(r.rates,r.updated);
+  return fetchJSONTimed('https://open.er-api.com/v6/latest/USD',{},12000).then(function(j){if(!j||!j.rates)throw new Error('no rates');return keep(j.rates,(j.time_last_update_unix||0)*1000)});
+ }).catch(function(){if(cache){FX=cache;FX.stale=true;return FX}return FX}).then(function(x){FX_P=null;return x});
+ return FX_P;
+}
+function fxSave(){if(!UD)return;UD.fx={home:fxCode('fx-mine')||'NAD',fee:+v('fx-fee')||0,round:!!(el('fx-round')&&el('fx-round').checked),show:!!(el('fx-show')&&el('fx-show').checked)};saveUD()}
+function fxInit(){
+ const inv=el('inv-currency'),m=el('fx-mine'),c=el('fx-client');if(!inv||!m||!c)return;
+ if(!m.options.length){
+  const all=Array.from(inv.options).map(function(o){return o.value}).filter(function(x){return !/^(XA[GU]|XB[A-D]|XDR|XP[DT]|XSU|XTS|XUA|XXX|BOV|CHE|CHW|CLF|COU|MXV|USN|UYI|UYW)\b/.test(x)});
+  const opt=function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'};
+  const html='<optgroup label="Popular">'+FX_MAIN.map(fxOpt).filter(Boolean).map(opt).join('')+'</optgroup><optgroup label="All currencies">'+all.map(opt).join('')+'</optgroup>';
+  m.innerHTML=html;c.innerHTML=html;
+  const f=(UD&&UD.fx)||{};
+  m.value=fxOpt(f.home||'NAD')||m.value;
+  if(f.fee!=null)setV('fx-fee',f.fee);
+  if(el('fx-round'))el('fx-round').checked=f.round!==false;
+  if(el('fx-show'))el('fx-show').checked=!!f.show;
+  c.value=fxOpt('USD');
+ }
+ fxAuto();
+ fxRates().then(fxRender);
+}
+function fxAuto(){
+ const ctry=v('inv-to-country'),code=FX_CUR[ctry],n=el('fx-auto-note');
+ if(code&&fxOpt(code)&&el('fx-client')){el('fx-client').value=fxOpt(code);if(n)n.textContent='· auto from '+ctry}else if(n)n.textContent='';
+ fxRender();
+}
+function fxRender(){
+ const st=el('fx-status'),res=el('fx-result'),inv=el('fx-inv');if(!res)return;
+ const mine=fxCode('fx-mine')||'NAD',cl=fxCode('fx-client')||'USD',fee=Math.max(0,+v('fx-fee')||0),ic=fxCode('inv-currency');
+ const bb=el('fx-bill'),bk=el('fx-back');if(bb)bb.textContent='💱 Bill client in '+cl;if(bk)bk.textContent='↩ Back to '+mine;
+ if(!FX){if(st){st.textContent=FX_P?'loading live rates…':'⚠️ rates unavailable — tap Refresh rates';st.className='fx-live'+(FX_P?'':' bad')}res.innerHTML='Live rates are needed to convert.';if(inv)inv.innerHTML='';return}
+ if(st){st.textContent=(FX.stale?'⚠️ offline — last rates from ':'🟢 live rates · updated ')+new Date(FX.updated).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});st.className='fx-live '+(FX.stale?'bad':'ok')}
+ const a=Math.max(0,+v('fx-amt')||0),x=fxConv(a,mine,cl);
+ if(x==null){res.innerHTML='No live rate for '+esc(cl)+' yet.';if(inv)inv.innerHTML='';return}
+ res.innerHTML=esc(fxFmt(a,mine))+' =<span class="big">'+esc(fxFmt(x,cl))+'</span>1 '+mine+' = '+fxRate(fxConv(1,mine,cl))+' '+cl+' &nbsp;•&nbsp; 1 '+cl+' = '+fxRate(fxConv(1,cl,mine))+' '+mine;
+ if(!inv)return;
+ let tot=0;try{tot=invData().total||0}catch(e){}
+ const toMe=fxConv(tot,ic,mine),toCl=fxConv(tot,ic,cl);
+ if(!tot||toMe==null){inv.innerHTML='';return}
+ inv.innerHTML='🧾 This invoice: <b>'+esc(fxFmt(tot,ic))+'</b>'+(ic!==cl&&toCl!=null?' — client pays ≈ '+esc(fxFmt(toCl,cl)):'')+
+  '<br>💰 You receive '+(ic!==mine?'≈ ':'')+'<b>'+esc(fxFmt(toMe,mine))+'</b>'+
+  (fee&&ic!==mine?' — after '+fee+'% fees ≈ <b>'+esc(fxFmt(toMe*(1-fee/100),mine))+'</b>':'');
+}
+function fxReprice(to){
+ const from=fxCode('inv-currency');if(!FX)return showToast('Live rates not loaded yet — tap Refresh rates','error');
+ if(!to||from===to)return showToast('The invoice is already in '+(to||from),'info');
+ if(fxConv(1,from,to)==null)return showToast('No live rate for '+to,'error');
+ const rnd=el('fx-round')&&el('fx-round').checked;
+ const cv=function(n){n=fxConv(n,from,to);return rnd?fxNice(n,to):Math.round(n*100)/100};
+ document.querySelectorAll('#invItems tr').forEach(function(r){const pi=r.querySelector('td:nth-child(3) input');if(!pi||pi.value==='')return;pi.value=cv(parseFloat(pi.value)||0)});
+ const sh=el('inv-shipping');if(sh&&+sh.value)sh.value=cv(+sh.value);
+ setV('inv-currency',fxOpt(to));calcInvTotal();
+ showToast('💱 Invoice re-priced from '+from+' to '+to+' at today\'s rate','success');
+}
+function fxBillClient(){fxReprice(fxCode('fx-client'))}
+function fxBillMine(){fxReprice(fxCode('fx-mine')||'NAD')}
+function fxNoteFor(d){
+ if(!(el('fx-show')&&el('fx-show').checked)||!FX)return '';
+ const ic=fxCode('inv-currency'),mine=fxCode('fx-mine')||'NAD';if(ic===mine)return '';
+ const x=fxConv(d.total,ic,mine);if(x==null)return '';
+ return '≈ '+fxFmt(x,mine)+' (1 '+ic+' = '+fxRate(fxConv(1,ic,mine))+' '+mine+', rate of '+new Date(FX.updated).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+')';
+}
+const _fxCalc=calcInvTotal;calcInvTotal=function(){_fxCalc.apply(this,arguments);try{fxRender()}catch(e){}};
+const _fxEst=updateInvoiceEstimate;updateInvoiceEstimate=function(){_fxEst.apply(this,arguments);try{fxAuto()}catch(e){}};
+const _fxInvData=window.invData;window.invData=function(){const d=_fxInvData.apply(this,arguments);d.cur=fxCode('inv-currency');d.fxNote=fxNoteFor(d);if(d.fxNote)d.notes=(d.notes?d.notes+'\n\n':'')+'Exchange rate: '+d.fxNote;return d};
+const _fxLead=invoiceLead;invoiceLead=function(id){
+ _fxLead.apply(this,arguments);
+ const l=findLead(id);if(!l||!l.country)return;
+ const sel=el('inv-to-country');
+ if(sel&&Array.from(sel.options).some(function(o){return o.value===l.country})){sel.value=l.country;try{fxInit()}catch(e){}updateInvoiceEstimate();const c=FX_CUR[l.country];if(c)setTimeout(function(){showToast('💱 '+l.name+' is in '+l.country+' — the converter is set to '+c,'info')},900)}
+};
+(function(){const ic=el('inv-currency');if(ic)ic.addEventListener('change',function(){calcInvTotal()})})();
+const _fxSV=window.sv;window.sv=function(view){const r=_fxSV.apply(this,arguments);if(view==='invoice')try{fxInit()}catch(e){console.warn(e)}return r};
+
 /* ===== LEAD STATUS (Hot / Warm / Cold) ===== */
 function setLeadStatus(id,status){
  const l=findLead(id);
@@ -7523,7 +7652,7 @@ function sendInvoiceWA(){
  const d=invData();
  const ph=(el('inv-to-phone').value||'').replace(/\D/g,'');
  if(!ph)return showToast('Add the client phone number first','error');
- const msg='Hello '+(d.to.name||'there')+'! 🧾 Here is your invoice '+d.num+' from '+d.from.name+':\n\nTotal: '+money(d.total)+'\nDue: '+d.due+' ('+d.terms+')'+(d.to.country?'\nDelivery country: '+d.to.country:'')+(d.shipping?'\nShipping: '+money(d.shipping):'')+(d.payment?'\n\n💳 Payment Instructions:\n'+d.payment:'')+(d.stripe?'\n\nStripe payment link:\n'+d.stripe:'')+(d.paypal?'\n\nPayPal payment link:\n'+d.paypal:'')+(d.qr?'\n\nScan/payment QR target:\n'+d.qr:'')+'\n\nThank you for your business 🙏';
+ const msg='Hello '+(d.to.name||'there')+'! 🧾 Here is your invoice '+d.num+' from '+d.from.name+':\n\nTotal: '+money(d.total)+(d.fxNote?'\n('+d.fxNote+')':'')+'\nDue: '+d.due+' ('+d.terms+')'+(d.to.country?'\nDelivery country: '+d.to.country:'')+(d.shipping?'\nShipping: '+money(d.shipping):'')+(d.payment?'\n\n💳 Payment Instructions:\n'+d.payment:'')+(d.stripe?'\n\nStripe payment link:\n'+d.stripe:'')+(d.paypal?'\n\nPayPal payment link:\n'+d.paypal:'')+(d.qr?'\n\nScan/payment QR target:\n'+d.qr:'')+'\n\nThank you for your business 🙏';
  window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');
  recordInvoice(d,'sent');closeM('invoiceModal');
  showToast('💬 Invoice '+d.num+' sent via WhatsApp','success');
